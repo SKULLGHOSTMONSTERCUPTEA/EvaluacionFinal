@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<!--
+  TechLab Portfolio - Detalle: RoboNexis N1
+  Autor: Alexis Negrón Rodríguez
+  Archivo: detalle-robonexis-n1.html
+
+  Estructura HTML5:
+  - <nav>: Navbar Bootstrap 5 responsiva
+  - <header>: Hero con overlay y título
+  - <main>:
+      · <section id="overview">: Objetivo, KPIs y panel lateral con
+        datos de plataforma (Yahboom G1, RPi 3B, Debian Buster)
+      · <section id="sistemas">: 6 cards de subsistemas —
+        Comunicación (4 capas: LoRa, hotspot, TCP/IP, cifrado),
+        Movilidad (4 motores DC 1300RPM, orugas rediseñadas),
+        Energético (15 celdas 18650, solar, Al disipativo),
+        Térmico (ventilación 22U, Zener, DC-DC),
+        IA embebida (6 módulos), Mecánica expresiva (orejas dinámicas)
+      · <section id="ai">: Badges de funciones IA, tabla de lógica
+        de respuesta, SVG demostrativo de orejas con selector
+        interactivo de 4 estados del sistema
+      · <section id="autonomia">: Barras animadas de autonomía
+        (3h / 6h / 8h) y detalles de batería y protección eléctrica
+      · <section id="tecnologias">: Stack tecnológico completo
+        y navegación entre proyectos
+  - <footer>: Pie de página
+-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="RoboNexis N1 — Plataforma Robótica Autónoma Experimental con IA embebida, LoRa Mesh y energía solar">
+  <title>TechLab | RoboNexis N1</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <script src="js/app.js"></script>
+  <style>
+    .sys-card {
+      background: #111;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 4px;
+      padding: 1.4rem;
+      height: 100%;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .sys-card:hover { border-color: rgba(0,200,255,0.25); transform: translateY(-3px); }
+    .sys-card-icon {
+      width: 44px; height: 44px;
+      background: rgba(0,200,255,0.08);
+      border: 1px solid rgba(0,200,255,0.2);
+      border-radius: 2px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--acento); font-size: 1.2rem; margin-bottom: 1rem;
+    }
+    .sys-card-title {
+      font-family: var(--fuente-titulo); font-size: 0.78rem;
+      color: var(--blanco); letter-spacing: 2px;
+      text-transform: uppercase; margin-bottom: 0.8rem;
+    }
+    .sys-card ul { list-style: none; padding: 0; margin: 0; }
+    .sys-card ul li {
+      font-size: 0.85rem; color: #888;
+      padding: 0.3rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      display: flex; align-items: center; gap: 0.5rem;
+      line-height: 1.5;
+    }
+    .sys-card ul li:last-child { border-bottom: none; }
+    .sys-card ul li::before {
+      content: ''; width: 4px; height: 4px;
+      background: var(--acento); border-radius: 50%; flex-shrink: 0;
+    }
+    .ai-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(0,200,255,0.06);
+      border: 1px solid rgba(0,200,255,0.18);
+      color: #ccc; font-size: 0.82rem;
+      padding: 0.45rem 0.9rem; border-radius: 2px; margin: 0.2rem;
+      transition: border-color 0.3s, color 0.3s;
+    }
+    .ai-badge i { color: var(--acento); }
+    .ai-badge:hover { border-color: var(--acento); color: var(--blanco); }
+    .autonomy-bar-wrap {
+      background: rgba(255,255,255,0.05);
+      border-radius: 2px; height: 10px; overflow: hidden; margin: 0.5rem 0 0.3rem;
+    }
+    .autonomy-bar { height: 100%; border-radius: 2px; width: 0; transition: width 1.6s cubic-bezier(0.22,1,0.36,1); }
+    .stat-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 0.6rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.88rem;
+    }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-row .label { color: #555; font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; }
+    .stat-row .value { color: #bbb; font-family: var(--fuente-titulo); font-size: 0.85rem; letter-spacing: 1px; }
+    .stat-row .value.accent { color: var(--acento); }
+    .stat-row .value.green  { color: #00ff88; }
+    .btn-ear {
+      font-size: 0.72rem; padding: 0.3rem 0.8rem;
+      background: transparent; border: 1px solid rgba(255,255,255,0.1);
+      color: #666; border-radius: 2px; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-ear:hover { border-color: rgba(0,200,255,0.3); color: #aaa; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" aria-label="Navegación principal">
+    <div class="container">
+      <a class="navbar-brand" href="index.html"><i class="bi bi-cpu-fill me-2"></i>TECHLAB</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
+              aria-controls="navbarMain" aria-expanded="false" aria-label="Alternar navegación">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav ms-auto gap-lg-2">
+          <li class="nav-item"><a class="nav-link" href="index.html"><i class="bi bi-house me-1"></i>Inicio</a></li>
+          <li class="nav-item"><a class="nav-link active" href="portfolio.html"><i class="bi bi-grid me-1"></i>Portafolio</a></li>
+          <li class="nav-item"><a class="nav-link" href="contacto.html"><i class="bi bi-envelope me-1"></i>Contacto</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header>
+    <div class="detail-hero" style="background-image:url('img/robonexis.jpg');" role="banner">
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(13,13,13,1) 0%,rgba(0,20,50,0.7) 100%);"></div>
+      <div class="detail-hero-content container w-100" style="position:relative;z-index:1;">
+        <nav aria-label="Ruta de navegación" style="margin-bottom:0.5rem;">
+          <ol class="breadcrumb" style="background:transparent;padding:0;margin:0;">
+            <li class="breadcrumb-item"><a href="portfolio.html" style="color:#888;text-decoration:none;font-size:0.8rem;letter-spacing:1px;">Portafolio</a></li>
+            <li class="breadcrumb-item active" style="color:var(--acento);font-size:0.8rem;letter-spacing:1px;">RoboNexis N1</li>
+          </ol>
+        </nav>
+        <span style="font-size:0.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">Robótica · Edge AI · Sistemas Autónomos</span>
+        <h1 class="section-title mt-1">RoboNexis N1</h1>
+        <p style="color:rgba(255,255,255,0.55);font-size:0.88rem;letter-spacing:1px;margin-top:0.4rem;">Autonomous Experimental Robotics Platform</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- OVERVIEW -->
+    <section id="overview" class="section-dark" aria-labelledby="rn1-titulo">
+      <div class="container">
+        <h2 class="visually-hidden" id="rn1-titulo">Detalle del proyecto RoboNexis N1</h2>
+        <div class="row g-5">
+
+          <div class="col-lg-8">
+            <p class="about-text">
+              <strong style="color:var(--blanco);">RoboNexis N1</strong> es una plataforma robótica experimental
+              diseñada para integrar sistemas físicos y digitales en una unidad autónoma capaz de operar con
+              reconocimiento, comunicación, navegación y respuesta adaptativa en tiempo real, sin depender
+              de infraestructura externa ni conexión a la nube.
+            </p>
+            <p class="about-text">
+              El sistema fue construido sobre un chasis <strong style="color:var(--blanco);">Yahboom G1 reutilizado</strong>
+              con una <strong style="color:var(--blanco);">Raspberry Pi 3B</strong> como unidad central corriendo
+              <strong style="color:var(--blanco);">Debian Buster personalizado</strong>. Cada subsistema fue diseñado,
+              rediseñado o modificado para alcanzar estabilidad operativa prolongada y autonomía real en campo,
+              incluyendo un paquete energético de <strong style="color:var(--blanco);">15 celdas de litio 18650</strong>
+              con sistema solar auxiliar.
+            </p>
+            <p class="about-text">
+              El proyecto opera como plataforma de prueba para
+              <strong style="color:var(--blanco);">IA embebida en edge</strong>: reconocimiento facial,
+              detección de movimiento, sensores sonar y un sistema experimental de
+              <strong style="color:var(--blanco);">emociones simuladas</strong> expresadas físicamente
+              mediante orejas robóticas dinámicas de rango variable (−25° frontal / −15° trasero).
+            </p>
+
+            <hr class="divider">
+
+            <div class="row g-3">
+              <div class="col-6 col-md-3">
+                <div style="background:rgba(0,200,255,0.05);border:1px solid rgba(0,200,255,0.12);border-radius:4px;padding:1rem;text-align:center;">
+                  <p style="font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:0.3rem;">Autonomía estándar</p>
+                  <p style="font-family:var(--fuente-titulo);font-size:1.6rem;color:var(--acento);margin:0;line-height:1;">3–6h</p>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div style="background:rgba(0,200,255,0.05);border:1px solid rgba(0,200,255,0.12);border-radius:4px;padding:1rem;text-align:center;">
+                  <p style="font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:0.3rem;">Autonomía máx.</p>
+                  <p style="font-family:var(--fuente-titulo);font-size:1.6rem;color:var(--blanco);margin:0;line-height:1;">8h</p>
+                  <p style="font-size:0.68rem;color:#555;margin:0;">alimentación ext.</p>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div style="background:rgba(0,200,255,0.05);border:1px solid rgba(0,200,255,0.12);border-radius:4px;padding:1rem;text-align:center;">
+                  <p style="font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:0.3rem;">Celdas Li-ion</p>
+                  <p style="font-family:var(--fuente-titulo);font-size:1.6rem;color:var(--blanco);margin:0;line-height:1;">15×</p>
+                  <p style="font-size:0.68rem;color:#555;margin:0;">18650</p>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div style="background:rgba(0,200,255,0.05);border:1px solid rgba(0,200,255,0.12);border-radius:4px;padding:1rem;text-align:center;">
+                  <p style="font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:0.3rem;">Motores DC</p>
+                  <p style="font-family:var(--fuente-titulo);font-size:1.6rem;color:var(--blanco);margin:0;line-height:1;">4×</p>
+                  <p style="font-size:0.68rem;color:#555;margin:0;">1300 RPM gearbox</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <div style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.5rem;position:sticky;top:80px;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:0.82rem;letter-spacing:2px;margin-bottom:1.4rem;padding-bottom:0.8rem;border-bottom:1px solid rgba(255,255,255,0.08);">
+                <i class="bi bi-info-circle text-acento me-2"></i>Plataforma Base
+              </h4>
+              <div class="stat-row"><span class="label">Estado</span><span class="value green"><i class="bi bi-circle-fill me-1" style="font-size:0.5rem;"></i>Operativo</span></div>
+              <div class="stat-row"><span class="label">Chasis</span><span class="value">Yahboom G1</span></div>
+              <div class="stat-row"><span class="label">Computadora central</span><span class="value">Raspberry Pi 3B</span></div>
+              <div class="stat-row"><span class="label">Sistema operativo</span><span class="value">Debian Buster Custom</span></div>
+              <div class="stat-row"><span class="label">Locomoción</span><span class="value">Oruga diferencial</span></div>
+              <div class="stat-row"><span class="label">Comunicación</span><span class="value accent">4 capas redundantes</span></div>
+              <div class="stat-row"><span class="label">Energía</span><span class="value">Li-ion + Solar</span></div>
+              <div class="stat-row"><span class="label">Módulos IA</span><span class="value accent">6 activos</span></div>
+              <div class="stat-row"><span class="label">Expresión mecánica</span><span class="value">Orejas dinámicas</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SUBSISTEMAS -->
+    <section id="sistemas" class="section-darker" aria-labelledby="sistemas-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:0.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">Arquitectura modular</p>
+          <h2 class="section-title" id="sistemas-titulo">Subsistemas Integrados</h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="row g-4">
+
+          <div class="col-sm-6 col-lg-4 d-flex">
+            <div class="sys-card w-100">
+              <div class="sys-card-icon" aria-hidden="true"><i class="bi bi-broadcast"></i></div>
+              <p class="sys-card-title">Comunicación</p>
+              <p style="font-size:0.8rem;color:#555;margin-bottom:0.8rem;line-height:1.6;">4 capas redundantes para operación en cualquier escenario sin punto único de fallo.</p>
+              <ul>
+                <li>Hotspot dedicado (AP propio)</li>
+                <li>LoRa Mesh estático</li>
+                <li>Comunicación local cifrada</li>
+                <li>Sistema TCP/IP interno</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-sm-6 col-lg-4 d-flex">
+            <div class="sys-card w-100">
+              <div class="sys-card-icon" aria-hidden="true"><i class="bi bi-arrows-move"></i></div>
+              <p class="sys-card-title">Movilidad</p>
+              <p style="font-size:0.8rem;color:#555;margin-bottom:0.8rem;line-height:1.6;">Sistema de locomoción rediseñado completamente para precisión, velocidad y estabilidad mecánica.</p>
+              <ul>
+                <li>4 motores DC 1300 RPM gearbox</li>
+                <li>Reestructuración de orugas</li>
+                <li>Recalibración de torque</li>
+                <li>Ajustes de distribución de peso</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-sm-6 col-lg-4 d-flex">
+            <div class="sys-card w-100">
+              <div class="sys-card-icon" aria-hidden="true"><i class="bi bi-battery-charging"></i></div>
+              <p class="sys-card-title">Sistema Energético</p>
+              <p style="font-size:0.8rem;color:#555;margin-bottom:0.8rem;line-height:1.6;">Arquitectura modular de alimentación con redundancia solar y encapsulado disipativo de aluminio.</p>
+              <ul>
+                <li>15 celdas de litio 18650</li>
+                <li>Encapsulado térmico protector</li>
+                <li>Aleación de aluminio disipativa</li>
+                <li>Sistema solar auxiliar</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-sm-6 col-lg-4 d-flex">
+            <div class="sys-card w-100">
+              <div class="sys-card-icon" aria-hidden="true"><i class="bi bi-thermometer-half"></i></div>
+              <p class="sys-card-title">Sistema Térmico</p>
+              <p style="font-size:0.8rem;color:#555;margin-bottom:0.8rem;line-height:1.6;">Gestión térmica activa y pasiva multicapa para operación prolongada sin degradación.</p>
+              <ul>
+                <li>Ventilación 22U 12V activa</li>
+                <li>Convertidores DC-DC</li>
+                <li>Diodos Zener de protección</li>
+                <li>Disipación pasiva multicapa</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-sm-6 col-lg-4 d-flex">
+            <div class="sys-card w-100" style="border-color:rgba(0,200,255,0.18);">
+              <div class="sys-card-icon" aria-hidden="true"><i class="bi bi-robot"></i></div>
+              <p class="sys-card-title">IA Embebida</p>
+              <p style="font-size:0.8rem;color:#555;margin-bottom:0.8rem;line-height:1.6;">Seis funciones de inteligencia artificial ejecutadas localmente en edge — sin cloud.</p>
+              <ul>
+                <li>Reconocimiento facial</li>
+                <li>Identificación por label</li>
+                <li>Sistema fallback automático</li>
+                <li>Detección de movimiento</li>
+                <li>Sensores tipo sonar</li>
+                <li>Sistema de emociones simuladas</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-sm-6 col-lg-4 d-flex">
+            <div class="sys-card w-100">
+              <div class="sys-card-icon" aria-hidden="true"><i class="bi bi-gear-wide-connected"></i></div>
+              <p class="sys-card-title">Mecánica Expresiva</p>
+              <p style="font-size:0.8rem;color:#555;margin-bottom:0.8rem;line-height:1.6;">Orejas robóticas dinámicas que reflejan físicamente el estado del sistema e interacciones.</p>
+              <ul>
+                <li>Rango frontal: −25°</li>
+                <li>Rango trasero: −15°</li>
+                <li>Respuesta a eventos del sistema</li>
+                <li>Reconocimiento contextual</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- IA Y OREJAS -->
+    <section id="ai" class="section-dark" aria-labelledby="ai-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:0.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">Inteligencia embebida</p>
+          <h2 class="section-title" id="ai-titulo">IA y Expresión Dinámica</h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="row g-5 align-items-start">
+
+          <div class="col-lg-6">
+            <h3 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:0.88rem;letter-spacing:2px;margin-bottom:1.2rem;">
+              <i class="bi bi-cpu text-acento me-2"></i>Módulos IA Activos
+            </h3>
+            <div style="margin-bottom:2rem;">
+              <span class="ai-badge"><i class="bi bi-person-bounding-box"></i>Reconocimiento facial</span>
+              <span class="ai-badge"><i class="bi bi-tag"></i>Identificación por label</span>
+              <span class="ai-badge"><i class="bi bi-shield-check"></i>Sistema fallback</span>
+              <span class="ai-badge"><i class="bi bi-camera-video"></i>Detección de movimiento</span>
+              <span class="ai-badge"><i class="bi bi-soundwave"></i>Sensores sonar</span>
+              <span class="ai-badge"><i class="bi bi-emoji-smile"></i>Emociones simuladas</span>
+            </div>
+            <div style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.4rem;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:0.8rem;letter-spacing:2px;margin-bottom:1rem;">
+                <i class="bi bi-diagram-3 text-acento me-2"></i>Lógica de Respuesta Adaptativa
+              </h4>
+              <div class="stat-row"><span class="label">Entrada principal</span><span class="value">Cámara + Sonar</span></div>
+              <div class="stat-row"><span class="label">Reconocimiento facial</span><span class="value accent">Tiempo real · local</span></div>
+              <div class="stat-row"><span class="label">Activación fallback</span><span class="value">Automática ante fallo</span></div>
+              <div class="stat-row"><span class="label">Expresión de estado</span><span class="value">Orejas robóticas</span></div>
+              <div class="stat-row"><span class="label">Procesamiento</span><span class="value green">Edge — sin cloud</span></div>
+              <div class="stat-row"><span class="label">Plataforma</span><span class="value">Raspberry Pi 3B</span></div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <h3 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:0.88rem;letter-spacing:2px;margin-bottom:1.2rem;">
+              <i class="bi bi-gear-wide-connected text-acento me-2"></i>Orejas Robóticas — Estados
+            </h3>
+            <div style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.4rem;">
+
+              <svg viewBox="0 0 320 150" width="100%" role="img" aria-label="Diagrama de orejas robóticas con rango de movimiento frontal y trasero">
+                <title>Orejas robóticas dinámicas — rango de movimiento</title>
+                <rect x="120" y="50" width="80" height="60" rx="6" fill="#1a1a1a" stroke="rgba(0,200,255,0.2)" stroke-width="1"/>
+                <circle cx="140" cy="72" r="5" fill="rgba(0,200,255,0.6)"/>
+                <circle cx="180" cy="72" r="5" fill="rgba(0,200,255,0.6)"/>
+                <rect x="140" y="88" width="40" height="6" rx="2" fill="rgba(0,200,255,0.15)"/>
+                <text x="160" y="122" text-anchor="middle" fill="#444" font-size="8" font-family="monospace">RoboNexis N1</text>
+                <rect x="94" y="38" width="16" height="36" rx="3" fill="#1a1a1a" stroke="rgba(0,200,255,0.4)" stroke-width="1.2"/>
+                <rect x="97" y="41" width="10" height="6" rx="1" fill="rgba(0,200,255,0.15)"/>
+                <rect x="210" y="38" width="16" height="36" rx="3" fill="#1a1a1a" stroke="rgba(0,200,255,0.4)" stroke-width="1.2"/>
+                <rect x="213" y="41" width="10" height="6" rx="1" fill="rgba(0,200,255,0.15)"/>
+                <path d="M 94 56 A 22 22 0 0 1 74 41" stroke="rgba(0,200,255,0.15)" stroke-width="1" fill="none" stroke-dasharray="3 2"/>
+                <text x="60" y="38" fill="#555" font-size="7" font-family="monospace">−25°</text>
+                <path d="M 226 56 A 22 22 0 0 0 244 41" stroke="rgba(0,200,255,0.15)" stroke-width="1" fill="none" stroke-dasharray="3 2"/>
+                <text x="244" y="38" fill="#555" font-size="7" font-family="monospace">−15°</text>
+                <text x="102" y="84" text-anchor="middle" fill="rgba(0,200,255,0.4)" font-size="7" font-family="monospace">FRONT</text>
+                <text x="218" y="84" text-anchor="middle" fill="rgba(0,200,255,0.4)" font-size="7" font-family="monospace">REAR</text>
+              </svg>
+
+              <div style="margin-top:1rem;">
+                <p style="font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:0.6rem;">Estado del sistema → posición</p>
+                <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
+                  <button onclick="setEarState('alerta')" id="btn-alerta" class="btn-ear"><i class="bi bi-exclamation-triangle me-1"></i>Alerta</button>
+                  <button onclick="setEarState('reconocimiento')" id="btn-reconocimiento" class="btn-ear"><i class="bi bi-hand-index me-1"></i>Reconocimiento</button>
+                  <button onclick="setEarState('reposo')" id="btn-reposo" class="btn-ear"><i class="bi bi-moon me-1"></i>Reposo</button>
+                  <button onclick="setEarState('evento')" id="btn-evento" class="btn-ear"><i class="bi bi-lightning me-1"></i>Evento</button>
+                </div>
+                <p id="ear-desc" style="font-size:0.82rem;color:#666;margin-top:0.8rem;line-height:1.7;min-height:2.8rem;"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AUTONOMÍA -->
+    <section id="autonomia" class="section-darker" aria-labelledby="autonomia-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:0.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">Sistema de alimentación</p>
+          <h2 class="section-title" id="autonomia-titulo">Autonomía y Energía</h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="row g-4 align-items-start">
+
+          <div class="col-lg-6">
+            <div style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.5rem;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:0.82rem;letter-spacing:2px;margin-bottom:1.4rem;">
+                <i class="bi bi-clock text-acento me-2"></i>Autonomía por Modo
+              </h4>
+              <div style="margin-bottom:1.4rem;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
+                  <span style="font-size:0.78rem;color:#888;">Operación estándar (mín.)</span>
+                  <span style="font-family:var(--fuente-titulo);font-size:0.8rem;color:var(--acento);">3 h</span>
+                </div>
+                <div class="autonomy-bar-wrap"><div class="autonomy-bar" id="bar-min" style="background:rgba(0,200,255,0.45);"></div></div>
+              </div>
+              <div style="margin-bottom:1.4rem;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
+                  <span style="font-size:0.78rem;color:#888;">Operación estándar (máx.)</span>
+                  <span style="font-family:var(--fuente-titulo);font-size:0.8rem;color:var(--acento);">6 h</span>
+                </div>
+                <div class="autonomy-bar-wrap"><div class="autonomy-bar" id="bar-std" style="background:var(--acento);"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
+                  <span style="font-size:0.78rem;color:#888;">Con alimentación externa</span>
+                  <span style="font-family:var(--fuente-titulo);font-size:0.8rem;color:#00ff88;">8 h</span>
+                </div>
+                <div class="autonomy-bar-wrap"><div class="autonomy-bar" id="bar-ext" style="background:#00ff88;"></div></div>
+              </div>
+              <p style="font-size:0.78rem;color:#444;margin-top:1.2rem;line-height:1.6;">Sistema solar auxiliar extiende autonomía bajo iluminación exterior.</p>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.5rem;margin-bottom:1rem;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:0.82rem;letter-spacing:2px;margin-bottom:1.2rem;">
+                <i class="bi bi-battery-full text-acento me-2"></i>Paquete de Baterías
+              </h4>
+              <div class="stat-row"><span class="label">Tipo de celda</span><span class="value">Litio 18650</span></div>
+              <div class="stat-row"><span class="label">Cantidad</span><span class="value accent">15 celdas</span></div>
+              <div class="stat-row"><span class="label">Encapsulado</span><span class="value">Térmico protector</span></div>
+              <div class="stat-row"><span class="label">Disipación</span><span class="value">Aleación aluminio</span></div>
+              <div class="stat-row"><span class="label">Auxiliar</span><span class="value green">Panel solar</span></div>
+            </div>
+            <div style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.5rem;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:0.82rem;letter-spacing:2px;margin-bottom:1.2rem;">
+                <i class="bi bi-shield-check text-acento me-2"></i>Protección Eléctrica
+              </h4>
+              <div class="stat-row"><span class="label">Regulación</span><span class="value">Convertidores DC-DC</span></div>
+              <div class="stat-row"><span class="label">Protección picos</span><span class="value green">Diodos Zener</span></div>
+              <div class="stat-row"><span class="label">Ventilación activa</span><span class="value">22U 12V</span></div>
+              <div class="stat-row"><span class="label">Disipación pasiva</span><span class="value">Multicapa</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TECNOLOGÍAS Y NAVEGACIÓN -->
+    <section id="tecnologias" class="section-dark" aria-labelledby="tech-rn1-titulo">
+      <div class="container text-center">
+        <h3 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:0.9rem;letter-spacing:2px;margin-bottom:1.5rem;" id="tech-rn1-titulo">
+          <i class="bi bi-tools text-acento me-2"></i>Stack Tecnológico
+        </h3>
+        <div>
+          <span class="tech-pill"><i class="bi bi-diagram-3"></i>Raspberry Pi 3B</span>
+          <span class="tech-pill"><i class="bi bi-terminal"></i>Debian Buster Custom</span>
+          <span class="tech-pill"><i class="bi bi-filetype-py"></i>Python</span>
+          <span class="tech-pill"><i class="bi bi-camera-video"></i>OpenCV</span>
+          <span class="tech-pill"><i class="bi bi-broadcast"></i>LoRa Mesh</span>
+          <span class="tech-pill"><i class="bi bi-wifi"></i>Hotspot AP</span>
+          <span class="tech-pill"><i class="bi bi-hdd-network"></i>TCP/IP cifrado</span>
+          <span class="tech-pill"><i class="bi bi-cpu"></i>GPIO Auxiliar</span>
+          <span class="tech-pill"><i class="bi bi-battery-charging"></i>Li-ion 18650</span>
+          <span class="tech-pill"><i class="bi bi-sun"></i>Solar auxiliar</span>
+          <span class="tech-pill"><i class="bi bi-gear"></i>DC-DC Converters</span>
+          <span class="tech-pill"><i class="bi bi-robot"></i>Edge AI embebido</span>
+        </div>
+        <hr class="divider mt-5">
+        <div class="d-flex flex-wrap gap-3 justify-content-center mt-4">
+          <a href="portfolio.html" class="btn-tech"><i class="bi bi-arrow-left me-2"></i>Volver al Portafolio</a>
+          <a href="detalle-mainframe.html" class="btn-tech btn-tech-solid"><i class="bi bi-arrow-right me-2"></i>Ver Mainframe eGPU</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 <a href="index.html">TechLab</a> · Alexis Negrón Rodríguez · San Juan, Puerto Rico</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    /* Barras de autonomía */
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          setTimeout(() => {
+            document.getElementById('bar-min').style.width = '37.5%';
+            document.getElementById('bar-std').style.width = '75%';
+            document.getElementById('bar-ext').style.width = '100%';
+          }, 200);
+          obs.disconnect();
+        }
+      });
+    }, { threshold: 0.4 });
+    const barEl = document.getElementById('bar-min');
+    if (barEl) obs.observe(barEl);
+
+    /* Orejas robóticas */
+    const estados = {
+      alerta:        'Orejas en posición frontal máxima (−25°). Estado de alerta activo — detección de movimiento y sonar habilitados a máxima sensibilidad.',
+      reconocimiento:'Orejas en posición neutral (0°). Reconocimiento facial en curso — sistema de identificación por label activo, interacción social.',
+      reposo:        'Orejas en posición trasera (−15°). Sistema en modo reposo — monitoreo pasivo activo, consumo energético reducido.',
+      evento:        'Orejas oscilando dinámicamente entre −25° y −15°. Evento detectado — respuesta contextual en procesamiento, emociones simuladas activas.'
+    };
+
+    function setEarState(state) {
+      ['alerta','reconocimiento','reposo','evento'].forEach(s => {
+        const b = document.getElementById('btn-' + s);
+        if (b) { b.style.borderColor = 'rgba(255,255,255,0.1)'; b.style.color = '#666'; }
+      });
+      const btn = document.getElementById('btn-' + state);
+      if (btn) { btn.style.borderColor = 'rgba(0,200,255,0.5)'; btn.style.color = 'var(--acento)'; }
+      const d = document.getElementById('ear-desc');
+      if (d) d.textContent = estados[state] || '';
+    }
+    setEarState('alerta');
+  </script>
+</body>
+</html>

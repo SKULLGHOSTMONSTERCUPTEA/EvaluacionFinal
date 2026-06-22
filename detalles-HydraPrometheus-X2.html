@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<!--
+  =============================================
+  TechLab Portfolio — Detalle: Hydra Prometheus X2
+  Autor: Alexis Negrón Rodríguez
+  Archivo: detalle-hydra-prometheus.html
+
+  Estructura HTML5:
+  - <nav>: Navbar Bootstrap 5 responsiva
+  - <header>: Hero con overlay rojizo y título
+  - <main>:
+      · <section id="overview">: Objetivo del proyecto,
+        plataforma RTX 3090 Zotac, arquitectura híbrida
+        custom pasivo-activo multicapa. 4 KPIs:
+        ≤60°C núcleo · 45-60°C hotspot · 60°C VRAM AI
+        · turbina reconstruida
+      · <section id="ingenieria">: Ingeniería térmica —
+        procedimiento experimental de contacto:
+        calibración superficial, alineación mecánica,
+        tratamiento térmico, aplicación gradualizada.
+        Detalle del ensamblaje: lijado calibrado,
+        inspección microscópica, análisis de porosidad,
+        ciclos térmicos controlados, activación progresiva
+        del compuesto térmico.
+      · <section id="refrigeracion">: Sistema de refrigeración
+        multicapa — turbinas BFB1012, dual fan blade tech,
+        active turbine airflow, enfriamiento VRAM multicapa,
+        MOSFET targeted airflow, ball bearing dual custom,
+        canalización térmica dedicada.
+      · <section id="turbina">: Innovación mecánica —
+        turbina reconstruida/recalibrada/modificada:
+        menos vibración, mejor presión estática,
+        estabilidad prolongada. Diagrama SVG comparativo
+        turbina estándar vs modificada.
+      · <section id="resultados">: Temperaturas registradas
+        con barras de calor animadas: núcleo ≤60°C,
+        hotspot 45-60°C, VRAM 60°C bajo AI sostenida.
+        Tabla de aplicaciones y comparativa de objetivos.
+      · <section id="tecnologias">: Stack y navegación
+  - <footer>: Pie de página
+  =============================================
+-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Hydra Prometheus X2 — RTX 3090 Zotac · Refrigeración híbrida custom · Turbina modificada · AI Inference — Alexis TechLab">
+  <title>TechLab | Hydra Prometheus X2</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <script src="js/app.js"></script>
+
+  <style>
+    .mt{width:100%;border-collapse:collapse;font-size:.88rem}
+    .mt th{font-family:var(--fuente-titulo);font-size:.67rem;letter-spacing:2px;text-transform:uppercase;color:#555;padding:.55rem 1rem;border-bottom:1px solid rgba(255,255,255,.08);text-align:left}
+    .mt td{padding:.65rem 1rem;border-bottom:1px solid rgba(255,255,255,.05);color:#bbb;vertical-align:middle}
+    .mt tr:last-child td{border-bottom:none}
+    .mt tr:hover td{background:rgba(0,200,255,.03)}
+    .hi{color:var(--acento);font-weight:700;font-family:var(--fuente-titulo);letter-spacing:1px}
+    .ok{color:#00ff88;font-weight:600}
+    .hot{color:#ff6432;font-weight:700;font-family:var(--fuente-titulo);letter-spacing:1px}
+
+    /* KPI */
+    .kpi{background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.1rem;text-align:center}
+    .kpi-lbl{font-size:.62rem;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:.3rem}
+    .kpi-val{font-family:var(--fuente-titulo);font-size:1.5rem;color:var(--acento);margin:0;line-height:1.1}
+    .kpi-sub{font-size:.68rem;color:#444;margin:0}
+
+    /* Stat row */
+    .sr{display:flex;justify-content:space-between;align-items:baseline;padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.05)}
+    .sr:last-child{border-bottom:none}
+    .sr .lb{color:#555;font-size:.73rem;letter-spacing:1px;text-transform:uppercase}
+    .sr .vl{color:#bbb;font-family:var(--fuente-titulo);font-size:.83rem;letter-spacing:1px}
+    .sr .vl.a{color:var(--acento)}
+    .sr .vl.g{color:#00ff88}
+    .sr .vl.r{color:#ff6432}
+
+    /* Paso de procedimiento */
+    .proc-step{
+      display:flex;align-items:flex-start;gap:1rem;
+      padding:.9rem 0;border-bottom:1px solid rgba(255,255,255,.05);
+    }
+    .proc-step:last-child{border-bottom:none}
+    .proc-num{
+      font-family:var(--fuente-titulo);font-size:.78rem;color:var(--acento);
+      letter-spacing:1px;flex-shrink:0;width:28px;padding-top:.05rem;
+    }
+    .proc-title{font-family:var(--fuente-titulo);font-size:.75rem;color:var(--blanco);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:.2rem}
+    .proc-desc{font-size:.83rem;color:#777;margin:0;line-height:1.5}
+
+    /* Componente de refrigeración */
+    .cool-item{
+      display:flex;align-items:flex-start;gap:.9rem;
+      padding:.85rem 0;border-bottom:1px solid rgba(255,255,255,.05);
+    }
+    .cool-item:last-child{border-bottom:none}
+    .cool-icon{
+      width:36px;height:36px;background:rgba(0,200,255,.08);
+      border:1px solid rgba(0,200,255,.2);border-radius:2px;
+      display:flex;align-items:center;justify-content:center;
+      color:var(--acento);font-size:.95rem;flex-shrink:0;
+    }
+    .cool-title{font-family:var(--fuente-titulo);font-size:.73rem;color:var(--blanco);letter-spacing:1.5px;margin-bottom:.15rem}
+    .cool-desc{font-size:.82rem;color:#666;margin:0;line-height:1.5}
+
+    /* Barra de temperatura */
+    .temp-wrap{margin-bottom:1.4rem}
+    .temp-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.25rem}
+    .temp-label{font-size:.8rem;color:#888}
+    .temp-val{font-family:var(--fuente-titulo);font-size:.88rem}
+    .temp-bg{background:rgba(255,255,255,.05);border-radius:2px;height:10px;overflow:hidden}
+    .temp-bar{height:100%;border-radius:2px;width:0;transition:width 1.5s cubic-bezier(.22,1,.36,1)}
+    .temp-note{font-size:.72rem;color:#444;margin-top:.2rem}
+
+    /* Turbina badge */
+    .turb-badge{
+      display:inline-flex;align-items:center;gap:.4rem;
+      background:rgba(255,100,50,.06);border:1px solid rgba(255,100,50,.2);
+      color:#bbb;font-size:.8rem;padding:.35rem .85rem;border-radius:2px;margin:.2rem;
+    }
+    .turb-badge i{color:#ff6432}
+
+    /* Aplicación pill */
+    .app-pill{
+      display:inline-flex;align-items:center;gap:.4rem;
+      background:rgba(0,200,255,.06);border:1px solid rgba(0,200,255,.16);
+      color:#bbb;font-size:.8rem;padding:.35rem .85rem;border-radius:2px;margin:.2rem;
+    }
+    .app-pill i{color:var(--acento)}
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" aria-label="Navegación principal">
+    <div class="container">
+      <a class="navbar-brand" href="index.html"><i class="bi bi-cpu-fill me-2"></i>TECHLAB</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+              data-bs-target="#navbarMain" aria-controls="navbarMain"
+              aria-expanded="false" aria-label="Alternar navegación">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav ms-auto gap-lg-2">
+          <li class="nav-item"><a class="nav-link" href="index.html"><i class="bi bi-house me-1"></i>Inicio</a></li>
+          <li class="nav-item"><a class="nav-link active" href="portfolio.html"><i class="bi bi-grid me-1"></i>Portafolio</a></li>
+          <li class="nav-item"><a class="nav-link" href="contacto.html"><i class="bi bi-envelope me-1"></i>Contacto</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header>
+    <div class="detail-hero" style="background-image:url('img/Hydra.jpg');" role="banner">
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(13,13,13,1) 0%,rgba(30,5,0,.78) 100%);"></div>
+      <div class="detail-hero-content container w-100" style="position:relative;z-index:1;">
+        <nav aria-label="Ruta de navegación" style="margin-bottom:.5rem;">
+          <ol class="breadcrumb" style="background:transparent;padding:0;margin:0;">
+            <li class="breadcrumb-item"><a href="portfolio.html" style="color:#888;text-decoration:none;font-size:.8rem;letter-spacing:1px;">Portafolio</a></li>
+            <li class="breadcrumb-item active" style="color:var(--acento);font-size:.8rem;letter-spacing:1px;">Hydra Prometheus X2</li>
+          </ol>
+        </nav>
+        <span style="font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">
+          RTX 3090 · Refrigeración Híbrida · Turbina Modificada · AI Inference
+        </span>
+        <h1 class="section-title mt-1">Hydra Prometheus X2</h1>
+        <p style="color:rgba(255,255,255,.5);font-size:.88rem;letter-spacing:1px;margin-top:.4rem;">
+          Advanced Hybrid Cooling Architecture — NVIDIA RTX 3090 Zotac · Pasivo-Activo Multicapa
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- OVERVIEW -->
+    <section id="overview" class="section-dark" aria-labelledby="hp-titulo">
+      <div class="container">
+        <h2 class="visually-hidden" id="hp-titulo">Detalle del proyecto Hydra Prometheus X2</h2>
+        <div class="row g-5">
+
+          <div class="col-lg-8">
+            <p class="about-text">
+              <strong style="color:var(--blanco);">Hydra Prometheus X2</strong> es una plataforma
+              experimental de refrigeración híbrida desarrollada específicamente para resolver
+              los desafíos térmicos de cargas de
+              <strong style="color:var(--blanco);">inferencia de IA</strong> y
+              <strong style="color:var(--blanco);">aceleración CUDA sostenida</strong> sobre
+              una <strong style="color:var(--blanco);">NVIDIA RTX 3090 Zotac</strong>.
+            </p>
+            <p class="about-text">
+              El sistema fue diseñado para resolver tres problemas específicos en cargas prolongadas:
+              <strong style="color:var(--blanco);">hotspots extremos</strong>,
+              <strong style="color:var(--blanco);">degradación térmica</strong> y
+              <strong style="color:var(--blanco);">estrés continuo en memorias VRAM y VRM</strong>.
+              La arquitectura combina un sistema pasivo-activo multicapa con una turbina
+              <strong style="color:var(--acento);">reconstruida, recalibrada y modificada</strong>
+              para operar con menor vibración, mejor presión estática y mayor estabilidad prolongada.
+            </p>
+            <p class="about-text">
+              El procedimiento de ensamblaje incluyó
+              <strong style="color:var(--blanco);">lijado calibrado</strong>,
+              <strong style="color:var(--blanco);">inspección microscópica</strong>,
+              <strong style="color:var(--blanco);">análisis de porosidad</strong> y
+              <strong style="color:var(--blanco);">ciclos térmicos controlados</strong>
+              para la activación progresiva del compuesto — un proceso experimental que va
+              significativamente más allá de una aplicación estándar de pasta térmica.
+            </p>
+
+            <hr class="divider">
+
+            <div class="row g-3">
+              <div class="col-6 col-md-3">
+                <div class="kpi" style="border-color:rgba(255,100,50,.2);">
+                  <p class="kpi-lbl">Núcleo GPU máx.</p>
+                  <p class="kpi-val" style="color:#ff8c42;">≤60°C</p>
+                  <p class="kpi-sub">bajo carga sostenida</p>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="kpi" style="border-color:rgba(255,150,50,.15);">
+                  <p class="kpi-lbl">Hotspot registrado</p>
+                  <p class="kpi-val" style="color:#ffaa42;font-size:1.2rem;">45–60°C</p>
+                  <p class="kpi-sub">rango estabilizado</p>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="kpi">
+                  <p class="kpi-lbl">VRAM bajo AI</p>
+                  <p class="kpi-val" style="color:#ffaa00;">60°C</p>
+                  <p class="kpi-sub">carga AI sostenida</p>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="kpi">
+                  <p class="kpi-lbl">Turbina</p>
+                  <p class="kpi-val" style="font-size:1rem;padding-top:.3rem;">Reconstruida</p>
+                  <p class="kpi-sub">BFB1012 modificada</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel lateral -->
+          <div class="col-lg-4">
+            <div style="background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.5rem;position:sticky;top:80px;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.82rem;letter-spacing:2px;margin-bottom:1.4rem;padding-bottom:.8rem;border-bottom:1px solid rgba(255,255,255,.08);">
+                <i class="bi bi-gpu-card text-acento me-2"></i>Plataforma Base
+              </h4>
+              <div class="sr"><span class="lb">Estado</span><span class="vl g"><i class="bi bi-circle-fill me-1" style="font-size:.5rem;"></i>Validado</span></div>
+              <div class="sr"><span class="lb">GPU</span><span class="vl a">NVIDIA RTX 3090 Zotac</span></div>
+              <div class="sr"><span class="lb">Arquitectura</span><span class="vl">Híbrida custom</span></div>
+              <div class="sr"><span class="lb">Sistema térmico</span><span class="vl">Pasivo-activo multicapa</span></div>
+              <div class="sr"><span class="lb">Turbinas</span><span class="vl a">BFB1012 (1 modificada)</span></div>
+              <div class="sr"><span class="lb">Tecnología</span><span class="vl">Dual fan blade</span></div>
+              <div class="sr"><span class="lb">Núcleo GPU máx.</span><span class="vl r">≤60 °C</span></div>
+              <div class="sr"><span class="lb">Hotspot</span><span class="vl r">45–60 °C</span></div>
+              <div class="sr"><span class="lb">VRAM AI sostenida</span><span class="vl r">60 °C</span></div>
+              <div class="sr"><span class="lb">Enfoque principal</span><span class="vl">AI inference · CUDA</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- INGENIERÍA TÉRMICA -->
+    <section id="ingenieria" class="section-darker" aria-labelledby="ing-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">Procedimiento experimental</p>
+          <h2 class="section-title" id="ing-titulo">Ingeniería Térmica de Contacto</h2>
+          <div class="section-line"></div>
+          <p style="color:#555;max-width:540px;margin:0 auto;font-size:.88rem;line-height:1.8;">
+            El procedimiento de ensamblaje va más allá de la aplicación estándar de compuesto térmico.
+            Cada etapa fue ejecutada de forma controlada para maximizar la transferencia de calor
+            y eliminar variaciones superficiales.
+          </p>
+        </div>
+
+        <div class="row g-5">
+
+          <!-- Pasos del procedimiento -->
+          <div class="col-lg-6">
+            <h3 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.85rem;letter-spacing:2px;margin-bottom:1.4rem;">
+              <i class="bi bi-list-ol text-acento me-2"></i>Procedimiento de Ensamblaje
+            </h3>
+            <div style="background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.4rem;">
+
+              <div class="proc-step">
+                <span class="proc-num">01</span>
+                <div>
+                  <p class="proc-title">Calibración Superficial</p>
+                  <p class="proc-desc">Preparación y nivelación de las superficies de contacto del die GPU y el sistema de disipación. Establece la base para el contacto térmico óptimo.</p>
+                </div>
+              </div>
+
+              <div class="proc-step">
+                <span class="proc-num">02</span>
+                <div>
+                  <p class="proc-title">Lijado Calibrado</p>
+                  <p class="proc-desc">Proceso de abrasión controlada de la superficie de contacto para eliminar imperfecciones microscópicas y reducir la resistencia térmica interfacial.</p>
+                </div>
+              </div>
+
+              <div class="proc-step">
+                <span class="proc-num">03</span>
+                <div>
+                  <p class="proc-title">Inspección Microscópica</p>
+                  <p class="proc-desc">Verificación visual de la superficie post-lijado para detectar irregularidades residuales, porosidad o variaciones que afecten el contacto.</p>
+                </div>
+              </div>
+
+              <div class="proc-step">
+                <span class="proc-num">04</span>
+                <div>
+                  <p class="proc-title">Análisis de Porosidad</p>
+                  <p class="proc-desc">Evaluación de los poros superficiales que pueden atrapar aire y crear resistencia térmica local. Determinación del tipo de compuesto óptimo por zona.</p>
+                </div>
+              </div>
+
+              <div class="proc-step">
+                <span class="proc-num">05</span>
+                <div>
+                  <p class="proc-title">Alineación Mecánica</p>
+                  <p class="proc-desc">Posicionamiento preciso del sistema de disipación sobre la GPU para garantizar presión uniforme y contacto distribuido sin puntos de tensión.</p>
+                </div>
+              </div>
+
+              <div class="proc-step">
+                <span class="proc-num">06</span>
+                <div>
+                  <p class="proc-title">Aplicación Gradualizada del Compuesto</p>
+                  <p class="proc-desc">Distribución progresiva y controlada del TIM por zonas — núcleo, VRM, VRAM — con densidades de aplicación diferenciadas según demanda térmica de cada componente.</p>
+                </div>
+              </div>
+
+              <div class="proc-step">
+                <span class="proc-num">07</span>
+                <div>
+                  <p class="proc-title">Ciclos Térmicos Controlados</p>
+                  <p class="proc-desc">Activación progresiva del compuesto mediante ciclos de carga y reposo. El compuesto se asienta molecularmente y elimina micro-burbujas residuales bajo estrés térmico controlado.</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Objetivos del diseño y evidencia -->
+          <div class="col-lg-6">
+            <h3 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.85rem;letter-spacing:2px;margin-bottom:1.4rem;">
+              <i class="bi bi-bullseye text-acento me-2"></i>Problemas Resueltos
+            </h3>
+
+            <div style="background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.4rem;margin-bottom:1rem;">
+              <div class="sr"><span class="lb">Problema 1</span><span class="vl r">Hotspots extremos</span></div>
+              <div class="sr"><span class="lb">Solución</span><span class="vl">Canalización térmica dedicada + MOSFET airflow</span></div>
+              <div class="sr"><span class="lb">Problema 2</span><span class="vl r">Degradación térmica prolongada</span></div>
+              <div class="sr"><span class="lb">Solución</span><span class="vl">Sistema pasivo-activo multicapa</span></div>
+              <div class="sr"><span class="lb">Problema 3</span><span class="vl r">Estrés VRAM / VRM bajo AI</span></div>
+              <div class="sr"><span class="lb">Solución</span><span class="vl">Enfriamiento VRAM multicapa dedicado</span></div>
+              <div class="sr"><span class="lb">Problema 4</span><span class="vl r">Vibración de turbinas</span></div>
+              <div class="sr"><span class="lb">Solución</span><span class="vl">Turbina reconstruida + recalibrada</span></div>
+            </div>
+
+            <div style="background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.4rem;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.78rem;letter-spacing:2px;margin-bottom:1rem;">
+                <i class="bi bi-file-earmark-text text-acento me-2"></i>Evidencia Técnica
+              </h4>
+              <div class="sr"><span class="lb">Planos</span><span class="vl g">Redirección de flujo mecánico tricapa</span></div>
+              <div class="sr"><span class="lb">Registros</span><span class="vl g">Densidad y comportamiento dieléctrico</span></div>
+              <div class="sr"><span class="lb">Telemetría</span><span class="vl g">Térmica lineal sin picos</span></div>
+              <div class="sr"><span class="lb">Validación</span><span class="vl g">Ciclos de carga sostenida</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SISTEMA DE REFRIGERACIÓN -->
+    <section id="refrigeracion" class="section-dark" aria-labelledby="ref-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">Arquitectura de enfriamiento</p>
+          <h2 class="section-title" id="ref-titulo">Sistema de Refrigeración Multicapa</h2>
+          <div class="section-line"></div>
+        </div>
+
+        <div class="row g-4">
+
+          <div class="col-lg-6">
+            <div style="background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.5rem;height:100%;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.82rem;letter-spacing:2px;margin-bottom:1.3rem;">
+                <i class="bi bi-fan text-acento me-2"></i>Componentes de Flujo Activo
+              </h4>
+
+              <div class="cool-item">
+                <div class="cool-icon"><i class="bi bi-fan"></i></div>
+                <div>
+                  <p class="cool-title">Turbinas BFB1012</p>
+                  <p class="cool-desc">Turbinas industriales de alto caudal como base del sistema activo. Una de ellas fue reconstruida y modificada para el proyecto.</p>
+                </div>
+              </div>
+
+              <div class="cool-item">
+                <div class="cool-icon"><i class="bi bi-wind"></i></div>
+                <div>
+                  <p class="cool-title">Dual Fan Blade Technology</p>
+                  <p class="cool-desc">Configuración de doble paleta para maximizar el flujo de aire estático y reducir turbulencias internas en el chasis.</p>
+                </div>
+              </div>
+
+              <div class="cool-item">
+                <div class="cool-icon"><i class="bi bi-arrow-repeat"></i></div>
+                <div>
+                  <p class="cool-title">Active Turbine Airflow</p>
+                  <p class="cool-desc">Gestión activa del flujo de aire mediante control de velocidad diferenciado según zona térmica y carga de trabajo detectada.</p>
+                </div>
+              </div>
+
+              <div class="cool-item">
+                <div class="cool-icon"><i class="bi bi-gear-wide-connected"></i></div>
+                <div>
+                  <p class="cool-title">Ball Bearing Dual Custom</p>
+                  <p class="cool-desc">Rodamientos de bola dual personalizados para reducir fricción mecánica y extender la vida útil operativa de las turbinas.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div style="background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.5rem;height:100%;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.82rem;letter-spacing:2px;margin-bottom:1.3rem;">
+                <i class="bi bi-thermometer-half text-acento me-2"></i>Enfriamiento por Zona
+              </h4>
+
+              <div class="cool-item">
+                <div class="cool-icon"><i class="bi bi-layers"></i></div>
+                <div>
+                  <p class="cool-title">Enfriamiento VRAM Multicapa</p>
+                  <p class="cool-desc">Sistema dedicado de múltiples capas de disipación sobre los chips VRAM, objetivo crítico bajo cargas de inferencia IA con 14–16 GB activos.</p>
+                </div>
+              </div>
+
+              <div class="cool-item">
+                <div class="cool-icon"><i class="bi bi-cpu"></i></div>
+                <div>
+                  <p class="cool-title">MOSFET Targeted Airflow</p>
+                  <p class="cool-desc">Flujo de aire dirigido específicamente hacia los MOSFETs del VRM para evitar el estrés eléctrico-térmico bajo consumos de 300–350W sostenidos.</p>
+                </div>
+              </div>
+
+              <div class="cool-item">
+                <div class="cool-icon"><i class="bi bi-diagram-3"></i></div>
+                <div>
+                  <p class="cool-title">Canalización Térmica Dedicada</p>
+                  <p class="cool-desc">Rutas de extracción de calor físicamente separadas por zona (núcleo / VRAM / VRM) para evitar recirculación de aire caliente entre componentes.</p>
+                </div>
+              </div>
+
+              <div class="cool-item">
+                <div class="cool-icon"><i class="bi bi-tools"></i></div>
+                <div>
+                  <p class="cool-title">Reconstrucción del Sistema Térmico</p>
+                  <p class="cool-desc">Rediseño completo del sistema de disipación original, incluyendo reemplazo y modificación de componentes para alcanzar los objetivos térmicos del proyecto.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- TURBINA MODIFICADA -->
+    <section id="turbina" class="section-darker" aria-labelledby="turb-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">Innovación mecánica</p>
+          <h2 class="section-title" id="turb-titulo">Turbina BFB1012 — Modificación y Reconstrucción</h2>
+          <div class="section-line"></div>
+        </div>
+
+        <div class="row g-5 align-items-center">
+
+          <!-- Diagrama SVG turbina -->
+          <div class="col-lg-5">
+            <svg viewBox="0 0 320 220" width="100%" role="img"
+                 aria-label="Diagrama comparativo turbina estándar vs turbina modificada BFB1012">
+              <title>BFB1012 — Estándar vs Modificada</title>
+
+              <!-- Estándar -->
+              <g>
+                <text x="80" y="18" text-anchor="middle" fill="#555"
+                      font-size="8" font-family="monospace" letter-spacing="1">ESTÁNDAR</text>
+                <!-- Cuerpo -->
+                <circle cx="80" cy="95" r="58" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+                <circle cx="80" cy="95" r="42" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                <!-- Paletas -->
+                <g stroke="rgba(255,255,255,0.2)" stroke-width="1.5" fill="none">
+                  <line x1="80" y1="95" x2="130" y2="68"/>
+                  <line x1="80" y1="95" x2="120" y2="135"/>
+                  <line x1="80" y1="95" x2="75" y2="148"/>
+                  <line x1="80" y1="95" x2="30" y2="130"/>
+                  <line x1="80" y1="95" x2="28" y2="75"/>
+                  <line x1="80" y1="95" x2="65" y2="42"/>
+                  <line x1="80" y1="95" x2="105" y2="45"/>
+                </g>
+                <circle cx="80" cy="95" r="8" fill="#1a1a1a" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                <text x="80" y="168" text-anchor="middle" fill="#444"
+                      font-size="7" font-family="monospace">Vibración: Alta</text>
+                <text x="80" y="180" text-anchor="middle" fill="#444"
+                      font-size="7" font-family="monospace">Presión estática: Media</text>
+              </g>
+
+              <!-- Flecha central -->
+              <text x="160" y="100" text-anchor="middle" fill="rgba(0,200,255,0.4)"
+                    font-size="20">→</text>
+
+              <!-- Modificada -->
+              <g>
+                <text x="240" y="18" text-anchor="middle" fill="var(--acento, #00c8ff)"
+                      font-size="8" font-family="monospace" letter-spacing="1">MODIFICADA</text>
+                <!-- Cuerpo -->
+                <circle cx="240" cy="95" r="58" fill="none"
+                        stroke="rgba(0,200,255,0.2)" stroke-width="1.2"/>
+                <circle cx="240" cy="95" r="42" fill="none"
+                        stroke="rgba(0,200,255,0.1)" stroke-width="1"/>
+                <!-- Paletas optimizadas — más curvadas -->
+                <g stroke="rgba(0,200,255,0.5)" stroke-width="1.8" fill="none">
+                  <path d="M240 95 Q270 75 290 68"/>
+                  <path d="M240 95 Q275 110 280 135"/>
+                  <path d="M240 95 Q240 130 235 148"/>
+                  <path d="M240 95 Q210 125 190 130"/>
+                  <path d="M240 95 Q188 88 188 75"/>
+                  <path d="M240 95 Q210 60 225 42"/>
+                  <path d="M240 95 Q255 55 265 45"/>
+                </g>
+                <!-- Núcleo mejorado -->
+                <circle cx="240" cy="95" r="10" fill="#0a0a0a"
+                        stroke="rgba(0,200,255,0.4)" stroke-width="1.2"/>
+                <circle cx="240" cy="95" r="4" fill="rgba(0,200,255,0.3)"/>
+                <!-- Ball bearing indicador -->
+                <circle cx="240" cy="95" r="14" fill="none"
+                        stroke="rgba(0,200,255,0.15)" stroke-width="1" stroke-dasharray="3 2"/>
+                <text x="240" y="168" text-anchor="middle" fill="rgba(0,200,255,0.5)"
+                      font-size="7" font-family="monospace">Vibración: Reducida</text>
+                <text x="240" y="180" text-anchor="middle" fill="rgba(0,200,255,0.5)"
+                      font-size="7" font-family="monospace">Presión estática: Mejorada</text>
+                <text x="240" y="192" text-anchor="middle" fill="rgba(0,255,136,0.4)"
+                      font-size="7" font-family="monospace">Estabilidad: Prolongada</text>
+              </g>
+            </svg>
+          </div>
+
+          <!-- Detalles de la modificación -->
+          <div class="col-lg-7">
+            <h3 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.85rem;letter-spacing:2px;margin-bottom:1.4rem;">
+              <i class="bi bi-wrench-adjustable text-acento me-2"></i>Modificaciones Realizadas
+            </h3>
+
+            <div style="background:#111;border:1px solid rgba(0,200,255,.12);border-radius:4px;padding:1.4rem;margin-bottom:1rem;">
+              <div class="sr"><span class="lb">Proceso</span><span class="vl a">Reconstrucción completa</span></div>
+              <div class="sr"><span class="lb">Recalibración</span><span class="vl a">Geometría de paletas</span></div>
+              <div class="sr"><span class="lb">Rodamientos</span><span class="vl">Ball bearing dual custom</span></div>
+              <div class="sr"><span class="lb">Vibración</span><span class="vl g">Reducida significativamente</span></div>
+              <div class="sr"><span class="lb">Presión estática</span><span class="vl g">Mejorada</span></div>
+              <div class="sr"><span class="lb">Estabilidad operativa</span><span class="vl g">Prolongada</span></div>
+              <div class="sr"><span class="lb">Modelo base</span><span class="vl">BFB1012</span></div>
+            </div>
+
+            <div style="margin-bottom:1rem;">
+              <span class="turb-badge"><i class="bi bi-wrench"></i>Reconstruida</span>
+              <span class="turb-badge"><i class="bi bi-sliders"></i>Recalibrada</span>
+              <span class="turb-badge"><i class="bi bi-arrow-down-circle"></i>Menos vibración</span>
+              <span class="turb-badge"><i class="bi bi-wind"></i>Mejor presión estática</span>
+              <span class="turb-badge"><i class="bi bi-clock-history"></i>Mayor estabilidad</span>
+            </div>
+
+            <div style="background:rgba(0,200,255,.04);border:1px solid rgba(0,200,255,.1);border-radius:4px;padding:1rem;">
+              <p style="font-size:.82rem;color:#555;line-height:1.7;margin:0;">
+                <i class="bi bi-info-circle text-acento me-2"></i>
+                La modificación de una turbina industrial como la BFB1012 requiere
+                comprensión de la dinámica de fluidos interna, la distribución de presión estática
+                en las paletas y el comportamiento de los rodamientos bajo temperatura. Esta
+                modificación es el componente mecánico más singular del proyecto.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTADOS TÉRMICOS -->
+    <section id="resultados" class="section-dark" aria-labelledby="res-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">Validación experimental</p>
+          <h2 class="section-title" id="res-titulo">Temperaturas Registradas y Aplicaciones</h2>
+          <div class="section-line"></div>
+        </div>
+
+        <div class="row g-5">
+
+          <!-- Barras de temperatura -->
+          <div class="col-lg-6">
+            <div style="background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.5rem;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.82rem;letter-spacing:2px;margin-bottom:1.4rem;">
+                <i class="bi bi-thermometer-sun text-acento me-2"></i>Mapa Térmico — Carga Sostenida
+              </h4>
+              <p style="font-size:.78rem;color:#444;margin-bottom:1.4rem;">
+                Escala: 0°C → 100°C. Referencia de peligro típica RTX 3090: núcleo &gt;83°C, VRAM &gt;90°C.
+              </p>
+
+              <!-- Núcleo GPU -->
+              <div class="temp-wrap">
+                <div class="temp-header">
+                  <span class="temp-label">Núcleo GPU</span>
+                  <span class="temp-val" style="color:#ff8c42;">≤60 °C máx.</span>
+                </div>
+                <div class="temp-bg">
+                  <div class="temp-bar" id="tb-core"
+                       style="background:linear-gradient(to right,#00c8ff,#ff8c42);"></div>
+                </div>
+                <p class="temp-note">Bajo cargas AI e inferencia sostenida — 40+ puntos bajo límite crítico</p>
+              </div>
+
+              <!-- Hotspot -->
+              <div class="temp-wrap">
+                <div class="temp-header">
+                  <span class="temp-label">Hotspot registrado</span>
+                  <span class="temp-val" style="color:#ffaa42;">45–60 °C</span>
+                </div>
+                <div class="temp-bg">
+                  <div class="temp-bar" id="tb-hot"
+                       style="background:linear-gradient(to right,#00c8ff,#ffaa42);"></div>
+                </div>
+                <p class="temp-note">Rango estabilizado — sin picos abruptos documentados</p>
+              </div>
+
+              <!-- VRAM -->
+              <div class="temp-wrap" style="margin-bottom:0;">
+                <div class="temp-header">
+                  <span class="temp-label">VRAM — Carga AI sostenida</span>
+                  <span class="temp-val" style="color:#ffaa00;">60 °C</span>
+                </div>
+                <div class="temp-bg">
+                  <div class="temp-bar" id="tb-vram"
+                       style="background:linear-gradient(to right,#00c8ff,#ffaa00);"></div>
+                </div>
+                <p class="temp-note">Durante inferencia con 14–16 GB VRAM activos — dentro de rango seguro</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Aplicaciones principales -->
+          <div class="col-lg-6">
+            <h3 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.85rem;letter-spacing:2px;margin-bottom:1.4rem;">
+              <i class="bi bi-lightning-charge text-acento me-2"></i>Aplicaciones Principales
+            </h3>
+
+            <div style="margin-bottom:1.5rem;">
+              <span class="app-pill"><i class="bi bi-robot"></i>AI Inference</span>
+              <span class="app-pill"><i class="bi bi-cpu"></i>CUDA Acceleration</span>
+              <span class="app-pill"><i class="bi bi-graph-up"></i>Model Training</span>
+              <span class="app-pill"><i class="bi bi-clock-history"></i>Long Duration Workloads</span>
+              <span class="app-pill"><i class="bi bi-thermometer-half"></i>Experimental Thermal Validation</span>
+            </div>
+
+            <div style="background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.4rem;margin-bottom:1rem;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.78rem;letter-spacing:2px;margin-bottom:1rem;">
+                <i class="bi bi-check-circle text-acento me-2"></i>Objetivos Cumplidos
+              </h4>
+              <div class="sr"><span class="lb">Hotspots extremos</span><span class="vl g">Resueltos</span></div>
+              <div class="sr"><span class="lb">Degradación térmica</span><span class="vl g">Eliminada bajo carga sostenida</span></div>
+              <div class="sr"><span class="lb">Estrés VRAM/VRM</span><span class="vl g">Controlado — 60°C máx.</span></div>
+              <div class="sr"><span class="lb">Vibración turbinas</span><span class="vl g">Reducida — turbina modificada</span></div>
+              <div class="sr"><span class="lb">Estabilidad prolongada</span><span class="vl g">Validada</span></div>
+              <div class="sr"><span class="lb">Telemetría térmica</span><span class="vl g">Lineal sin picos</span></div>
+            </div>
+
+            <div style="background:rgba(0,200,255,.04);border:1px solid rgba(0,200,255,.1);border-radius:4px;padding:1rem;">
+              <p style="font-size:.82rem;color:#555;line-height:1.7;margin:0;">
+                Los resultados validan que la arquitectura híbrida pasivo-activo multicapa,
+                combinada con el procedimiento de ensamblaje experimental y la turbina
+                modificada, logra mantener una RTX 3090 dentro de rangos seguros bajo
+                cargas de inferencia AI que típicamente generan hotspots superiores a 90°C
+                en configuraciones estándar de fábrica.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- TECNOLOGÍAS -->
+    <section id="tecnologias" class="section-darker" aria-labelledby="tech-hp-titulo">
+      <div class="container text-center">
+        <h3 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.9rem;letter-spacing:2px;margin-bottom:1.5rem;" id="tech-hp-titulo">
+          <i class="bi bi-tools text-acento me-2"></i>Stack Tecnológico
+        </h3>
+        <div>
+          <span class="tech-pill"><i class="bi bi-gpu-card"></i>NVIDIA RTX 3090 Zotac</span>
+          <span class="tech-pill"><i class="bi bi-fan"></i>Turbinas BFB1012</span>
+          <span class="tech-pill"><i class="bi bi-layers"></i>Dual Fan Blade Tech</span>
+          <span class="tech-pill"><i class="bi bi-gear-wide-connected"></i>Ball Bearing Dual Custom</span>
+          <span class="tech-pill"><i class="bi bi-thermometer-half"></i>MOSFET Targeted Airflow</span>
+          <span class="tech-pill"><i class="bi bi-diagram-3"></i>Canalización Térmica Dedicada</span>
+          <span class="tech-pill"><i class="bi bi-search"></i>Inspección Microscópica</span>
+          <span class="tech-pill"><i class="bi bi-wrench-adjustable"></i>Lijado Calibrado</span>
+          <span class="tech-pill"><i class="bi bi-cpu"></i>CUDA 11.x+</span>
+          <span class="tech-pill"><i class="bi bi-graph-up"></i>Telemetría térmica</span>
+        </div>
+        <hr class="divider mt-5">
+        <div class="d-flex flex-wrap gap-3 justify-content-center mt-4">
+          <a href="portfolio.html" class="btn-tech"><i class="bi bi-arrow-left me-2"></i>Volver al Portafolio</a>
+          <a href="detalle-mainframe.html" class="btn-tech btn-tech-solid"><i class="bi bi-arrow-right me-2"></i>Ver Mainframe eGPU</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 <a href="index.html">TechLab</a> · Alexis Negrón Rodríguez · San Juan, Puerto Rico</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function onVisible(id, cb) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const o = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) { cb(); o.disconnect(); } });
+      }, { threshold: 0.4 });
+      o.observe(el);
+    }
+
+    /* Barras de temperatura — escala 0-100°C */
+    onVisible('tb-core', () => setTimeout(() => {
+      document.getElementById('tb-core').style.width  = '60%'; /* 60°C / 100°C */
+      document.getElementById('tb-hot').style.width   = '60%'; /* 60°C máx hotspot */
+      document.getElementById('tb-vram').style.width  = '60%'; /* 60°C VRAM */
+    }, 150));
+  </script>
+
+</body>
+</html>

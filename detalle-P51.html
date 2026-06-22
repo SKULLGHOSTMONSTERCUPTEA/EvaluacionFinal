@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<!--
+  TechLab Portfolio - Detalle: P51
+  Autor: Alexis Negrón Rodríguez
+  Archivo Seleccionado: detalle-P51.html
+
+  Estructura HTML5:
+  - <nav>: Navbar Bootstrap 5 responsiva
+  - <header>: Hero de detalle con overlay y título
+  - <main>:
+      · <section id="detalle">: Descripción del proyecto,
+        tecnologías usadas como tags estilizados,
+        y panel lateral con info del proyecto.
+  - <footer>: Pie de página con créditos-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="P51 — asistente modular basado en IA y automatización por Alexis TechLab">
+  <title>TechLab | P51</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <script src="js/app.js"></script>
+</head>
+<body>
+
+  <!--NAVBAR-->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" aria-label="Navegación principal">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">
+        <i class="bi bi-cpu-fill me-2"></i>TECHLAB
+      </a>
+      <button class="navbar-toggler" type="button"
+              data-bs-toggle="collapse" data-bs-target="#navbarMain"
+              aria-controls="navbarMain" aria-expanded="false"
+              aria-label="Alternar navegación">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav ms-auto gap-lg-2">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html"><i class="bi bi-house me-1"></i>Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="portfolio.html"><i class="bi bi-grid me-1"></i>Portafolio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="contacto.html"><i class="bi bi-envelope me-1"></i>Contacto</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!--HEADER — Hero de detalle-->
+  <header>
+    <div class="detail-hero" style="background-image:url('img/p51.jpg');" role="banner">
+      <!-- Overlay extra utilizado para este proyecto (En este caso verde oscuro) -->
+      <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(13,13,13,1) 0%, rgba(0,40,10,0.5) 100%);"></div>
+      <div class="detail-hero-content container w-100" style="position:relative;z-index:1;">
+        <nav aria-label="Ruta de navegación" style="margin-bottom:0.5rem;">
+          <ol class="breadcrumb" style="background:transparent; padding:0; margin:0;">
+            <li class="breadcrumb-item">
+              <a href="portfolio.html" style="color:#888; text-decoration:none; font-size:0.8rem; letter-spacing:1px;">
+                Portafolio
+              </a>
+            </li>
+            <li class="breadcrumb-item active" style="color:var(--acento); font-size:0.8rem; letter-spacing:1px;">
+              P51
+            </li>
+          </ol>
+        </nav>
+        <span style="font-size:0.72rem; letter-spacing:3px; text-transform:uppercase; color:var(--acento);">
+          IA · Automatización · Linux
+        </span>
+        <h1 class="section-title mt-1">P51</h1>
+      </div>
+    </div>
+  </header>
+
+  <!--MAIN -->
+  <main>
+    <section id="detalle" class="section-dark" aria-labelledby="P51-titulo">
+      <div class="container">
+        <h2 class="visually-hidden" id="P51-titulo">Detalle del proyecto P51</h2>
+
+        <div class="row g-5">
+
+          <!-- Descripción del proyecto -->
+          <div class="col-lg-8">
+
+            <p class="about-text">
+              <strong style="color:var(--blanco);">P51</strong> es un asistente modular basado en
+              inteligencia artificial con capacidad de comunicación en tiempo real entre múltiples
+              sistemas. Su arquitectura permite que distintos nodos —corriendo en diferentes dispositivos—
+              compartan contexto, comandos y resultados de forma sincronizada.
+            </p>
+
+            <p class="about-text">
+              El sistema utiliza <strong style="color:var(--blanco);">WebSockets</strong> para mantener
+              conexiones persistentes entre el servidor central y los clientes, lo que permite latencias
+              mínimas en la ejecución de tareas automatizadas. El reconocimiento de voz se implementa
+              con <strong style="color:var(--blanco);">Vosk</strong>, funcionando completamente offline
+              sin enviar datos a servidores externos.
+            </p>
+
+            <p class="about-text">
+              El razonamiento y la generación de respuestas se delegan a
+              <strong style="color:var(--blanco);">GPT4All</strong>, un modelo de lenguaje que corre
+              localmente sobre Linux. Esto garantiza privacidad total y operación sin dependencia
+              de servicios en la nube, incluso en entornos sin internet.
+            </p>
+
+            <hr class="divider">
+
+            <h3 style="font-family:var(--fuente-titulo); color:var(--blanco); font-size:0.95rem; letter-spacing:2px; margin-bottom:1.2rem;">
+              <i class="bi bi-tools text-acento me-2"></i>Tecnologías Utilizadas
+            </h3>
+
+            <div>
+              <span class="tech-tag"><i class="bi bi-terminal me-1"></i>Linux</span>
+              <span class="tech-tag"><i class="bi bi-filetype-py me-1"></i>Python</span>
+              <span class="tech-tag"><i class="bi bi-broadcast me-1"></i>WebSockets</span>
+              <span class="tech-tag"><i class="bi bi-mic me-1"></i>Vosk</span>
+              <span class="tech-tag"><i class="bi bi-robot me-1"></i>GPT4All</span>
+              <span class="tech-tag"><i class="bi bi-hdd-network me-1"></i>Socket.IO</span>
+              <span class="tech-tag"><i class="bi bi-gear me-1"></i>Systemd</span>
+            </div>
+
+            <hr class="divider">
+
+            <!-- Navegación entre proyectos -->
+            <div class="d-flex flex-wrap gap-3 justify-content-between">
+              <a href="detalle-robonexis-n1.html" class="btn-tech">
+                <i class="bi bi-arrow-left me-2"></i>Anterior: RoboNexis N1
+              </a>
+              <a href="portfolio.html" class="btn-tech btn-tech-solid">
+                <i class="bi bi-grid me-2"></i>Ver Todos los Proyectos
+              </a>
+            </div>
+
+          </div>
+
+          <!-- Panel lateral -->
+          <div class="col-lg-4">
+            <div style="background:#111; border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:1.5rem;">
+              <h4 style="font-family:var(--fuente-titulo); color:var(--blanco); font-size:0.85rem; letter-spacing:2px; margin-bottom:1.5rem; padding-bottom:0.8rem; border-bottom:1px solid rgba(255,255,255,0.08);">
+                <i class="bi bi-bar-chart text-acento me-2"></i>Datos del Proyecto
+              </h4>
+
+              <div style="margin-bottom:1rem;">
+                <p style="font-size:0.72rem; letter-spacing:1.5px; text-transform:uppercase; color:#555; margin-bottom:0.2rem;">Estado</p>
+                <p style="color:#ffaa00; font-weight:600; margin:0;">
+                  <i class="bi bi-circle-fill me-1" style="font-size:0.6rem;"></i>Prototipo Activo
+                </p>
+              </div>
+
+              <div style="margin-bottom:1rem;">
+                <p style="font-size:0.72rem; letter-spacing:1.5px; text-transform:uppercase; color:#555; margin-bottom:0.2rem;">Versión</p>
+                <p style="color:#bbb; margin:0;">v1.2.0</p>
+              </div>
+
+              <div style="margin-bottom:1rem;">
+                <p style="font-size:0.72rem; letter-spacing:1.5px; text-transform:uppercase; color:#555; margin-bottom:0.2rem;">Plataforma</p>
+                <p style="color:#bbb; margin:0;">Linux (Debian / Ubuntu)</p>
+              </div>
+
+              <div style="margin-bottom:1rem;">
+                <p style="font-size:0.72rem; letter-spacing:1.5px; text-transform:uppercase; color:#555; margin-bottom:0.2rem;">Lenguaje Principal</p>
+                <p style="color:#bbb; margin:0;">Python 3.11</p>
+              </div>
+
+              <div style="margin-bottom:0;">
+                <p style="font-size:0.72rem; letter-spacing:1.5px; text-transform:uppercase; color:#555; margin-bottom:0.2rem;">Licencia</p>
+                <p style="color:#bbb; margin:0;">GPL v3.0</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!--FOOTER-->
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 <a href="index.html">TechLab</a> · Alexis Negrón Rodríguez · San Juan, Puerto Rico</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

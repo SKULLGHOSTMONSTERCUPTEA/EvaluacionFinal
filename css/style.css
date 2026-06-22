@@ -1,0 +1,772 @@
+/* =============================================
+   TechLab Portfolio - Custom CSS
+   Autor: Alexis Negrón Rodríguez
+   Descripción: Estilos personalizados que complementan Bootstrap 5
+   ============================================= */
+
+/* --- Variables de color y fuentes --- */
+:root {
+  --azul:       #003366;
+  --azul-medio: #0a4fa6;
+  --azul-claro: #1a73e8;
+  --gris:       #f5f5f5;
+  --gris-medio: #e0e0e0;
+  --oscuro:     #0d0d0d;
+  --blanco:     #ffffff;
+  --acento:     #00c8ff;
+  --fuente-titulo: 'Orbitron', sans-serif;
+  --fuente-cuerpo: 'Exo 2', sans-serif;
+}
+
+/* --- Reset y base --- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--fuente-cuerpo);
+  background-color: var(--oscuro);
+  color: #cccccc;
+  margin: 0;
+  padding: 0;
+}
+
+/* --- Scrollbar personalizada --- */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #111; }
+::-webkit-scrollbar-thumb { background: var(--azul-medio); border-radius: 3px; }
+
+/* =============================================
+   NAVBAR
+   ============================================= */
+.navbar-brand {
+  font-family: var(--fuente-titulo);
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  color: var(--acento) !important;
+}
+
+.navbar-nav .nav-link {
+  font-family: var(--fuente-cuerpo);
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  color: #aaa !important;
+  position: relative;
+  padding-bottom: 4px;
+  transition: color 0.3s;
+}
+
+.navbar-nav .nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--acento);
+  transition: width 0.3s;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  color: var(--acento) !important;
+}
+
+.navbar-nav .nav-link:hover::after,
+.navbar-nav .nav-link.active::after {
+  width: 100%;
+}
+
+.navbar-toggler {
+  border-color: var(--azul-medio);
+}
+
+/* =============================================
+   HERO SECTION
+   ============================================= */
+.hero {
+  height: 100vh;
+  min-height: 500px;
+  background-image: url('../img/hero.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  color: var(--blanco);
+}
+
+/* Overlay oscuro sobre la imagen */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    160deg,
+    rgba(0, 5, 20, 0.88) 0%,
+    rgba(0, 30, 80, 0.70) 60%,
+    rgba(0, 200, 255, 0.10) 100%
+  );
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 1s ease both;
+}
+
+.hero-title {
+  font-family: var(--fuente-titulo);
+  font-size: clamp(2rem, 6vw, 4rem);
+  letter-spacing: 4px;
+  color: var(--blanco);
+  text-shadow: 0 0 30px rgba(0, 200, 255, 0.6);
+  margin-bottom: 0.4rem;
+}
+
+.hero-subtitle {
+  font-size: clamp(0.95rem, 2.5vw, 1.2rem);
+  color: rgba(255, 255, 255, 0.75);
+  letter-spacing: 1px;
+  margin-bottom: 2rem;
+  max-width: 540px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Línea decorativa bajo el título */
+.hero-line {
+  width: 60px;
+  height: 3px;
+  background: var(--acento);
+  margin: 0.8rem auto 1.6rem;
+  border-radius: 2px;
+  box-shadow: 0 0 12px var(--acento);
+}
+
+/* =============================================
+   BOTONES
+   ============================================= */
+.btn-tech {
+  font-family: var(--fuente-titulo);
+  font-size: 0.78rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 0.65rem 2rem;
+  border: 2px solid var(--acento);
+  color: var(--acento);
+  background: transparent;
+  border-radius: 2px;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-tech:hover {
+  background: var(--acento);
+  color: var(--oscuro);
+  box-shadow: 0 0 20px rgba(0, 200, 255, 0.4);
+}
+
+.btn-tech-solid {
+  background: var(--azul-medio);
+  color: var(--blanco);
+  border: 2px solid var(--azul-medio);
+}
+
+.btn-tech-solid:hover {
+  background: var(--acento);
+  border-color: var(--acento);
+  color: var(--oscuro);
+  box-shadow: 0 0 20px rgba(0, 200, 255, 0.4);
+}
+
+/* =============================================
+   SECCIONES GENERALES
+   ============================================= */
+.section-dark {
+  background-color: #0d0d0d;
+  padding: 5rem 0;
+}
+
+.section-darker {
+  background-color: #080808;
+  padding: 5rem 0;
+}
+
+.section-blue {
+  background-color: var(--azul);
+  padding: 5rem 0;
+}
+
+.section-title {
+  font-family: var(--fuente-titulo);
+  font-size: clamp(1.3rem, 3vw, 1.9rem);
+  letter-spacing: 3px;
+  color: var(--blanco);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.section-line {
+  width: 50px;
+  height: 3px;
+  background: var(--acento);
+  margin: 0 auto 2.5rem;
+  border-radius: 2px;
+}
+
+/* =============================================
+   ACERCA DE MÍ
+   ============================================= */
+.about-text {
+  font-size: 1.05rem;
+  line-height: 1.9;
+  color: #bbbbbb;
+}
+
+.about-badge {
+  display: inline-block;
+  background: rgba(0, 200, 255, 0.1);
+  border: 1px solid rgba(0, 200, 255, 0.3);
+  color: var(--acento);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 0.3rem 0.9rem;
+  border-radius: 2px;
+  margin: 0.25rem;
+}
+
+.about-avatar {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 3px solid var(--acento);
+  box-shadow: 0 0 25px rgba(0, 200, 255, 0.35);
+  object-fit: cover;
+  background: var(--azul-medio);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.5rem;
+  color: var(--acento);
+  margin: 0 auto 1.5rem;
+}
+
+/* =============================================
+   TECNOLOGÍAS
+   ============================================= */
+.tech-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cccccc;
+  font-size: 0.88rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 2px;
+  margin: 0.3rem;
+  transition: border-color 0.3s, color 0.3s;
+}
+
+.tech-pill:hover {
+  border-color: var(--acento);
+  color: var(--acento);
+}
+
+.tech-pill i {
+  color: var(--acento);
+  font-size: 1rem;
+}
+
+/* =============================================
+   CARDS DE PROYECTOS
+   ============================================= */
+.card {
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s;
+  overflow: hidden;
+  height: 100%;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(0, 200, 255, 0.15);
+  border-color: rgba(0, 200, 255, 0.3);
+}
+
+.card-img-top {
+  height: 200px;
+  object-fit: cover;
+  filter: brightness(0.85) saturate(0.9);
+  transition: filter 0.3s;
+}
+
+.card:hover .card-img-top {
+  filter: brightness(1) saturate(1.1);
+}
+
+.card-body {
+  padding: 1.4rem;
+}
+
+.card-title {
+  font-family: var(--fuente-titulo);
+  font-size: 1rem;
+  color: var(--blanco);
+  letter-spacing: 1.5px;
+  margin-bottom: 0.6rem;
+}
+
+.card-text {
+  color: #999;
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+
+.card-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--acento);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* =============================================
+   CARRUSEL — Hero de Inicio (index.html)
+   ============================================= */
+#heroCarousel {
+  height: 100vh;
+  min-height: 500px;
+  position: relative;
+  overflow: hidden;
+}
+
+#heroCarousel .carousel-item {
+  height: 100vh;
+  min-height: 500px;
+}
+
+#heroCarousel .carousel-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.55) saturate(0.9);
+}
+
+/* Overlay degradado sobre cada imagen, igual que el .hero original */
+#heroCarousel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    160deg,
+    rgba(0, 5, 20, 0.88) 0%,
+    rgba(0, 30, 80, 0.70) 60%,
+    rgba(0, 200, 255, 0.10) 100%
+  );
+}
+
+#heroCarousel .carousel-caption {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 1rem;
+}
+
+/* Indicadores nativos de Bootstrap, restilizados */
+#heroCarousel .carousel-indicators {
+  z-index: 3;
+  margin-bottom: 2.4rem;
+}
+
+#heroCarousel .carousel-indicators [data-bs-target] {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid var(--acento);
+  background-color: transparent;
+  opacity: 0.6;
+}
+
+#heroCarousel .carousel-indicators .active {
+  background-color: var(--acento);
+  opacity: 1;
+  box-shadow: 0 0 10px var(--acento);
+}
+
+/* Flechas prev/next */
+#heroCarousel .carousel-control-prev,
+#heroCarousel .carousel-control-next {
+  z-index: 3;
+  width: 4rem;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+#heroCarousel .carousel-control-prev:hover,
+#heroCarousel .carousel-control-next:hover {
+  opacity: 1;
+}
+
+/* Barra de progreso personalizada, sincronizada vía JS */
+.carousel-progress-track {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  z-index: 3;
+}
+
+#carouselProgress {
+  height: 100%;
+  width: 0%;
+  background: var(--acento);
+  box-shadow: 0 0 10px var(--acento);
+  transition: width 0.5s ease;
+}
+
+/* =============================================
+   TARJETAS RESALTADAS POR JAVASCRIPT (hover)
+   =============================================
+   Se agrega vía mouseenter/mouseleave en app.js.
+   Va un paso más allá del :hover puro de CSS para
+   cumplir el requisito de interacción con JS. */
+.card[data-project] {
+  cursor: pointer;
+}
+
+.card-resaltada {
+  transform: translateY(-8px) scale(1.015);
+  box-shadow: 0 16px 48px rgba(0, 200, 255, 0.28);
+  border-color: var(--acento) !important;
+}
+
+.card-resaltada .card-img-top {
+  filter: brightness(1.05) saturate(1.15);
+}
+
+/* =============================================
+   MODAL DE DETALLES DE PROYECTO
+   ============================================= */
+#projectModal .modal-content {
+  background: #111111;
+  border: 1px solid rgba(0, 200, 255, 0.25);
+  border-radius: 4px;
+  color: #ccc;
+}
+
+#projectModal .modal-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#projectModal .modal-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#projectModal .btn-close {
+  filter: invert(1) brightness(2);
+}
+
+#projectModalImagen {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 1.2rem;
+  background: linear-gradient(135deg, #001830, #003366);
+}
+
+#projectModalCategoria {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--acento);
+}
+
+#projectModalDescripcion {
+  color: #bbb;
+  line-height: 1.8;
+  margin: 1rem 0;
+}
+
+#projectModalTags {
+  margin-bottom: 0.5rem;
+}
+
+.modal-estado-badge {
+  display: inline-block;
+  background: rgba(0, 200, 255, 0.1);
+  border: 1px solid rgba(0, 200, 255, 0.3);
+  color: var(--acento);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 0.25rem 0.8rem;
+  border-radius: 2px;
+}
+
+/* =============================================
+   VALIDACIÓN EN TIEMPO REAL (JS)
+   ============================================= */
+.form-control.is-valid {
+  border-color: var(--acento);
+  background-image: none; /* quita el ícono check por defecto de Bootstrap */
+}
+
+.form-control.is-invalid {
+  background-image: none; /* quita el ícono X por defecto de Bootstrap */
+}
+
+/* =============================================
+   PÁGINA DE DETALLE
+   ============================================= */
+.detail-hero {
+  height: 45vh;
+  min-height: 280px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+}
+
+.detail-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(13,13,13,1) 0%, rgba(0,20,60,0.6) 100%);
+}
+
+.detail-hero-content {
+  position: relative;
+  z-index: 1;
+  padding: 2rem 0;
+}
+
+.tech-tag {
+  display: inline-block;
+  background: rgba(0, 200, 255, 0.08);
+  border: 1px solid rgba(0, 200, 255, 0.25);
+  color: var(--acento);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 0.3rem 0.85rem;
+  border-radius: 2px;
+  margin: 0.2rem;
+}
+
+/* =============================================
+   FORMULARIO DE CONTACTO
+   ============================================= */
+.form-control,
+.form-select {
+  background: #111;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #ccc;
+  border-radius: 2px;
+  padding: 0.75rem 1rem;
+  font-family: var(--fuente-cuerpo);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus,
+.form-select:focus {
+  background: #151515;
+  border-color: var(--acento);
+  box-shadow: 0 0 0 3px rgba(0, 200, 255, 0.15);
+  color: #eee;
+  outline: none;
+}
+
+.form-control::placeholder {
+  color: #555;
+}
+
+.form-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #888;
+  margin-bottom: 0.4rem;
+}
+
+.form-control.is-invalid {
+  border-color: #ff4d6d;
+}
+
+.invalid-feedback {
+  color: #ff4d6d;
+  font-size: 0.8rem;
+}
+
+/* Textarea */
+textarea.form-control {
+  resize: vertical;
+  min-height: 130px;
+}
+
+/* =============================================
+   CONTACTO - INFO LATERAL
+   ============================================= */
+.contact-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.contact-icon {
+  width: 42px;
+  height: 42px;
+  background: rgba(0, 200, 255, 0.08);
+  border: 1px solid rgba(0, 200, 255, 0.25);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--acento);
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.contact-info-item h6 {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #666;
+  margin-bottom: 0.2rem;
+}
+
+.contact-info-item p {
+  color: #bbb;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* =============================================
+   FOOTER
+   ============================================= */
+footer {
+  background: #050505;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 2.5rem 0;
+  text-align: center;
+}
+
+footer p {
+  color: #444;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+footer a {
+  color: var(--acento);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+footer a:hover {
+  opacity: 0.7;
+}
+
+/* =============================================
+   ANIMACIONES
+   ============================================= */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.7s ease both;
+}
+
+.fade-delay-1 { animation-delay: 0.15s; }
+.fade-delay-2 { animation-delay: 0.30s; }
+.fade-delay-3 { animation-delay: 0.45s; }
+
+/* =============================================
+   UTILIDADES EXTRA
+   ============================================= */
+.text-acento { color: var(--acento) !important; }
+.border-acento { border-color: var(--acento) !important; }
+.bg-oscuro { background-color: var(--oscuro) !important; }
+
+/* Divisor decorativo */
+.divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(0,200,255,0.3), transparent);
+  margin: 3rem 0;
+}
+
+/* =============================================
+   RESPONSIVIDAD ADICIONAL
+   ============================================= */
+@media (max-width: 768px) {
+  .hero {
+    background-attachment: scroll; /* Evita bug en iOS */
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .section-dark,
+  .section-darker,
+  .section-blue {
+    padding: 3.5rem 0;
+  }
+
+  #heroCarousel,
+  #heroCarousel .carousel-item {
+    height: 90vh;
+    min-height: 420px;
+  }
+
+  #heroCarousel .carousel-control-prev,
+  #heroCarousel .carousel-control-next {
+    width: 2.5rem;
+  }
+
+  #projectModalImagen {
+    height: 160px;
+  }
+}

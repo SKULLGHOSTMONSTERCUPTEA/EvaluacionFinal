@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<!--
+  =============================================
+  TechLab Portfolio — Detalle: Asus E210M
+  Autor: Alexis Negrón Rodríguez
+  Archivo: detalle-asus-e210m.html
+
+  Estructura HTML5:
+  - <nav>: Navbar Bootstrap 5 responsiva
+  - <header>: Hero con overlay y título
+  - <main>:
+      · <section id="overview">: Descripción del proyecto,
+        intervención crítica (Process Table reg + kernel),
+        4 KPIs: 920MB RAM · 38-39 procesos · 42 FPS · 1,445 MB/s TX
+        Panel lateral: specs Asus E210M Celeron N4020 4GB RAM
+      · <section id="memoria">: Progresión de optimización de memoria
+        1,111MB → 1,040MB (sin compresión) → 920MB (capa cero)
+        → 980MB objetivo próxima etapa. Barras proporcionales
+        animadas. Métricas de proceso: 40-43 procesos,
+        6-7 background, 490-726 subprocesos.
+      · <section id="seguridad">: §11.5 Validación de integridad
+        de seguridad bajo huella sub-gigabyte.
+        Servicios 100% activos: Defender (MsMpEng),
+        Security Health Service, lsass, Firewall,
+        RPC, DCOM, Audio Stack, BitLocker.
+        Piso histórico 38-39 procesos con todos activos.
+      · <section id="overflow">: Integer Overflow documentado —
+        -246,864,158 en contador FPS. Causa: erradicación total
+        de interrupciones parasitarias. Kernel gestionó sin TDR,
+        sin freeze shell, sin fallos cmd/PowerShell.
+        42 FPS estables The Forest DX11 mundo abierto.
+      · <section id="mellanox">: §12.3 Mellanox-Kernel Tuning —
+        InfiniBand/Ethernet enterprise, reconfiguración
+        Process Table + Circular Kernel Buffers,
+        I/O Interrupt Reduction, peak TX 1,445 MB/s,
+        cero pérdida de paquetes bajo virtualización densa.
+      · <section id="tecnologias">: Stack y navegación
+  - <footer>: Pie de página
+  =============================================
+-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Asus E210M — Win 11 24H2 LTSC · 920MB RAM · Seguridad activa · Mellanox 1,445 MB/s · Integer Overflow documentado — Alexis TechLab">
+  <title>TechLab | Asus E210M — Win 11 Optimization</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <script src="js/app.js"></script>
+
+  <style>
+    .mt{width:100%;border-collapse:collapse;font-size:.88rem}
+    .mt th{font-family:var(--fuente-titulo);font-size:.67rem;letter-spacing:2px;text-transform:uppercase;color:#555;padding:.55rem 1rem;border-bottom:1px solid rgba(255,255,255,.08);text-align:left}
+    .mt td{padding:.65rem 1rem;border-bottom:1px solid rgba(255,255,255,.05);color:#bbb;vertical-align:middle}
+    .mt tr:last-child td{border-bottom:none}
+    .mt tr:hover td{background:rgba(0,200,255,.03)}
+    .hi{color:var(--acento);font-weight:700;font-family:var(--fuente-titulo);letter-spacing:1px}
+    .ok{color:#00ff88;font-weight:600}
+    .warn{color:#ffaa00;font-weight:600}
+    .kpi{background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.1rem;text-align:center}
+    .kpi-lbl{font-size:.62rem;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:.3rem}
+    .kpi-val{font-family:var(--fuente-titulo);font-size:1.5rem;color:var(--acento);margin:0;line-height:1.1}
+    .kpi-sub{font-size:.68rem;color:#444;margin:0}
+    .sr{display:flex;justify-content:space-between;align-items:baseline;padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.05)}
+    .sr:last-child{border-bottom:none}
+    .sr .lb{color:#555;font-size:.73rem;letter-spacing:1px;text-transform:uppercase}
+    .sr .vl{color:#bbb;font-family:var(--fuente-titulo);font-size:.83rem;letter-spacing:1px}
+    .sr .vl.a{color:var(--acento)}
+    .sr .vl.g{color:#00ff88}
+    .sr .vl.w{color:#ffaa00}
+    .sr .vl.r{color:#ff6432}
+
+    /* Barra de memoria */
+    .mem-row{margin-bottom:1.2rem}
+    .mem-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.25rem}
+    .mem-label{font-size:.8rem;color:#888}
+    .mem-val{font-family:var(--fuente-titulo);font-size:.85rem}
+    .mem-bg{background:rgba(255,255,255,.05);border-radius:2px;height:10px;overflow:hidden}
+    .mem-bar{height:100%;border-radius:2px;width:0;transition:width 1.5s cubic-bezier(.22,1,.36,1)}
+    .mem-note{font-size:.72rem;color:#444;margin-top:.2rem}
+
+    /* Servicio de seguridad badge */
+    .svc-badge{
+      display:inline-flex;align-items:center;gap:.4rem;
+      background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.18);
+      color:#aaa;font-size:.8rem;padding:.35rem .85rem;
+      border-radius:2px;margin:.2rem;
+    }
+    .svc-badge i{color:#00ff88;font-size:.75rem}
+
+    /* Integer overflow highlight */
+    .overflow-val{
+      font-family:var(--fuente-titulo);font-size:1.6rem;
+      color:#ff4466;letter-spacing:1px;
+      text-shadow:0 0 20px rgba(255,68,102,.3);
+    }
+
+    /* Mellanox metric pill */
+    .mlx-pill{
+      display:inline-block;background:rgba(0,200,255,.06);
+      border:1px solid rgba(0,200,255,.18);color:#ccc;
+      font-size:.8rem;padding:.35rem .85rem;border-radius:2px;margin:.2rem;
+    }
+    .mlx-pill strong{color:var(--acento)}
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" aria-label="Navegación principal">
+    <div class="container">
+      <a class="navbar-brand" href="index.html"><i class="bi bi-cpu-fill me-2"></i>TECHLAB</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+              data-bs-target="#navbarMain" aria-controls="navbarMain"
+              aria-expanded="false" aria-label="Alternar navegación">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav ms-auto gap-lg-2">
+          <li class="nav-item"><a class="nav-link" href="index.html"><i class="bi bi-house me-1"></i>Inicio</a></li>
+          <li class="nav-item"><a class="nav-link active" href="portfolio.html"><i class="bi bi-grid me-1"></i>Portafolio</a></li>
+          <li class="nav-item"><a class="nav-link" href="contacto.html"><i class="bi bi-envelope me-1"></i>Contacto</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header>
+    <div class="detail-hero" style="background-image:url('img/Asus.jpg');" role="banner">
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(13,13,13,1) 0%,rgba(0,15,30,.76) 100%);"></div>
+      <div class="detail-hero-content container w-100" style="position:relative;z-index:1;">
+        <nav aria-label="Ruta de navegación" style="margin-bottom:.5rem;">
+          <ol class="breadcrumb" style="background:transparent;padding:0;margin:0;">
+            <li class="breadcrumb-item"><a href="portfolio.html" style="color:#888;text-decoration:none;font-size:.8rem;letter-spacing:1px;">Portafolio</a></li>
+            <li class="breadcrumb-item active" style="color:var(--acento);font-size:.8rem;letter-spacing:1px;">Asus E210M</li>
+          </ol>
+        </nav>
+        <span style="font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">
+          Win 11 24H2 LTSC · Optimización Estructural · Mellanox Kernel
+        </span>
+        <h1 class="section-title mt-1">Asus E210M</h1>
+        <p style="color:rgba(255,255,255,.5);font-size:.88rem;letter-spacing:1px;margin-top:.4rem;">
+          Bare-Metal Windows 11 LTSC 24H2 · Celeron N4020 · 4 GB RAM · 920 MB huella estabilizada
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- OVERVIEW -->
+    <section id="overview" class="section-dark" aria-labelledby="e210-titulo">
+      <div class="container">
+        <h2 class="visually-hidden" id="e210-titulo">Detalle del proyecto Asus E210M</h2>
+        <div class="row g-5">
+
+          <div class="col-lg-8">
+            <p class="about-text">
+              El proyecto <strong style="color:var(--blanco);">Asus E210M</strong> documenta la optimización
+              estructural avanzada de <strong style="color:var(--blanco);">Windows 11 Enterprise LTSC 24H2
+              (Build 26100.1742)</strong> sobre una plataforma Intel Celeron de 4 GB de RAM físicos —
+              logrando una huella de memoria estabilizada en
+              <strong style="color:var(--acento);">920 MB en frío</strong> con todos los servicios
+              críticos de seguridad <strong style="color:var(--blanco);">100% activos</strong>.
+            </p>
+            <p class="about-text">
+              La intervención central consistió en la
+              <strong style="color:var(--blanco);">reconfiguración analítica de la Process Table</strong>
+              en el Registro (<code style="color:var(--acento);background:rgba(0,200,255,.08);padding:0 4px;border-radius:2px;">reg</code>)
+              y la calibración de intervalos de memoria del Kernel — sin desfragmentación forzada,
+              sin vaciado activo de memoria y sin compresión habilitada. La progresión documentada
+              va de <strong style="color:var(--blanco);">1,111 MB → 1,040 MB → 920 MB</strong>,
+              con un objetivo activo de <strong style="color:var(--acento);">980 MB</strong>
+              en la próxima etapa de optimización.
+            </p>
+            <p class="about-text">
+              El proyecto incluye además la optimización del subsistema de red
+              <strong style="color:var(--blanco);">Mellanox-Kernel</strong> mediante reconfiguración
+              de Circular Kernel Buffers, alcanzando picos de
+              <strong style="color:var(--acento);">1,445 MB/s en transmisión TX</strong> sin pérdida
+              de paquetes bajo virtualización densa concurrente.
+            </p>
+
+            <hr class="divider">
+
+            <div class="row g-3">
+              <div class="col-6 col-md-3">
+                <div class="kpi" style="border-color:rgba(0,200,255,.2);">
+                  <p class="kpi-lbl">RAM huella fría</p>
+                  <p class="kpi-val">920</p>
+                  <p class="kpi-sub">MB — seguridad ON</p>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="kpi">
+                  <p class="kpi-lbl">Procesos mín. absoluto</p>
+                  <p class="kpi-val">38–39</p>
+                  <p class="kpi-sub">idle · Taskmgr inactivo</p>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="kpi">
+                  <p class="kpi-lbl">FPS The Forest DX11</p>
+                  <p class="kpi-val">42</p>
+                  <p class="kpi-sub">mundo abierto · estables</p>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="kpi" style="border-color:rgba(0,200,255,.15);">
+                  <p class="kpi-lbl">Peak TX Mellanox</p>
+                  <p class="kpi-val" style="font-size:1.2rem;">1,445</p>
+                  <p class="kpi-sub">MB/s transmisión</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel lateral -->
+          <div class="col-lg-4">
+            <div style="background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.5rem;position:sticky;top:80px;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.82rem;letter-spacing:2px;margin-bottom:1.4rem;padding-bottom:.8rem;border-bottom:1px solid rgba(255,255,255,.08);">
+                <i class="bi bi-laptop text-acento me-2"></i>Hardware Base
+              </h4>
+              <div class="sr"><span class="lb">Estado</span><span class="vl g"><i class="bi bi-circle-fill me-1" style="font-size:.5rem;"></i>En optimización activa</span></div>
+              <div class="sr"><span class="lb">Dispositivo</span><span class="vl">Asus E210M</span></div>
+              <div class="sr"><span class="lb">CPU</span><span class="vl a">Intel Celeron N4020</span></div>
+              <div class="sr"><span class="lb">RAM física</span><span class="vl">4 GB (3,919 MB disp.)</span></div>
+              <div class="sr"><span class="lb">OS</span><span class="vl">Win 11 LTSC 24H2</span></div>
+              <div class="sr"><span class="lb">Build</span><span class="vl">26100.1742</span></div>
+              <div class="sr"><span class="lb">Edición</span><span class="vl">Enterprise LTSC</span></div>
+              <div class="sr"><span class="lb">Metodología</span><span class="vl">WinOs Unify Corps</span></div>
+              <div class="sr"><span class="lb">eGPU</span><span class="vl">Fury X setup</span></div>
+              <div class="sr"><span class="lb">RAM objetivo próx.</span><span class="vl w">~980 MB</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- PROGRESIÓN DE MEMORIA -->
+    <section id="memoria" class="section-darker" aria-labelledby="mem-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">Optimización activa documentada</p>
+          <h2 class="section-title" id="mem-titulo">Progresión de Huella de Memoria</h2>
+          <div class="section-line"></div>
+          <p style="color:#555;max-width:540px;margin:0 auto;font-size:.88rem;line-height:1.8;">
+            Sin compresión activa, sin desfragmentación forzada, sin vaciado de memoria.
+            Reducción lograda únicamente mediante reconfiguración de Process Table y
+            calibración de intervalos de memoria del Kernel.
+          </p>
+        </div>
+
+        <div class="row g-5">
+
+          <!-- Barras de progresión -->
+          <div class="col-lg-7">
+            <div style="background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.5rem;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.82rem;letter-spacing:2px;margin-bottom:1.4rem;">
+                <i class="bi bi-bar-chart text-acento me-2"></i>Línea de Optimización (MB utilizados)
+              </h4>
+
+              <!-- 1,111 MB — punto de partida -->
+              <div class="mem-row">
+                <div class="mem-header">
+                  <span class="mem-label">Punto de partida</span>
+                  <span class="mem-val" style="color:#888;">1,111 MB</span>
+                </div>
+                <div class="mem-bg"><div class="mem-bar" id="mb-1111" style="background:rgba(255,255,255,.2);"></div></div>
+                <p class="mem-note">Base inicial antes de intervención estructural</p>
+              </div>
+
+              <!-- 1,040 MB — sin compresión -->
+              <div class="mem-row">
+                <div class="mem-header">
+                  <span class="mem-label">Sin compresión activa</span>
+                  <span class="mem-val" style="color:#ffaa00;">1,040 MB</span>
+                </div>
+                <div class="mem-bg"><div class="mem-bar" id="mb-1040" style="background:#ffaa00;"></div></div>
+                <p class="mem-note">Primera reducción — sin compresión, sin desfragmentar, sin vaciar memoria</p>
+              </div>
+
+              <!-- 920 MB — capa cero -->
+              <div class="mem-row">
+                <div class="mem-header">
+                  <span class="mem-label">Compresión de capa cero</span>
+                  <span class="mem-val" style="color:var(--acento);">920 MB ← actual</span>
+                </div>
+                <div class="mem-bg"><div class="mem-bar" id="mb-920" style="background:var(--acento);box-shadow:0 0 8px rgba(0,200,255,.3);"></div></div>
+                <p class="mem-note">Con servicios de seguridad 100% activos — piso histórico estabilizado</p>
+              </div>
+
+              <!-- 980 MB — objetivo próxima etapa -->
+              <div class="mem-row" style="margin-bottom:0;">
+                <div class="mem-header">
+                  <span class="mem-label" style="color:#555;">Objetivo próxima etapa</span>
+                  <span class="mem-val" style="color:#555;">~980 MB (configurado)</span>
+                </div>
+                <div class="mem-bg">
+                  <div class="mem-bar" id="mb-980" style="background:rgba(0,200,255,.25);border:1px dashed rgba(0,200,255,.3);"></div>
+                </div>
+                <p class="mem-note" style="color:#333;">Standby configurado pendiente de validación en siguiente fase</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Métricas de procesos -->
+          <div class="col-lg-5">
+            <div style="background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.5rem;margin-bottom:1rem;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.82rem;letter-spacing:2px;margin-bottom:1.2rem;">
+                <i class="bi bi-list-task text-acento me-2"></i>Métricas de Proceso (Idle)
+              </h4>
+              <div class="sr"><span class="lb">Procesos activos globales</span><span class="vl a">40 – 43</span></div>
+              <div class="sr"><span class="lb">Piso mínimo absoluto</span><span class="vl a">38 – 39</span></div>
+              <div class="sr"><span class="lb">Background (segundo plano)</span><span class="vl">6 – 7</span></div>
+              <div class="sr"><span class="lb">Subprocesos concurrentes</span><span class="vl">490 – 726</span></div>
+              <div class="sr"><span class="lb">Procesos Windows</span><span class="vl">~34</span></div>
+              <div class="sr"><span class="lb">Taskmgr durante idle</span><span class="vl">Inactivo</span></div>
+            </div>
+
+            <div style="background:rgba(0,200,255,.04);border:1px solid rgba(0,200,255,.1);border-radius:4px;padding:1rem;">
+              <p style="font-size:.82rem;color:#555;line-height:1.7;margin:0;">
+                <i class="bi bi-info-circle text-acento me-2"></i>
+                La reducción de subprocesos desde el umbral estándar (~1,000+) hasta el
+                piso de <strong style="color:#888;">490–726</strong> se logra mediante
+                reconfiguración matemática de prioridades en la Process Table y ajuste
+                de políticas en <code style="color:var(--acento);">reg</code>,
+                sin eliminar servicios críticos del sistema.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SEGURIDAD ACTIVA -->
+    <section id="seguridad" class="section-dark" aria-labelledby="sec-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:#00ff88;">§11.5 — Validación de integridad</p>
+          <h2 class="section-title" id="sec-titulo">Seguridad 100% Activa a 920 MB</h2>
+          <div class="section-line" style="background:#00ff88;box-shadow:0 0 10px rgba(0,255,136,.3);"></div>
+          <p style="color:#555;max-width:560px;margin:0 auto;font-size:.88rem;line-height:1.8;">
+            El dato más difícil de replicar del proyecto. La mayoría de optimizaciones extremas
+            de Windows logran huella mínima <em>sacrificando</em> capas de seguridad.
+            Aquí todas están activas simultáneamente.
+          </p>
+        </div>
+
+        <div class="row g-5 align-items-start">
+
+          <div class="col-lg-6">
+            <h3 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.85rem;letter-spacing:2px;margin-bottom:1.4rem;">
+              <i class="bi bi-shield-check" style="color:#00ff88;margin-right:8px;"></i>Servicios de Seguridad Activos
+            </h3>
+
+            <div style="margin-bottom:1.5rem;">
+              <span class="svc-badge"><i class="bi bi-shield-fill-check"></i>Windows Defender (MsMpEng)</span>
+              <span class="svc-badge"><i class="bi bi-heart-pulse"></i>Security Health Service</span>
+              <span class="svc-badge"><i class="bi bi-lock-fill"></i>lsass.exe</span>
+              <span class="svc-badge"><i class="bi bi-fire"></i>Firewall cifrado</span>
+              <span class="svc-badge"><i class="bi bi-arrow-repeat"></i>RPC</span>
+              <span class="svc-badge"><i class="bi bi-diagram-2"></i>DCOM</span>
+              <span class="svc-badge"><i class="bi bi-volume-up"></i>Audio Stack</span>
+              <span class="svc-badge"><i class="bi bi-hdd-lock"></i>BitLocker (subsistema disponible)</span>
+              <span class="svc-badge"><i class="bi bi-globe"></i>Protecciones web activas</span>
+            </div>
+
+            <div style="background:rgba(0,255,136,.04);border:1px solid rgba(0,255,136,.15);border-radius:4px;padding:1.2rem;">
+              <p style="font-size:.88rem;color:#666;line-height:1.8;margin:0;">
+                Todos los servicios pueden ser reactivados de forma controlada mediante sus
+                rutas y asignaciones documentadas como
+                <strong style="color:#888;">método de fallback</strong> — la optimización es
+                reversible por diseño, no destructiva.
+              </p>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div style="background:#111;border:1px solid rgba(0,255,136,.12);border-radius:4px;padding:1.5rem;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.82rem;letter-spacing:2px;margin-bottom:1.2rem;">
+                <i class="bi bi-bar-chart text-acento me-2"></i>Métricas de Validación §11.5
+              </h4>
+              <table class="mt">
+                <thead><tr><th>Métrica</th><th>Resultado</th></tr></thead>
+                <tbody>
+                  <tr><td>Kernel objetivo</td><td style="color:#bbb;">Win 11 LTSC 24H2 · Build 26100.1742</td></tr>
+                  <tr><td>Huella RAM estabilizada</td><td><span class="hi">920 MB</span></td></tr>
+                  <tr><td>Compresión activa</td><td><span class="ok">No requerida</span></td></tr>
+                  <tr><td>Desfragmentación forzada</td><td><span class="ok">No requerida</span></td></tr>
+                  <tr><td>Procesos mín. absoluto (idle)</td><td><span class="hi">38 – 39</span></td></tr>
+                  <tr><td>Servicios seguridad</td><td><span class="ok">100% activos</span></td></tr>
+                  <tr><td>Defender (MsMpEng)</td><td><span class="ok">Activo</span></td></tr>
+                  <tr><td>Firewall cifrado</td><td><span class="ok">Activo</span></td></tr>
+                  <tr><td>BitLocker</td><td><span class="ok">Subsistema disponible</span></td></tr>
+                  <tr><td>FPS eGPU The Forest DX11</td><td><span class="hi">42 FPS estables</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- INTEGER OVERFLOW -->
+    <section id="overflow" class="section-darker" aria-labelledby="ovf-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:#ff4466;">Fenómeno documentado</p>
+          <h2 class="section-title" id="ovf-titulo">Integer Overflow — Efecto de Erradicación de Interrupciones</h2>
+          <div class="section-line" style="background:#ff4466;box-shadow:0 0 10px rgba(255,68,102,.3);"></div>
+        </div>
+
+        <div class="row g-5 align-items-center">
+
+          <div class="col-lg-5 text-center">
+            <p style="font-size:.72rem;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:.5rem;">Valor registrado en contador FPS</p>
+            <div class="overflow-val" aria-label="Valor del integer overflow: menos 246 millones 864 mil 158">
+              −246,864,158
+            </div>
+            <p style="font-size:.78rem;color:#555;margin-top:.5rem;line-height:1.6;">
+              Desbordamiento del contador de entero nativo<br>del software durante fases de pausa
+            </p>
+            <div style="margin-top:1.5rem;">
+              <span class="tech-tag" style="color:#ff4466;border-color:rgba(255,68,102,.3);">Integer Overflow</span>
+              <span class="tech-tag"><i class="bi bi-check me-1"></i>Sin TDR</span>
+              <span class="tech-tag"><i class="bi bi-check me-1"></i>Sin freeze shell</span>
+              <span class="tech-tag"><i class="bi bi-check me-1"></i>cmd/PS estables</span>
+            </div>
+          </div>
+
+          <div class="col-lg-7">
+            <div style="background:#111;border:1px solid rgba(255,68,102,.15);border-radius:4px;padding:1.5rem;margin-bottom:1rem;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.82rem;letter-spacing:2px;margin-bottom:1.2rem;">
+                <i class="bi bi-bug" style="color:#ff4466;margin-right:8px;"></i>Análisis del Fenómeno
+              </h4>
+              <div class="sr"><span class="lb">Causa raíz</span><span class="vl" style="text-align:right;max-width:65%;">Erradicación total de interrupciones parasitarias en CPU</span></div>
+              <div class="sr"><span class="lb">Efecto observado</span><span class="vl r">Overflow contador FPS nativo</span></div>
+              <div class="sr"><span class="lb">Valor desbordamiento</span><span class="vl r">−246,864,158</span></div>
+              <div class="sr"><span class="lb">Contexto</span><span class="vl">Fases de pausa del software</span></div>
+              <div class="sr"><span class="lb">TDR (timeout GPU)</span><span class="vl g">No registrado</span></div>
+              <div class="sr"><span class="lb">Congelamiento shell</span><span class="vl g">No registrado</span></div>
+              <div class="sr"><span class="lb">Fallos cmd/PowerShell</span><span class="vl g">No registrados</span></div>
+              <div class="sr"><span class="lb">Gestión del Kernel</span><span class="vl g">Desbordamiento manejado sin incidentes</span></div>
+            </div>
+
+            <div style="background:rgba(255,68,102,.04);border:1px solid rgba(255,68,102,.12);border-radius:4px;padding:1rem;">
+              <p style="font-size:.82rem;color:#666;line-height:1.7;margin:0;">
+                <i class="bi bi-info-circle" style="color:#ff4466;margin-right:6px;"></i>
+                El overflow no es un fallo del sistema sino un
+                <strong style="color:#888;">efecto secundario documentado</strong> de la eliminación
+                completa de interrupciones parasitarias. El contador de entero del software no fue
+                diseñado para frecuencias tan limpias — el Kernel de Windows gestionó el desbordamiento
+                de la variable correctamente sin propagar el error a capas superiores.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- MELLANOX KERNEL -->
+    <section id="mellanox" class="section-dark" aria-labelledby="mlx-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">§12.3 — Subsistema de red enterprise</p>
+          <h2 class="section-title" id="mlx-titulo">Mellanox-Kernel Tuning</h2>
+          <div class="section-line"></div>
+          <p style="color:#555;max-width:540px;margin:0 auto;font-size:.88rem;line-height:1.8;">
+            Optimización de los controladores nativos del Kernel Mellanox
+            (InfiniBand / Ethernet Enterprise Architecture) mediante metodología NexCore Base.
+          </p>
+        </div>
+
+        <div class="row g-5">
+
+          <div class="col-lg-6">
+            <h3 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.85rem;letter-spacing:2px;margin-bottom:1.4rem;">
+              <i class="bi bi-hdd-network text-acento me-2"></i>Metodología Aplicada
+            </h3>
+
+            <div style="background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.4rem;margin-bottom:1rem;">
+              <div class="sr"><span class="lb">Componente</span><span class="vl">Kernel Mellanox nativo</span></div>
+              <div class="sr"><span class="lb">Arquitectura</span><span class="vl">InfiniBand / Ethernet Enterprise</span></div>
+              <div class="sr"><span class="lb">Base metodológica</span><span class="vl a">NexCore Base</span></div>
+              <div class="sr"><span class="lb">Intervención 1</span><span class="vl">Reconf. matemática Process Table</span></div>
+              <div class="sr"><span class="lb">Intervención 2</span><span class="vl">Rediseño Circular Kernel Buffers</span></div>
+              <div class="sr"><span class="lb">Tipo</span><span class="vl">Optimización estática</span></div>
+              <div class="sr"><span class="lb">Monitoreo</span><span class="vl a">Performance Monitor (perfmon)</span></div>
+            </div>
+
+            <div style="background:rgba(0,200,255,.04);border:1px solid rgba(0,200,255,.1);border-radius:4px;padding:1rem;">
+              <p style="font-size:.82rem;color:#555;line-height:1.7;margin:.0;">
+                <i class="bi bi-info-circle text-acento me-2"></i>
+                Las claves y rutas de monitoreo del Mellanox-Kernel fueron identificadas y
+                mapeadas desde <strong style="color:#888;">Performance Monitor (perfmon)</strong>,
+                permitiendo seguimiento granular de los Circular Buffers y colas de I/O
+                de los controladores nativos.
+              </p>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <h3 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.85rem;letter-spacing:2px;margin-bottom:1.4rem;">
+              <i class="bi bi-speedometer2 text-acento me-2"></i>Resultados de Infraestructura
+            </h3>
+
+            <div style="background:#111;border:1px solid rgba(0,200,255,.12);border-radius:4px;padding:1.4rem;margin-bottom:1rem;">
+              <table class="mt">
+                <thead><tr><th>Métrica</th><th>Resultado</th></tr></thead>
+                <tbody>
+                  <tr><td>Peak TX registrado</td><td><span class="hi">1,445 MB/s</span></td></tr>
+                  <tr><td>Pérdida de paquetes</td><td><span class="ok">Eliminada completamente</span></td></tr>
+                  <tr><td>Cuellos de botella</td><td><span class="ok">Sin presencia observada</span></td></tr>
+                  <tr><td>Micro-interrupciones I/O</td><td><span class="ok">Minimización drástica</span></td></tr>
+                  <tr><td>Entorno de prueba</span></td><td style="color:#bbb;">Virtualización densa concurrente</td></tr>
+                  <tr><td>Destino de flujo</td><td style="color:#bbb;">NAS dedicado</td></tr>
+                  <tr><td>Tipo de flujo</td><td style="color:#bbb;">Telemetría masiva + datos</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div style="margin-bottom:.5rem;">
+              <span class="mlx-pill">Peak TX <strong>1,445 MB/s</strong></span>
+              <span class="mlx-pill">I/O Interrupt <strong>reducido</strong></span>
+              <span class="mlx-pill">Packet loss <strong>0%</strong></span>
+              <span class="mlx-pill">NAS flow <strong>estable</strong></span>
+            </div>
+
+            <div style="background:rgba(0,200,255,.04);border:1px solid rgba(0,200,255,.1);border-radius:4px;padding:1rem;margin-top:.75rem;">
+              <p style="font-size:.82rem;color:#555;line-height:1.7;margin:0;">
+                La reducción de micro-interrupciones por procesamiento de paquetes permite
+                que el bus de datos transfiera flujos masivos de telemetría hacia entornos NAS
+                dedicados sin degradación bajo virtualización densa concurrente — resultado
+                consistente con las optimizaciones de pipeline documentadas en NexCore.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- TECNOLOGÍAS -->
+    <section id="tecnologias" class="section-darker" aria-labelledby="tech-e210-titulo">
+      <div class="container text-center">
+        <h3 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.9rem;letter-spacing:2px;margin-bottom:1.5rem;" id="tech-e210-titulo">
+          <i class="bi bi-tools text-acento me-2"></i>Stack Tecnológico
+        </h3>
+        <div>
+          <span class="tech-pill"><i class="bi bi-cpu"></i>Intel Celeron N4020</span>
+          <span class="tech-pill"><i class="bi bi-windows"></i>Win 11 LTSC 24H2</span>
+          <span class="tech-pill"><i class="bi bi-shield-check"></i>Windows Defender activo</span>
+          <span class="tech-pill"><i class="bi bi-hdd-network"></i>Mellanox Kernel</span>
+          <span class="tech-pill"><i class="bi bi-graph-up"></i>perfmon</span>
+          <span class="tech-pill"><i class="bi bi-gear"></i>Registry (reg)</span>
+          <span class="tech-pill"><i class="bi bi-diagram-3"></i>Circular Kernel Buffers</span>
+          <span class="tech-pill"><i class="bi bi-bar-chart"></i>Task Manager</span>
+          <span class="tech-pill"><i class="bi bi-gpu-card"></i>eGPU Fury X</span>
+          <span class="tech-pill"><i class="bi bi-hdd-rack"></i>NAS dedicado</span>
+          <span class="tech-pill"><i class="bi bi-terminal"></i>cmd / PowerShell</span>
+          <span class="tech-pill"><i class="bi bi-layers"></i>WinOs Unify Corps</span>
+        </div>
+        <hr class="divider mt-5">
+        <div class="d-flex flex-wrap gap-3 justify-content-center mt-4">
+          <a href="portfolio.html" class="btn-tech"><i class="bi bi-arrow-left me-2"></i>Volver al Portafolio</a>
+          <a href="detalle-micromainframe.html" class="btn-tech btn-tech-solid"><i class="bi bi-arrow-right me-2"></i>Ver Micro-Mainframe</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 <a href="index.html">TechLab</a> · Alexis Negrón Rodríguez · San Juan, Puerto Rico</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function onVisible(id, cb) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const o = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) { cb(); o.disconnect(); } });
+      }, { threshold: 0.35 });
+      o.observe(el);
+    }
+
+    /* Barras de progresión de memoria — base 1,111 MB = 100% */
+    onVisible('mb-1111', () => setTimeout(() => {
+      document.getElementById('mb-1111').style.width = '100%';
+      document.getElementById('mb-1040').style.width = (1040/1111*100).toFixed(1) + '%'; /* 93.6% */
+      document.getElementById('mb-920').style.width  = (920/1111*100).toFixed(1) + '%';  /* 82.8% */
+      document.getElementById('mb-980').style.width  = (980/1111*100).toFixed(1) + '%';  /* 88.2% */
+    }, 150));
+  </script>
+
+</body>
+</html>

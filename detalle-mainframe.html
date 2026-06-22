@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<!--TechLab Portfolio - Detalle: Mainframe eGPU
+  Autor: Alexis Negrón Rodríguez
+  Archivo: detalle-mainframe.html
+
+  Estructura HTML5:
+  - <nav>: Navbar Bootstrap 5 responsiva
+  - <header>: Hero de detalle con overlay y título del proyecto
+  - <main>:
+      · <section id="overview">: Descripción técnica del sistema,
+        arquitectura modular y objetivo del proyecto
+      · <section id="metricas">: Tablas de métricas reales de inferencia
+        (Prueba A y Prueba B con Codestral 22B Q4_K_M),
+        análisis de throughput y comportamiento del pipeline eGPU
+      · <section id="hardware">: Subsistemas integrados, sistema térmico,
+        monitoreo energético y aplicaciones principales
+      · <section id="tecnologias">: Tags de tecnologías utilizadas
+  - <footer>: Pie de página con navegación entre proyectos-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Mainframe eGPU — Infraestructura portátil CUDA, NAS y inferencia IA con Tesla V100 — Alexis TechLab">
+  <title>TechLab | Mainframe eGPU</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <script src="js/app.js"></script>
+
+  <style>
+    /* --- Tabla de métricas --- */
+    .metrics-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--fuente-cuerpo);
+      font-size: 0.9rem;
+    }
+    .metrics-table th {
+      font-family: var(--fuente-titulo);
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #666;
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      text-align: left;
+    }
+    .metrics-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      color: #bbb;
+      vertical-align: middle;
+    }
+    .metrics-table tr:last-child td { border-bottom: none; }
+    .metrics-table tr:hover td { background: rgba(0,200,255,0.03); }
+    .metrics-table .val-highlight {
+      color: var(--acento);
+      font-weight: 700;
+      font-size: 1rem;
+      font-family: var(--fuente-titulo);
+      letter-spacing: 1px;
+    }
+    .metrics-table .val-green {
+      color: #00ff88;
+      font-weight: 600;
+    }
+
+    /* --- Card de prueba (Prueba A / Prueba B) --- */
+    .test-card {
+      background: #111;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 4px;
+      padding: 1.5rem;
+      height: 100%;
+      transition: border-color 0.3s;
+    }
+    .test-card:hover { border-color: rgba(0,200,255,0.25); }
+    .test-card-label {
+      font-size: 0.65rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--acento);
+      margin-bottom: 0.3rem;
+    }
+    .test-card-title {
+      font-family: var(--fuente-titulo);
+      font-size: 0.95rem;
+      color: var(--blanco);
+      letter-spacing: 1.5px;
+      margin-bottom: 1rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .test-stat {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.55rem;
+    }
+    .test-stat-label {
+      font-size: 0.78rem;
+      color: #555;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .test-stat-val {
+      font-family: var(--fuente-titulo);
+      font-size: 0.95rem;
+      color: var(--blanco);
+      letter-spacing: 1px;
+    }
+    .test-stat-val.accent { color: var(--acento); }
+    .test-stat-val.green  { color: #00ff88; }
+
+    /* --- Barra de throughput animada --- */
+    .throughput-bar-wrap {
+      background: rgba(255,255,255,0.05);
+      border-radius: 2px;
+      height: 8px;
+      margin-top: 0.4rem;
+      overflow: hidden;
+    }
+    .throughput-bar {
+      height: 100%;
+      border-radius: 2px;
+      background: var(--acento);
+      width: 0;
+      transition: width 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow: 0 0 8px rgba(0,200,255,0.4);
+    }
+
+    /* --- Subsistema item --- */
+    .subsystem-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .subsystem-item:last-child { border-bottom: none; }
+    .subsystem-icon {
+      width: 38px;
+      height: 38px;
+      background: rgba(0,200,255,0.08);
+      border: 1px solid rgba(0,200,255,0.2);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--acento);
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .subsystem-item h6 {
+      font-family: var(--fuente-titulo);
+      font-size: 0.78rem;
+      color: var(--blanco);
+      letter-spacing: 1.5px;
+      margin-bottom: 0.15rem;
+    }
+    .subsystem-item p {
+      font-size: 0.85rem;
+      color: #888;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    /* --- Bus chart mini --- */
+    .bus-row {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 0.6rem;
+      font-size: 0.82rem;
+    }
+    .bus-label { color: #666; width: 80px; flex-shrink: 0; font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; }
+    .bus-range { color: var(--acento); font-family: var(--fuente-titulo); font-size: 0.8rem; width: 110px; flex-shrink: 0; }
+    .bus-bar-wrap { flex: 1; background: rgba(255,255,255,0.05); border-radius: 2px; height: 6px; }
+    .bus-bar { height: 100%; border-radius: 2px; width: 0; transition: width 1.4s ease; }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================
+       NAVBAR
+       ============================================ -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" aria-label="Navegación principal">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">
+        <i class="bi bi-cpu-fill me-2"></i>TECHLAB
+      </a>
+      <button class="navbar-toggler" type="button"
+              data-bs-toggle="collapse" data-bs-target="#navbarMain"
+              aria-controls="navbarMain" aria-expanded="false"
+              aria-label="Alternar navegación">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav ms-auto gap-lg-2">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html"><i class="bi bi-house me-1"></i>Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="portfolio.html"><i class="bi bi-grid me-1"></i>Portafolio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="contacto.html"><i class="bi bi-envelope me-1"></i>Contacto</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!--HEADER — Hero de detalle-->
+  <header>
+    <div class="detail-hero" style="background-image:url('img/laboratorio.jpg');" role="banner">
+      <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(13,13,13,1) 0%, rgba(0,10,40,0.65) 100%);"></div>
+      <div class="detail-hero-content container w-100" style="position:relative;z-index:1;">
+        <nav aria-label="Ruta de navegación" style="margin-bottom:0.5rem;">
+          <ol class="breadcrumb" style="background:transparent; padding:0; margin:0;">
+            <li class="breadcrumb-item">
+              <a href="portfolio.html" style="color:#888; text-decoration:none; font-size:0.8rem; letter-spacing:1px;">Portafolio</a>
+            </li>
+            <li class="breadcrumb-item active" style="color:var(--acento); font-size:0.8rem; letter-spacing:1px;">
+              Mainframe eGPU
+            </li>
+          </ol>
+        </nav>
+        <span style="font-size:0.72rem; letter-spacing:3px; text-transform:uppercase; color:var(--acento);">
+          CUDA · IA · NAS · Thunderbolt
+        </span>
+        <h1 class="section-title mt-1">Mainframe eGPU</h1>
+        <p style="color:rgba(255,255,255,0.6); font-size:0.88rem; letter-spacing:1px; margin-top:0.4rem;">
+          Infraestructura Portátil CUDA &amp; NAS — Plataforma Experimental
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <!--MAIN-->
+  <main>
+
+    <!-- === SECCIÓN 1: OVERVIEW === -->
+    <section id="overview" class="section-dark" aria-labelledby="mainframe-titulo">
+      <div class="container">
+        <h2 class="visually-hidden" id="mainframe-titulo">Detalle del proyecto Mainframe eGPU</h2>
+
+        <div class="row g-5">
+
+          <!-- Columna principal: descripción -->
+          <div class="col-lg-8">
+
+            <p class="about-text">
+              <strong style="color:var(--blanco);">Mainframe eGPU</strong> es una infraestructura portátil
+              diseñada para acelerar cargas de trabajo de
+              <strong style="color:var(--blanco);">inteligencia artificial</strong>,
+              <strong style="color:var(--blanco);">aceleración CUDA</strong>,
+              <strong style="color:var(--blanco);">almacenamiento NAS</strong> y
+              <strong style="color:var(--blanco);">virtualización</strong>.
+             
+            </p>
+
+            <p class="about-text">
+              El objetivo central fue resolver la necesidad de contar con una plataforma de
+              inferencia local de alto rendimiento sin depender de infraestructura cloud, manteniendo
+              portabilidad física y operación estable bajo cargas CUDA prolongadas. El sistema integra
+              una <strong style="color:var(--blanco);">Tesla V100</strong> via eGPU Thunderbolt como
+              acelerador principal, validada bajo condiciones reales de inferencia con modelos LLM de
+              22B parámetros.
+            </p>
+
+            <p class="about-text">
+              Las optimizaciones implementadas en
+              <strong style="color:var(--blanco);">WinOs Unify Corps</strong> — el entorno operativo
+              personalizado que corre sobre esta infraestructura — permitieron reducir el overhead de
+              transferencia PCIe externo y minimizar la saturación del bus Thunderbolt durante inferencia,
+              logrando velocidades superiores a <strong style="color:var(--acento);">90 tokens por segundo</strong>
+              en inferencia local distribuida con el modelo Codestral 22B Q4_K_M.
+            </p>
+
+            <hr class="divider">
+
+            <!-- Arquitectura modular -->
+            <h3 style="font-family:var(--fuente-titulo); color:var(--blanco); font-size:0.95rem; letter-spacing:2px; margin-bottom:1.2rem;">
+              <i class="bi bi-diagram-3 text-acento me-2"></i>Arquitectura Modular — Chasis S2200
+            </h3>
+
+            <div class="row g-3 mb-4">
+              <div class="col-sm-6">
+                <div style="background:rgba(0,200,255,0.05); border:1px solid rgba(0,200,255,0.12); border-radius:4px; padding:1rem;">
+                  <p style="font-size:0.7rem; letter-spacing:2px; text-transform:uppercase; color:var(--acento); margin-bottom:0.4rem;">Aceleración</p>
+                  <p style="color:#ccc; font-size:0.88rem; margin:0; line-height:1.7;">eGPU Thunderbolt Platform<br>Tesla V100 · 16GB HBM2<br>CUDA 11.x compatible</p>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div style="background:rgba(0,200,255,0.05); border:1px solid rgba(0,200,255,0.12); border-radius:4px; padding:1rem;">
+                  <p style="font-size:0.7rem; letter-spacing:2px; text-transform:uppercase; color:var(--acento); margin-bottom:0.4rem;">Almacenamiento</p>
+                  <p style="color:#ccc; font-size:0.88rem; margin:0; line-height:1.7;">NAS iStar 4-Bay<br>Almacenamiento redundante<br>iSCSI / compartido</p>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div style="background:rgba(0,200,255,0.05); border:1px solid rgba(0,200,255,0.12); border-radius:4px; padding:1rem;">
+                  <p style="font-size:0.7rem; letter-spacing:2px; text-transform:uppercase; color:var(--acento); margin-bottom:0.4rem;">Energía</p>
+                  <p style="color:#ccc; font-size:0.88rem; margin:0; line-height:1.7;">Dual PSU sincronizado<br>Monitoreo analógico 12V<br>Protección preventiva</p>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div style="background:rgba(0,200,255,0.05); border:1px solid rgba(0,200,255,0.12); border-radius:4px; padding:1rem;">
+                  <p style="font-size:0.7rem; letter-spacing:2px; text-transform:uppercase; color:var(--acento); margin-bottom:0.4rem;">Control</p>
+                  <p style="color:#ccc; font-size:0.88rem; margin:0; line-height:1.7;">USB Hub ×16<br>Sensores NTC físicos<br>Controladores STC-1000</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Panel lateral: datos del proyecto -->
+          <div class="col-lg-4">
+            <div style="background:#111; border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:1.5rem; position:sticky; top:80px;">
+              <h4 style="font-family:var(--fuente-titulo); color:var(--blanco); font-size:0.85rem; letter-spacing:2px; margin-bottom:1.5rem; padding-bottom:0.8rem; border-bottom:1px solid rgba(255,255,255,0.08);">
+                <i class="bi bi-bar-chart text-acento me-2"></i>Datos del Sistema
+              </h4>
+
+              <div style="margin-bottom:1rem;">
+                <p style="font-size:0.7rem; letter-spacing:1.5px; text-transform:uppercase; color:#555; margin-bottom:0.2rem;">Estado</p>
+                <p style="color:#00ff88; font-weight:600; margin:0; font-size:0.9rem;">
+                  <i class="bi bi-circle-fill me-1" style="font-size:0.55rem;"></i>Validado · En Uso
+                </p>
+              </div>
+
+              <div style="margin-bottom:1rem;">
+                <p style="font-size:0.7rem; letter-spacing:1.5px; text-transform:uppercase; color:#555; margin-bottom:0.2rem;">GPU Principal</p>
+                <p style="color:#bbb; margin:0; font-size:0.9rem;">NVIDIA Tesla V100<br><span style="color:#666; font-size:0.8rem;">16 GB HBM2 · 5120 CUDA cores</span></p>
+              </div>
+
+              <div style="margin-bottom:1rem;">
+                <p style="font-size:0.7rem; letter-spacing:1.5px; text-transform:uppercase; color:#555; margin-bottom:0.2rem;">Interfaz GPU</p>
+                <p style="color:#bbb; margin:0; font-size:0.9rem;">Thunderbolt (eGPU)</p>
+              </div>
+
+              <div style="margin-bottom:1rem;">
+                <p style="font-size:0.7rem; letter-spacing:1.5px; text-transform:uppercase; color:#555; margin-bottom:0.2rem;">VRAM Utilizada (inferencia)</p>
+                <p style="color:var(--acento); margin:0; font-family:var(--fuente-titulo); font-size:1.1rem; letter-spacing:1px;">14,166 MB</p>
+              </div>
+
+              <div style="margin-bottom:1rem;">
+                <p style="font-size:0.7rem; letter-spacing:1.5px; text-transform:uppercase; color:#555; margin-bottom:0.2rem;">RAM Host Asignada</p>
+                <p style="color:#bbb; margin:0; font-size:0.9rem;">17 GB</p>
+              </div>
+
+              <div style="margin-bottom:1rem;">
+                <p style="font-size:0.7rem; letter-spacing:1.5px; text-transform:uppercase; color:#555; margin-bottom:0.2rem;">Temperatura Estabilizada</p>
+                <p style="color:#bbb; margin:0; font-size:0.9rem;">43 °C promedio</p>
+              </div>
+
+              <div style="margin-bottom:1rem;">
+                <p style="font-size:0.7rem; letter-spacing:1.5px; text-transform:uppercase; color:#555; margin-bottom:0.2rem;">Consumo Promedio GPU</p>
+                <p style="color:#bbb; margin:0; font-size:0.9rem;">~125 W</p>
+              </div>
+
+              <div style="margin-bottom:0;">
+                <p style="font-size:0.7rem; letter-spacing:1.5px; text-transform:uppercase; color:#555; margin-bottom:0.2rem;">Entorno OS</p>
+                <p style="color:#bbb; margin:0; font-size:0.9rem;">WinOs Unify Corps 2.1<br><span style="color:#666; font-size:0.8rem;">Python · llama.cpp</span></p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- === SECCIÓN 2: MÉTRICAS REALES === -->
+    <section id="metricas" class="section-darker" aria-labelledby="metricas-titulo">
+      <div class="container">
+
+        <div class="text-center mb-5">
+          <p style="font-size:0.72rem; letter-spacing:3px; text-transform:uppercase; color:var(--acento);">Resultados empíricos</p>
+          <h2 class="section-title" id="metricas-titulo">Métricas de Inferencia Real</h2>
+          <div class="section-line"></div>
+          <p style="color:#666; max-width:580px; margin:0 auto; font-size:0.9rem; line-height:1.8;">
+            Pruebas ejecutadas con <strong style="color:#999;">Codestral 22B Q4_K_M</strong> sobre la infraestructura
+            RoboNexis + Mainframe eGPU Tesla V100. Offloading híbrido CPU + GPU. Plataforma host: Lenovo P51.
+          </p>
+        </div>
+
+        <!-- Tarjetas de métricas clave -->
+        <div class="row g-3 mb-5">
+          <div class="col-6 col-md-3">
+            <div style="background:#111; border:1px solid rgba(0,200,255,0.15); border-radius:4px; padding:1.2rem; text-align:center;">
+              <p style="font-size:0.65rem; letter-spacing:2px; text-transform:uppercase; color:#555; margin-bottom:0.4rem;">Pico Throughput</p>
+              <p style="font-family:var(--fuente-titulo); font-size:1.8rem; color:var(--acento); margin:0; line-height:1;">~93</p>
+              <p style="font-size:0.72rem; color:#555; margin:0;">tokens/seg</p>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div style="background:#111; border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:1.2rem; text-align:center;">
+              <p style="font-size:0.65rem; letter-spacing:2px; text-transform:uppercase; color:#555; margin-bottom:0.4rem;">Throughput Base</p>
+              <p style="font-family:var(--fuente-titulo); font-size:1.8rem; color:var(--blanco); margin:0; line-height:1;">~38</p>
+              <p style="font-size:0.72rem; color:#555; margin:0;">tokens/seg</p>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div style="background:#111; border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:1.2rem; text-align:center;">
+              <p style="font-size:0.65rem; letter-spacing:2px; text-transform:uppercase; color:#555; margin-bottom:0.4rem;">VRAM Utilizada</p>
+              <p style="font-family:var(--fuente-titulo); font-size:1.8rem; color:var(--blanco); margin:0; line-height:1;">14 GB</p>
+              <p style="font-size:0.72rem; color:#555; margin:0;">sin paginación crítica</p>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div style="background:#111; border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:1.2rem; text-align:center;">
+              <p style="font-size:0.65rem; letter-spacing:2px; text-width:uppercase; color:#555; margin-bottom:0.4rem;">Temperatura GPU</p>
+              <p style="font-family:var(--fuente-titulo); font-size:1.8rem; color:#00ff88; margin:0; line-height:1;">43 °C</p>
+              <p style="font-size:0.72rem; color:#555; margin:0;">estabilizada bajo carga</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comparativa Prueba A vs Prueba B -->
+        <div class="row g-4 mb-5">
+
+          <!-- Prueba A -->
+          <div class="col-md-6">
+            <div class="test-card">
+              <p class="test-card-label">Prueba A</p>
+              <p class="test-card-title">Inferencia Descriptiva Completa</p>
+              <p style="font-size:0.82rem; color:#666; margin-bottom:1.2rem; line-height:1.7;">
+                Contexto: explicación técnica extendida sobre física nuclear (U-235/U-238, enriquecimiento, generación energética).
+              </p>
+              <div class="test-stat">
+                <span class="test-stat-label">Tokens generados</span>
+                <span class="test-stat-val">750</span>
+              </div>
+              <div class="test-stat">
+                <span class="test-stat-label">Tiempo total</span>
+                <span class="test-stat-val">19.70 s</span>
+              </div>
+              <div class="test-stat">
+                <span class="test-stat-label">Throughput</span>
+                <span class="test-stat-val accent">~38 t/s</span>
+              </div>
+              <div class="test-stat">
+                <span class="test-stat-label">Coherencia contextual</span>
+                <span class="test-stat-val green">Alta</span>
+              </div>
+              <div class="test-stat">
+                <span class="test-stat-label">Degradación semántica</span>
+                <span class="test-stat-val green">No detectada</span>
+              </div>
+              <div class="test-stat">
+                <span class="test-stat-label">Temperatura GPU</span>
+                <span class="test-stat-val">Estable 43 °C</span>
+              </div>
+              <div class="mt-3">
+                <p style="font-size:0.7rem; letter-spacing:1.5px; text-transform:uppercase; color:#555; margin-bottom:0.4rem;">Throughput relativo</p>
+                <div class="throughput-bar-wrap">
+                  <div class="throughput-bar" id="bar-a" style="width:0%; background:rgba(0,200,255,0.7);"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Prueba B -->
+          <div class="col-md-6">
+            <div class="test-card" style="border-color:rgba(0,200,255,0.2);">
+              <p class="test-card-label">Prueba B — 5 seg después de Prueba A</p>
+              <p class="test-card-title">Inferencia de Alta Velocidad</p>
+              <p style="font-size:0.82rem; color:#666; margin-bottom:1.2rem; line-height:1.7;">
+                Segunda inferencia con buffer de memoria liberado eficientemente. Aprovechamiento superior del pipeline GPU.
+              </p>
+              <div class="test-stat">
+                <span class="test-stat-label">Tokens generados</span>
+                <span class="test-stat-val">750</span>
+              </div>
+              <div class="test-stat">
+                <span class="test-stat-label">Tiempo total</span>
+                <span class="test-stat-val">~8.00 s</span>
+              </div>
+              <div class="test-stat">
+                <span class="test-stat-label">Throughput</span>
+                <span class="test-stat-val accent">~93 t/s</span>
+              </div>
+              <div class="test-stat">
+                <span class="test-stat-label">Latencia acumulada</span>
+                <span class="test-stat-val green">Reducida</span>
+              </div>
+              <div class="test-stat">
+                <span class="test-stat-label">Aprovechamiento pipeline</span>
+                <span class="test-stat-val green">Superior</span>
+              </div>
+              <div class="test-stat">
+                <span class="test-stat-label">Incremento vs Prueba A</span>
+                <span class="test-stat-val accent">+145%</span>
+              </div>
+              <div class="mt-3">
+                <p style="font-size:0.7rem; letter-spacing:1.5px; text-transform:uppercase; color:#555; margin-bottom:0.4rem;">Throughput relativo</p>
+                <div class="throughput-bar-wrap">
+                  <div class="throughput-bar" id="bar-b"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Análisis del bus PCIe Thunderbolt -->
+        <div class="row g-4">
+          <div class="col-lg-6">
+            <div style="background:#111; border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:1.5rem;">
+              <h4 style="font-family:var(--fuente-titulo); color:var(--blanco); font-size:0.85rem; letter-spacing:2px; margin-bottom:1.4rem;">
+                <i class="bi bi-broadcast text-acento me-2"></i>Tráfico Bus PCIe Thunderbolt
+              </h4>
+
+              <div class="bus-row">
+                <span class="bus-label">RX Prom.</span>
+                <span class="bus-range">76 – 105 MB/s</span>
+                <div class="bus-bar-wrap"><div class="bus-bar" id="bus-rx" style="background:var(--acento);"></div></div>
+              </div>
+              <div class="bus-row">
+                <span class="bus-label">TX Prom.</span>
+                <span class="bus-range">60 – 1000 MB/s</span>
+                <div class="bus-bar-wrap"><div class="bus-bar" id="bus-tx" style="background:#00ff88;"></div></div>
+              </div>
+              <div class="bus-row">
+                <span class="bus-label">Saturación</span>
+                <span class="bus-range">No alcanzada</span>
+                <div class="bus-bar-wrap"><div class="bus-bar" id="bus-sat" style="background:#666;"></div></div>
+              </div>
+
+              <p style="font-size:0.82rem; color:#555; margin-top:1.2rem; line-height:1.7;">
+                El adaptador Thunderbolt no alcanzó saturación completa del enlace durante la inferencia,
+                indicando margen disponible para cargas adicionales.
+              </p>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div style="background:#111; border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:1.5rem; height:100%;">
+              <h4 style="font-family:var(--fuente-titulo); color:var(--blanco); font-size:0.85rem; letter-spacing:2px; margin-bottom:1.4rem;">
+                <i class="bi bi-lightning text-acento me-2"></i>Comportamiento Energético
+              </h4>
+              <table class="metrics-table">
+                <thead>
+                  <tr>
+                    <th>Parámetro</th>
+                    <th>Valor</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Consumo GPU registrado</td>
+                    <td><span class="val-highlight">169 W</span> (pico)</td>
+                  </tr>
+                  <tr>
+                    <td>Comportamiento real</td>
+                    <td style="color:#bbb;">Carga dinámica adaptativa</td>
+                  </tr>
+                  <tr>
+                    <td>Distribución de carga</td>
+                    <td class="val-green">Mejorada</td>
+                  </tr>
+                  <tr>
+                    <td>Estrés térmico</td>
+                    <td class="val-green">Reducido</td>
+                  </tr>
+                  <tr>
+                    <td>Pipeline CUDA</td>
+                    <td style="color:#bbb;">Utilización adaptativa</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p style="font-size:0.82rem; color:#555; margin-top:1rem; line-height:1.7;">
+                El sistema no dependía de fuerza bruta computacional sino de una distribución más
+                eficiente de inferencia y transferencia de datos.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- === SECCIÓN 3: HARDWARE Y SISTEMAS === -->
+    <section id="hardware" class="section-dark" aria-labelledby="hardware-titulo">
+      <div class="container">
+
+        <div class="text-center mb-5">
+          <p style="font-size:0.72rem; letter-spacing:3px; text-transform:uppercase; color:var(--acento);">Ingeniería física</p>
+          <h2 class="section-title" id="hardware-titulo">Subsistemas Integrados</h2>
+          <div class="section-line"></div>
+        </div>
+
+        <div class="row g-5">
+
+          <!-- Subsistemas -->
+          <div class="col-lg-6">
+            <h4 style="font-family:var(--fuente-titulo); color:var(--blanco); font-size:0.85rem; letter-spacing:2px; margin-bottom:1.2rem;">
+              <i class="bi bi-cpu text-acento me-2"></i>Componentes del Sistema
+            </h4>
+
+            <div class="subsystem-item">
+              <div class="subsystem-icon"><i class="bi bi-gpu-card"></i></div>
+              <div>
+                <h6>eGPU Thunderbolt Platform</h6>
+                <p>Tesla V100 · 16GB HBM2 · CUDA acceleration · inferencia LLM hasta 22B parámetros</p>
+              </div>
+            </div>
+
+            <div class="subsystem-item">
+              <div class="subsystem-icon"><i class="bi bi-hdd-rack"></i></div>
+              <div>
+                <h6>NAS iStar 4-Bay</h6>
+                <p>Almacenamiento redundante portátil · acceso iSCSI · soporte para modelos y datasets</p>
+              </div>
+            </div>
+
+            <div class="subsystem-item">
+              <div class="subsystem-icon"><i class="bi bi-plug"></i></div>
+              <div>
+                <h6>Dual PSU Sincronizado</h6>
+                <p>Sistemas de alimentación en paralelo · multímetros analógicos dedicados · detección de spikes en rieles 12V · sincronización y balanceo de carga</p>
+              </div>
+            </div>
+
+            <div class="subsystem-item">
+              <div class="subsystem-icon"><i class="bi bi-usb-symbol"></i></div>
+              <div>
+                <h6>USB Hub ×16</h6>
+                <p>Conectividad expandida para periféricos y módulos auxiliares de monitoreo</p>
+              </div>
+            </div>
+
+            <div class="subsystem-item">
+              <div class="subsystem-icon"><i class="bi bi-thermometer-half"></i></div>
+              <div>
+                <h6>Control Térmico Activo</h6>
+                <p>Controladores STC-1000 · sensores NTC físicos · ventilación Delta industrial · extracción dirigida a VRM, núcleo GPU, MOSFETs y cámaras internas</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Aplicaciones y tabla comparativa WinOs -->
+          <div class="col-lg-6">
+            <h4 style="font-family:var(--fuente-titulo); color:var(--blanco); font-size:0.85rem; letter-spacing:2px; margin-bottom:1.2rem;">
+              <i class="bi bi-graph-up text-acento me-2"></i>Mejoras por Generación WinOs
+            </h4>
+
+            <!-- Tabla comparativa WinOs 1.2 vs 2.1 -->
+            <div style="background:#111; border:1px solid rgba(255,255,255,0.08); border-radius:4px; overflow:hidden; margin-bottom:1.5rem;">
+              <table class="metrics-table">
+                <thead>
+                  <tr>
+                    <th>Característica</th>
+                    <th>WinOs 1.2</th>
+                    <th>WinOs 2.1</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Inferencia 550 tokens</td>
+                    <td style="color:#888;">2m 40s</td>
+                    <td class="val-green">Mejorada</td>
+                  </tr>
+                  <tr>
+                    <td>Scheduler</td>
+                    <td style="color:#888;">Básico</td>
+                    <td class="val-green">Adaptativo x64</td>
+                  </tr>
+                  <tr>
+                    <td>llama.cpp</td>
+                    <td style="color:#888;">Sin optimizar</td>
+                    <td class="val-green">Optimizado</td>
+                  </tr>
+                  <tr>
+                    <td>Gestión térmica</td>
+                    <td style="color:#888;">Parcial</td>
+                    <td class="val-green">Predictiva</td>
+                  </tr>
+                  <tr>
+                    <td>Offloading GPU</td>
+                    <td style="color:#888;">Limitado</td>
+                    <td class="val-green">Refinado</td>
+                  </tr>
+                  <tr>
+                    <td>Arquitectura AI</td>
+                    <td style="color:#888;">Experimental</td>
+                    <td class="val-green">Modular</td>
+                  </tr>
+                  <tr>
+                    <td>Estabilidad contextual</td>
+                    <td style="color:#888;">Media</td>
+                    <td class="val-green">Alta</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h4 style="font-family:var(--fuente-titulo); color:var(--blanco); font-size:0.85rem; letter-spacing:2px; margin-bottom:1rem;">
+              <i class="bi bi-lightning-charge text-acento me-2"></i>Aplicaciones Principales
+            </h4>
+            <div>
+              <span class="tech-tag"><i class="bi bi-robot me-1"></i>Inferencia IA</span>
+              <span class="tech-tag"><i class="bi bi-cpu me-1"></i>CUDA Acceleration</span>
+              <span class="tech-tag"><i class="bi bi-hdd me-1"></i>NAS Portable</span>
+              <span class="tech-tag"><i class="bi bi-server me-1"></i>Virtualización</span>
+              <span class="tech-tag"><i class="bi bi-bar-chart me-1"></i>Model Training</span>
+              <span class="tech-tag"><i class="bi bi-gear me-1"></i>Testing WinOs</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- === SECCIÓN 4: TECNOLOGÍAS === -->
+    <section id="tecnologias" class="section-darker" aria-labelledby="tech-mainframe-titulo">
+      <div class="container text-center">
+        <h3 style="font-family:var(--fuente-titulo); color:var(--blanco); font-size:0.9rem; letter-spacing:2px; margin-bottom:1.5rem;" id="tech-mainframe-titulo">
+          <i class="bi bi-tools text-acento me-2"></i>Stack Tecnológico
+        </h3>
+        <div>
+          <span class="tech-pill"><i class="bi bi-gpu-card"></i>Tesla V100</span>
+          <span class="tech-pill"><i class="bi bi-cpu"></i>CUDA 11.x</span>
+          <span class="tech-pill"><i class="bi bi-lightning-charge"></i>Thunderbolt eGPU</span>
+          <span class="tech-pill"><i class="bi bi-filetype-py"></i>Python</span>
+          <span class="tech-pill"><i class="bi bi-terminal"></i>llama.cpp</span>
+          <span class="tech-pill"><i class="bi bi-robot"></i>Codestral 22B Q4</span>
+          <span class="tech-pill"><i class="bi bi-windows"></i>WinOs Unify Corps 2.1</span>
+          <span class="tech-pill"><i class="bi bi-hdd-rack"></i>NAS iStar 4-Bay</span>
+          <span class="tech-pill"><i class="bi bi-thermometer-half"></i>STC-1000</span>
+          <span class="tech-pill"><i class="bi bi-graph-up"></i>HWInfo · OpenHW</span>
+          <span class="tech-pill"><i class="bi bi-diagram-3"></i>GPU-Z Telemetry</span>
+          <span class="tech-pill"><i class="bi bi-plug"></i>Dual PSU</span>
+        </div>
+
+        <hr class="divider mt-5">
+
+        <!-- Navegación entre proyectos -->
+        <div class="d-flex flex-wrap gap-3 justify-content-center mt-4">
+          <a href="portfolio.html" class="btn-tech">
+            <i class="bi bi-arrow-left me-2"></i>Volver al Portafolio
+          </a>
+          <a href="detalle-robonexis-n1.html" class="btn-tech btn-tech-solid">
+            <i class="bi bi-arrow-right me-2"></i>Ver RoboNexis N1
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================
+       FOOTER
+       ============================================ -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 <a href="index.html">TechLab</a> · Alexis Negrón Rodríguez · San Juan, Puerto Rico</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    /* Animar barras de throughput y bus cuando el elemento entra en viewport */
+    const animateOnVisible = (selector, callback) => {
+      const el = document.querySelector(selector);
+      if (!el) return;
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { callback(); obs.disconnect(); }
+        });
+      }, { threshold: 0.3 });
+      obs.observe(el);
+    };
+
+    /* Barras de throughput: A = 38/93 = ~41%, B = 100% */
+    animateOnVisible('#bar-a', () => {
+      setTimeout(() => {
+        document.getElementById('bar-a').style.width = '41%';
+        document.getElementById('bar-b').style.width = '100%';
+      }, 200);
+    });
+
+    /* Barras de bus PCIe */
+    animateOnVisible('#bus-rx', () => {
+      setTimeout(() => {
+        document.getElementById('bus-rx').style.width = '55%';   /* ~105 MB/s relativo */
+        document.getElementById('bus-tx').style.width = '85%';   /* hasta 1000 MB/s */
+        document.getElementById('bus-sat').style.width = '30%';  /* no saturado */
+      }, 200);
+    });
+  </script>
+
+</body>
+</html>

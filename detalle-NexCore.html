@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<!--
+  =============================================
+  TechLab Portfolio — Detalle: NexCore
+  Autor: Alexis Negrón Rodríguez
+  Archivo: detalle-nexcore.html
+
+  Estructura HTML5:
+  - <nav>: Navbar Bootstrap 5 responsiva
+  - <header>: Hero con overlay oscuro y título
+  - <main>:
+      · <section id="overview">: Descripción del sistema,
+        4 KPIs (42h, 40K milestones, 50-58°C, 1.1GB RAM),
+        panel lateral con specs Getac K120 G1 / i5-8250U
+      · <section id="benchmark">: Comparativa CPU raw only
+        — i5-8250U vs i9-13900K (ST 44% / MT ~12%)
+        — i5-8250U vs i5-7600K  (ST 77% / MT 81%)
+        Barras proporcionales animadas + tabla resumen de ratios
+        Nota: medido en VM VirtualBox Win11 sin drivers Intel
+      · <section id="casos">: Dos casos de estudio:
+        §6.2 — Inferencia Contextual Extendida
+          (750 tokens, ~2m05s, 15W, Codestral 22B Q4,
+           CPU raw, Getac K120, sin throttling,
+           coherencia bilingüe ES→EN)
+        §6.6 — Validación Extrema bajo concurrencia
+          (VM + LLM + dual monitor, 23.9GB/24GB,
+           saturación 150%, 438MB disponibles,
+           boot VM 17.04s, sin BSOD ni corrupción)
+      · <section id="shell">: Anexo §6.5 — Desacoplamiento
+        Shell/UI NexCore 1.2: componentes analizados,
+        metodología de 5 pasos, resultados (40-42 procesos,
+        sin fallos, sin corrupción, autoprotección Windows)
+      · <section id="os">: Entorno OS NexCore —
+        Win 11 24H2 Enterprise LTSC en Getac K120:
+        1.1GB RAM standby, 40-56 procesos, 726 subprocesos,
+        entrenamiento 42h CPU raw, 40K milestones,
+        mejoras planificadas
+      · <section id="tecnologias">: Stack completo
+        y navegación entre proyectos
+  - <footer>: Pie de página
+  =============================================
+-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="NexCore — Supervisión Jerárquica e Inferencia LLM CPU Raw sobre Getac K120 G1 i5-8250U — Alexis TechLab">
+  <title>TechLab | NexCore</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <script src="js/app.js"></script>
+
+  <style>
+    /* ---- Tabla de métricas ---- */
+    .mt { width:100%; border-collapse:collapse; font-size:0.88rem; }
+    .mt th {
+      font-family:var(--fuente-titulo); font-size:0.67rem; letter-spacing:2px;
+      text-transform:uppercase; color:#555; padding:0.55rem 1rem;
+      border-bottom:1px solid rgba(255,255,255,0.08); text-align:left;
+    }
+    .mt td { padding:0.65rem 1rem; border-bottom:1px solid rgba(255,255,255,0.05); color:#bbb; vertical-align:middle; }
+    .mt tr:last-child td { border-bottom:none; }
+    .mt tr:hover td { background:rgba(0,200,255,0.03); }
+    .hi  { color:var(--acento); font-weight:700; font-family:var(--fuente-titulo); letter-spacing:1px; }
+    .ok  { color:#00ff88; font-weight:600; }
+    .dim { color:#555; }
+
+    /* ---- KPI card ---- */
+    .kpi { background:#111; border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:1.1rem; text-align:center; }
+    .kpi-lbl { font-size:0.62rem; letter-spacing:2px; text-transform:uppercase; color:#555; margin-bottom:0.3rem; }
+    .kpi-val { font-family:var(--fuente-titulo); font-size:1.55rem; color:var(--acento); margin:0; line-height:1.1; }
+    .kpi-sub { font-size:0.68rem; color:#444; margin:0; }
+
+    /* ---- Stat row ---- */
+    .sr { display:flex; justify-content:space-between; align-items:baseline; padding:0.6rem 0; border-bottom:1px solid rgba(255,255,255,0.05); }
+    .sr:last-child { border-bottom:none; }
+    .sr .lbl { color:#555; font-size:0.73rem; letter-spacing:1px; text-transform:uppercase; }
+    .sr .val { color:#bbb; font-family:var(--fuente-titulo); font-size:0.83rem; letter-spacing:1px; }
+    .sr .val.a { color:var(--acento); }
+    .sr .val.g { color:#00ff88; }
+
+    /* ---- Benchmark bars ---- */
+    .bwrap { margin-bottom:1.4rem; }
+    .brow  { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:0.22rem; }
+    .bcpu  { font-size:0.77rem; color:#888; }
+    .bnum  { font-family:var(--fuente-titulo); font-size:0.82rem; color:var(--blanco); }
+    .bnum.nx { color:var(--acento); }
+    .bbg   { background:rgba(255,255,255,0.05); border-radius:2px; height:8px; overflow:hidden; margin-bottom:0.7rem; }
+    .bbar  { height:100%; border-radius:2px; width:0; transition:width 1.5s cubic-bezier(0.22,1,0.36,1); }
+
+    /* ---- Case card ---- */
+    .cc { background:#111; border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:1.5rem; height:100%; transition:border-color 0.3s; }
+    .cc:hover { border-color:rgba(0,200,255,0.2); }
+    .ctag  { font-size:0.65rem; letter-spacing:3px; text-transform:uppercase; color:var(--acento); margin-bottom:0.3rem; }
+    .ctit  { font-family:var(--fuente-titulo); font-size:0.9rem; color:var(--blanco); letter-spacing:1.5px; margin-bottom:1rem; padding-bottom:0.8rem; border-bottom:1px solid rgba(255,255,255,0.08); }
+
+    /* Barra saturación */
+    .sbg { background:rgba(255,255,255,0.05); border-radius:2px; height:10px; overflow:hidden; margin:0.4rem 0 0.2rem; }
+    .sbar { height:100%; border-radius:2px; width:0; transition:width 1.5s cubic-bezier(0.22,1,0.36,1); }
+
+    /* Badge componente */
+    .cbadge { display:inline-block; background:rgba(0,200,255,0.06); border:1px solid rgba(0,200,255,0.15); color:#aaa; font-size:0.8rem; padding:0.3rem 0.8rem; border-radius:2px; margin:0.2rem; }
+    .cbadge i { color:var(--acento); margin-right:4px; }
+
+    /* Ratio pill */
+    .ratio-pill { display:inline-block; background:rgba(0,200,255,0.08); border:1px solid rgba(0,200,255,0.2); color:var(--acento); font-family:var(--fuente-titulo); font-size:0.85rem; padding:0.25rem 0.75rem; border-radius:2px; letter-spacing:1px; }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" aria-label="Navegación principal">
+    <div class="container">
+      <a class="navbar-brand" href="index.html"><i class="bi bi-cpu-fill me-2"></i>TECHLAB</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+              data-bs-target="#navbarMain" aria-controls="navbarMain"
+              aria-expanded="false" aria-label="Alternar navegación">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav ms-auto gap-lg-2">
+          <li class="nav-item"><a class="nav-link" href="index.html"><i class="bi bi-house me-1"></i>Inicio</a></li>
+          <li class="nav-item"><a class="nav-link active" href="portfolio.html"><i class="bi bi-grid me-1"></i>Portafolio</a></li>
+          <li class="nav-item"><a class="nav-link" href="contacto.html"><i class="bi bi-envelope me-1"></i>Contacto</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header>
+    <div class="detail-hero" style="background-image:url('img/Nexcore.jpg');" role="banner">
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(13,13,13,1) 0%,rgba(0,10,30,0.74) 100%);"></div>
+      <div class="detail-hero-content container w-100" style="position:relative;z-index:1;">
+        <nav aria-label="Ruta de navegación" style="margin-bottom:0.5rem;">
+          <ol class="breadcrumb" style="background:transparent;padding:0;margin:0;">
+            <li class="breadcrumb-item"><a href="portfolio.html" style="color:#888;text-decoration:none;font-size:0.8rem;letter-spacing:1px;">Portafolio</a></li>
+            <li class="breadcrumb-item active" style="color:var(--acento);font-size:0.8rem;letter-spacing:1px;">NexCore</li>
+          </ol>
+        </nav>
+        <span style="font-size:0.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">
+          Supervisión Jerárquica · CPU Raw Inference · Validación Extrema
+        </span>
+        <h1 class="section-title mt-1">NexCore</h1>
+        <p style="color:rgba(255,255,255,0.55);font-size:0.88rem;letter-spacing:1px;margin-top:0.4rem;">
+          Hierarchical Monitoring System — Getac K120 G1 · i5-8250U · Win 10 Pro
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ================================================
+         OVERVIEW
+         ================================================ -->
+    <section id="overview" class="section-dark" aria-labelledby="nc-titulo">
+      <div class="container">
+        <h2 class="visually-hidden" id="nc-titulo">Detalle del proyecto NexCore</h2>
+        <div class="row g-5">
+
+          <div class="col-lg-8">
+            <p class="about-text">
+              <strong style="color:var(--blanco);">NexCore</strong> es un sistema de monitoreo integral
+              y supervisión jerárquica que coordina en tiempo real CPU, GPU, VRM, memoria y consumo
+              energético. Permite análisis cruzado de variables, validación de comportamiento bajo estrés
+              prolongado y registro histórico para optimización futura — todo ejecutado sobre hardware
+              de movilidad ultrarrestringida.
+            </p>
+            <p class="about-text">
+              La plataforma base es una <strong style="color:var(--blanco);">Getac K120 G1</strong>,
+              tablet rugosa industrial con <strong style="color:var(--blanco);">Intel Core i5-8250U</strong>
+              y 24 GB de RAM. Sobre este hardware, NexCore ejecutó sesiones continuas de entrenamiento e
+              inferencia de modelos LLM de 12B a 22B parámetros en
+              <strong style="color:var(--blanco);">CPU raw only</strong>, acumulando más de
+              <strong style="color:var(--acento);">42 horas</strong> de carga sostenida con temperatura
+              estable entre 50 y 58 °C, sin picos críticos y con aproximadamente
+              <strong style="color:var(--acento);">40,000 milestones</strong> desarrollados.
+            </p>
+            <p class="about-text">
+              El entorno operativo — <strong style="color:var(--blanco);">Windows 10</strong>
+              con la metodología de WinOs Unify Corps — mantiene en standby
+              <strong style="color:var(--acento);">1.1 GB de RAM</strong> utilizada, entre
+              <strong style="color:var(--blanco);">40 y 56 procesos activos</strong> y
+              <strong style="color:var(--blanco);">726 subprocesos</strong> según Task Manager,
+              con máximos observados de 60–80 procesos bajo carga. Estos resultados fueron
+              logrados <em>sin WinOs completamente activado</em>, lo que indica margen de
+              optimización adicional disponible.
+            </p>
+
+            <hr class="divider">
+
+            <div class="row g-3">
+              <div class="col-6 col-md-3">
+                <div class="kpi" style="border-color:rgba(0,200,255,0.15);">
+                  <p class="kpi-lbl">Entrenamiento acum.</p>
+                  <p class="kpi-val">42+</p>
+                  <p class="kpi-sub">horas CPU raw</p>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="kpi">
+                  <p class="kpi-lbl">Milestones</p>
+                  <p class="kpi-val">~40K</p>
+                  <p class="kpi-sub">desarrollados</p>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="kpi">
+                  <p class="kpi-lbl">Temperatura sostenida</p>
+                  <p class="kpi-val" style="font-size:1.2rem;">50–58°C</p>
+                  <p class="kpi-sub">sin picos críticos</p>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="kpi">
+                  <p class="kpi-lbl">RAM standby</p>
+                  <p class="kpi-val">1.1</p>
+                  <p class="kpi-sub">GB — Win 10 Pro</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel lateral -->
+          <div class="col-lg-4">
+            <div style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.5rem;position:sticky;top:80px;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:0.82rem;letter-spacing:2px;margin-bottom:1.4rem;padding-bottom:0.8rem;border-bottom:1px solid rgba(255,255,255,0.08);">
+                <i class="bi bi-cpu text-acento me-2"></i>Plataforma — Getac K120 G1
+              </h4>
+              <div class="sr"><span class="lbl">Estado</span><span class="val g"><i class="bi bi-circle-fill me-1" style="font-size:0.5rem;"></i>Validado</span></div>
+              <div class="sr"><span class="lbl">Dispositivo</span><span class="val">Getac K120 G1</span></div>
+              <div class="sr"><span class="lbl">CPU</span><span class="val a">Intel i5-8250U</span></div>
+              <div class="sr"><span class="lbl">RAM física</span><span class="val">24 GB</span></div>
+              <div class="sr"><span class="lbl">Sistema operativo</span><span class="val">Win 10 Pro</span></div>
+              <div class="sr"><span class="lbl">Metodología OS</span><span class="val">WinOs Unify Corps</span></div>
+              <div class="sr"><span class="lbl">Virtualización</span><span class="val">VirtualBox</span></div>
+              <div class="sr"><span class="lbl">Monitoreo</span><span class="val">HWInfo64</span></div>
+              <div class="sr"><span class="lbl">Modelo LLM</span><span class="val a">Codestral 22B Q4</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================
+         BENCHMARK CPU
+         ================================================ -->
+    <section id="benchmark" class="section-darker" aria-labelledby="bench-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:0.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">Rendimiento comparativo</p>
+          <h2 class="section-title" id="bench-titulo">CPU Raw — Comparativa de Rendimiento</h2>
+          <div class="section-line"></div>
+          <p style="color:#555;max-width:580px;margin:0 auto;font-size:0.88rem;line-height:1.8;">
+            Mediciones en CPU raw only bajo entorno NexCore. El i5-8250U fue evaluado
+            en VM VirtualBox con Windows 10 personalizado — misma metodología de WinOs Unify Corps —
+            sin drivers Intel instalados en la VM. Las referencias son sobre hardware nativo.
+          </p>
+        </div>
+
+        <div class="row g-4 mb-4">
+
+          <!-- Comparativa A: vs i9-13900K -->
+          <div class="col-lg-6">
+            <div style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.5rem;">
+              <p style="font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);margin-bottom:0.3rem;">Comparativa A</p>
+              <h3 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:0.9rem;letter-spacing:1.5px;margin-bottom:0.5rem;">
+                i5-8250U vs i9-13900K
+              </h3>
+              <p style="font-size:0.8rem;color:#555;margin-bottom:1.4rem;line-height:1.7;">
+                El i5-8250U alcanzó el <strong style="color:var(--acento);">44%</strong> del rendimiento
+                single-thread del i9-13900K — procesador de escritorio de 24 núcleos — desde una tablet
+                rugosa en VM, sin drivers instalados.
+              </p>
+
+              <!-- ST -->
+              <p style="font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:#444;margin-bottom:0.5rem;">Single Thread</p>
+              <div class="bwrap">
+                <div class="brow"><span class="bcpu">i5-8250U <span style="color:#444;font-size:0.7rem;">(NexCore VM)</span></span><span class="bnum nx">44</span></div>
+                <div class="bbg"><div class="bbar" id="a-st-nx" style="background:var(--acento);"></div></div>
+                <div class="brow"><span class="bcpu">i9-13900K <span style="color:#444;font-size:0.7rem;">(referencia)</span></span><span class="bnum">100</span></div>
+                <div class="bbg"><div class="bbar" id="a-st-ref" style="background:rgba(255,255,255,0.12);"></div></div>
+              </div>
+
+              <!-- MT -->
+              <p style="font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:#444;margin-bottom:0.5rem;">Multi Thread</p>
+              <div class="bwrap" style="margin-bottom:0;">
+                <div class="brow"><span class="bcpu">i5-8250U</span><span class="bnum nx">219</span></div>
+                <div class="bbg"><div class="bbar" id="a-mt-nx" style="background:var(--acento);"></div></div>
+                <div class="brow"><span class="bcpu">i9-13900K</span><span class="bnum">1,849</span></div>
+                <div class="bbg"><div class="bbar" id="a-mt-ref" style="background:rgba(255,255,255,0.12);"></div></div>
+              </div>
+            </div>
+
+            <div style="background:rgba(0,200,255,0.04);border:1px solid rgba(0,200,255,0.1);border-radius:4px;padding:1rem;margin-top:0.75rem;">
+              <p style="font-size:0.8rem;color:#666;line-height:1.7;margin:0;">
+                <i class="bi bi-info-circle text-acento me-1"></i>
+                Ratio MT: <span class="ratio-pill">4.94×</span> a favor del i9-13900K,
+                esperado por diferencia de arquitectura (24C vs 4C). La brecha ST del
+                <strong style="color:var(--acento);">44%</strong> es el dato relevante —
+                eficiencia por ciclo notable para un chip de tablet de bajo TDP bajo entorno optimizado.
+              </p>
+            </div>
+          </div>
+
+          <!-- Comparativa B: vs i5-7600K -->
+          <div class="col-lg-6">
+            <div style="background:#111;border:1px solid rgba(0,255,136,0.1);border-radius:4px;padding:1.5rem;">
+              <p style="font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:#00ff88;margin-bottom:0.3rem;">Comparativa B — Resultado más cercano</p>
+              <h3 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:0.9rem;letter-spacing:1.5px;margin-bottom:0.5rem;">
+                i5-8250U vs i5-7600K
+              </h3>
+              <p style="font-size:0.8rem;color:#555;margin-bottom:1.4rem;line-height:1.7;">
+                Contra el i5-7600K (escritorio 4C), el i5-8250U mostró resultados
+                <strong style="color:#00ff88;">notablemente cercanos</strong> en ambas métricas,
+                desde VM sin drivers Intel instalados.
+              </p>
+
+              <!-- ST -->
+              <p style="font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:#444;margin-bottom:0.5rem;">Single Thread</p>
+              <div class="bwrap">
+                <div class="brow"><span class="bcpu">i5-8250U <span style="color:#444;font-size:0.7rem;">(NexCore VM)</span></span><span class="bnum nx">371.4</span></div>
+                <div class="bbg"><div class="bbar" id="b-st-nx" style="background:var(--acento);"></div></div>
+                <div class="brow"><span class="bcpu">i5-7600K <span style="color:#444;font-size:0.7rem;">(referencia)</span></span><span class="bnum">480</span></div>
+                <div class="bbg"><div class="bbar" id="b-st-ref" style="background:rgba(255,255,255,0.12);"></div></div>
+              </div>
+
+              <!-- MT -->
+              <p style="font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:#444;margin-bottom:0.5rem;">Multi Thread</p>
+              <div class="bwrap" style="margin-bottom:0;">
+                <div class="brow"><span class="bcpu">i5-8250U</span><span class="bnum nx">1,490</span></div>
+                <div class="bbg"><div class="bbar" id="b-mt-nx" style="background:var(--acento);"></div></div>
+                <div class="brow"><span class="bcpu">i5-7600K</span><span class="bnum">1,837</span></div>
+                <div class="bbg"><div class="bbar" id="b-mt-ref" style="background:rgba(255,255,255,0.12);"></div></div>
+              </div>
+            </div>
+
+            <div style="background:rgba(0,255,136,0.04);border:1px solid rgba(0,255,136,0.1);border-radius:4px;padding:1rem;margin-top:0.75rem;">
+              <p style="font-size:0.8rem;color:#666;line-height:1.7;margin:0;">
+                <i class="bi bi-info-circle" style="color:#00ff88;margin-right:4px;"></i>
+                Ratio MT: <span class="ratio-pill" style="color:#00ff88;border-color:rgba(0,255,136,0.3);">3.74×</span>
+                a favor del i5-7600K desde VirtualBox sin drivers.
+                ST al <strong style="color:#00ff88;">77%</strong> y MT al
+                <strong style="color:#00ff88;">81%</strong> demuestran que el entorno optimizado
+                compensa significativamente las limitaciones de virtualización.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Tabla resumen -->
+        <div style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:4px;overflow:hidden;max-width:640px;margin:0 auto;">
+          <table class="mt">
+            <thead>
+              <tr><th>Comparativa</th><th>Single Thread</th><th>Multi Thread</th><th>Condiciones VM</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="color:#888;">i5-8250U vs i9-13900K</td>
+                <td><span class="hi">44%</span></td>
+                <td><span class="dim">~11.8% · ratio 4.94×</span></td>
+                <td><span class="ok">VirtualBox · sin drivers</span></td>
+              </tr>
+              <tr>
+                <td style="color:#888;">i5-8250U vs i5-7600K</td>
+                <td><span class="hi">77.4%</span></td>
+                <td><span class="hi">81.1% · ratio 3.74×</span></td>
+                <td><span class="ok">VirtualBox · sin drivers</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================================================
+         CASOS DE ESTUDIO
+         ================================================ -->
+    <section id="casos" class="section-dark" aria-labelledby="casos-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:0.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">Validación empírica</p>
+          <h2 class="section-title" id="casos-titulo">Casos de Estudio</h2>
+          <div class="section-line"></div>
+        </div>
+
+        <div class="row g-4">
+
+          <!-- §6.2 -->
+          <div class="col-lg-6 d-flex">
+            <div class="cc w-100">
+              <p class="ctag">§6.2 — Inferencia Contextual</p>
+              <p class="ctit">Inferencia Extendida — Codestral 22B Q4</p>
+              <p style="font-size:0.82rem;color:#555;margin-bottom:1.2rem;line-height:1.7;">
+                Codestral 22B Q4_K_M en CPU raw inference sobre Getac K120 G1 (i5-8250U),
+                sin optimizaciones avanzadas y con offloading básico. Incluye generación
+                bilingüe simultánea Español → Inglés.
+              </p>
+
+              <table class="mt" style="margin-bottom:1.2rem;">
+                <thead><tr><th>Parámetro</th><th>Resultado</th></tr></thead>
+                <tbody>
+                  <tr><td>Tokens generados</td><td><span class="hi">~750</span></td></tr>
+                  <tr><td>Tiempo total</td><td><span class="hi">~2m 05s</span></td></tr>
+                  <tr><td>CPU Package Power</td><td><span class="hi">~15 W</span></td></tr>
+                  <tr><td>Estado térmico</td><td><span class="ok">Estable</span></td></tr>
+                  <tr><td>Throttling detectado</td><td><span class="ok">No</span></td></tr>
+                  <tr><td>Coherencia contextual</td><td><span class="ok">Alta</span></td></tr>
+                  <tr><td>Generación bilingüe ES→EN</td><td><span class="ok">Estable</span></td></tr>
+                  <tr><td>Degradación semántica</td><td><span class="ok">No detectada</span></td></tr>
+                </tbody>
+              </table>
+
+              <div style="background:rgba(0,200,255,0.04);border:1px solid rgba(0,200,255,0.1);border-radius:4px;padding:0.9rem;">
+                <p style="font-size:0.8rem;color:#666;line-height:1.7;margin:0;">
+                  El modelo mantuvo coherencia táctica, continuidad narrativa y adaptación contextual
+                  incluso en generación extendida de 550 tokens sin optimizaciones activas.
+                  Estos resultados sirvieron como <strong style="color:#888;">base para las
+                  optimizaciones</strong> implementadas en la infraestructura Tesla V100 eGPU.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- §6.6 -->
+          <div class="col-lg-6 d-flex">
+            <div class="cc w-100" style="border-color:rgba(255,90,50,0.15);">
+              <p class="ctag" style="color:#ff6432;">§6.6 — Validación Extrema</p>
+              <p class="ctit">Concurrencia VM + LLM + Dual Monitor</p>
+              <p style="font-size:0.82rem;color:#555;margin-bottom:1.2rem;line-height:1.7;">
+                Saturación simultánea sobre Getac K120 G1: VM con actualización offline activa +
+                inferencia CPU raw + dos monitores externos con renderizado DXGI/DWM continuo
+                sobre iGPU Intel HD.
+              </p>
+
+              <!-- Barra saturación memoria -->
+              <div style="margin-bottom:1.2rem;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:0.22rem;">
+                  <span style="font-size:0.75rem;color:#888;">Memoria física — 23.9 GB / 24 GB</span>
+                  <span style="font-family:var(--fuente-titulo);font-size:0.8rem;color:#ff6432;">~150% sat.</span>
+                </div>
+                <div class="sbg">
+                  <div class="sbar" id="sat-bar" style="background:linear-gradient(to right,var(--acento),#ff6432);"></div>
+                </div>
+                <p style="font-size:0.72rem;color:#444;margin-top:0.2rem;">438 MB disponibles mínimos · saturación sostenida ~98%</p>
+              </div>
+
+              <table class="mt" style="margin-bottom:1.2rem;">
+                <thead><tr><th>Telemetría</th><th>Resultado</th></tr></thead>
+                <tbody>
+                  <tr><td>RAM utilizada</td><td><span class="hi">~23.9 GB</span> / 24 GB</td></tr>
+                  <tr><td>Saturación equivalente</td><td><span style="color:#ff6432;font-weight:700;">~150%</span></td></tr>
+                  <tr><td>RAM disponible mínima</td><td><span class="hi">438 MB</span></td></tr>
+                  <tr><td>Boot VM (VirtualBox)</td><td><span class="hi">17.04 s</span></td></tr>
+                  <tr><td>BSOD / deadlocks</td><td><span class="ok">No observados</span></td></tr>
+                  <tr><td>Corrupción de memoria</td><td><span class="ok">No detectada</span></td></tr>
+                  <tr><td>Flickering / colapso DWM</td><td><span class="ok">No observado</span></td></tr>
+                  <tr><td>Coherencia inferencia IA</td><td><span class="ok">Conservada completa</span></td></tr>
+                </tbody>
+              </table>
+
+              <div style="background:rgba(255,90,50,0.05);border:1px solid rgba(255,90,50,0.12);border-radius:4px;padding:0.9rem;">
+                <p style="font-size:0.8rem;color:#666;line-height:1.7;margin:0;">
+                  NexCore redistribuyó memoria comprimida correctamente, balanceó física y virtual,
+                  y evitó colisiones críticas de paginación. Las optimizaciones DXGI/D3D11 y la
+                  orquestación LUID redujeron el impacto gráfico sobre el pipeline de inferencia CPU raw,
+                  validando resiliencia equivalente a estaciones de trabajo multitarea de alta densidad.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================
+         DESACOPLAMIENTO SHELL §6.5
+         ================================================ -->
+    <section id="shell" class="section-darker" aria-labelledby="shell-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:0.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">Anexo §6.5</p>
+          <h2 class="section-title" id="shell-titulo">Desacoplamiento Shell / UI — NexCore 1.2</h2>
+          <div class="section-line"></div>
+          <p style="color:#555;max-width:520px;margin:0 auto;font-size:0.88rem;line-height:1.8;">
+            Reducción de overhead de SearchUI y ShellExperienceHost mediante desacoplamiento
+            parcial de dependencias visuales del shell, preservando herramientas administrativas
+            y estabilidad operativa completa.
+          </p>
+        </div>
+
+        <div class="row g-4">
+
+          <div class="col-lg-5">
+            <div style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.5rem;margin-bottom:1rem;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:0.8rem;letter-spacing:2px;margin-bottom:1.1rem;">
+                <i class="bi bi-search text-acento me-2"></i>Componentes Analizados
+              </h4>
+              <span class="cbadge"><i class="bi bi-window"></i>SearchUI.exe</span>
+              <span class="cbadge"><i class="bi bi-window"></i>ShellExperienceHost.exe</span>
+              <span class="cbadge"><i class="bi bi-folder2-open"></i>explorer.exe</span>
+              <span class="cbadge"><i class="bi bi-grid-3x3-gap"></i>SystemApps</span>
+              <span class="cbadge"><i class="bi bi-plug"></i>COM Interfaces</span>
+              <span class="cbadge"><i class="bi bi-gear"></i>Registry Policies</span>
+            </div>
+
+            <div style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.5rem;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:0.8rem;letter-spacing:2px;margin-bottom:1.1rem;">
+                <i class="bi bi-list-ol text-acento me-2"></i>Metodología Aplicada
+              </h4>
+              <div class="sr"><span class="lbl">Paso 1</span><span class="val">Aislamiento parcial hosts visuales</span></div>
+              <div class="sr"><span class="lbl">Paso 2</span><span class="val">Modificación controlada de políticas</span></div>
+              <div class="sr"><span class="lbl">Paso 3</span><span class="val">Overlay UI alternativo</span></div>
+              <div class="sr"><span class="lbl">Paso 4</span><span class="val">Preservación cmd / PowerShell</span></div>
+              <div class="sr"><span class="lbl">Paso 5</span><span class="val">Validación post-reinicio</span></div>
+            </div>
+          </div>
+
+          <div class="col-lg-7">
+            <div style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.5rem;margin-bottom:1rem;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:0.8rem;letter-spacing:2px;margin-bottom:1.1rem;">
+                <i class="bi bi-bar-chart text-acento me-2"></i>Resultados Observados
+              </h4>
+              <table class="mt">
+                <thead><tr><th>Métrica</th><th>Resultado</th></tr></thead>
+                <tbody>
+                  <tr><td>Procesos base en standby</td><td><span class="hi">~40–42</span></td></tr>
+                  <tr><td>Fallos de explorer.exe</td><td><span class="ok">No observados</span></td></tr>
+                  <tr><td>Corrupción de datos</td><td><span class="ok">No detectada</span></td></tr>
+                  <tr><td>Estabilidad del shell</td><td><span class="ok">Mantenida</span></td></tr>
+                  <tr><td>Herramientas administrativas</td><td><span class="ok">Sin afectación</span></td></tr>
+                  <tr><td>Persistencia funcional</td><td><span class="ok">Conservada</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div style="background:rgba(0,200,255,0.04);border:1px solid rgba(0,200,255,0.1);border-radius:4px;padding:1rem;">
+              <p style="font-size:0.8rem;color:#666;line-height:1.7;margin:0;">
+                <i class="bi bi-info-circle text-acento me-2"></i>
+                Windows ejecutó remapeos automáticos sobre enlaces simbólicos de SystemApps
+                como mecanismo de autoprotección. Este comportamiento
+                <strong style="color:#888;">no afectó</strong> la estabilidad del shell ni la
+                persistencia funcional. NexCore 1.2 demostró tolerancia ante modificaciones
+                estructurales del subsistema UI, reduciendo carga residual de procesos visuales.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================
+         ENTORNO OS
+         ================================================ -->
+    <section id="os" class="section-dark" aria-labelledby="os-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:0.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">Entorno optimizado</p>
+          <h2 class="section-title" id="os-titulo">Win 10 Pro — Métricas del Entorno</h2>
+          <div class="section-line"></div>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+
+          <div class="col-md-6 col-lg-4">
+            <div style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.5rem;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:0.8rem;letter-spacing:2px;margin-bottom:1.2rem;">
+                <i class="bi bi-windows text-acento me-2"></i>Standby del Sistema
+              </h4>
+              <div class="sr"><span class="lbl">RAM utilizada</span><span class="val a">1.1 GB</span></div>
+              <div class="sr"><span class="lbl">Procesos standby</span><span class="val">40 – 56</span></div>
+              <div class="sr"><span class="lbl">Procesos máx. obs.</span><span class="val">60 – 80</span></div>
+              <div class="sr"><span class="lbl">Subprocesos (TaskMgr)</span><span class="val a">~726</span></div>
+              <div class="sr"><span class="lbl">Edición</span><span class="val">Pro</span></div>
+              <div class="sr"><span class="lbl">Versión</span><span class="val">24H2</span></div>
+              <div class="sr"><span class="lbl">Metodología</span><span class="val">WinOs Unify Corps</span></div>
+              <div class="sr"><span class="lbl">WinOs activado</span><span class="val dim">Parcial (resultados sin activar)</span></div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-4">
+            <div style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.5rem;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:0.8rem;letter-spacing:2px;margin-bottom:1.2rem;">
+                <i class="bi bi-graph-up text-acento me-2"></i>Entrenamiento Sostenido
+              </h4>
+              <div class="sr"><span class="lbl">Horas acumuladas</span><span class="val a">42+ h</span></div>
+              <div class="sr"><span class="lbl">Ciclo por sesión</span><span class="val">12 horas</span></div>
+              <div class="sr"><span class="lbl">Modelos</span><span class="val">12B – 16B</span></div>
+              <div class="sr"><span class="lbl">Tipo de carga</span><span class="val">CPU Raw Only</span></div>
+              <div class="sr"><span class="lbl">Milestones</span><span class="val a">~40,000</span></div>
+              <div class="sr"><span class="lbl">Temperatura</span><span class="val">50 – 58 °C</span></div>
+              <div class="sr"><span class="lbl">Picos críticos</span><span class="val g">No detectados</span></div>
+              <div class="sr"><span class="lbl">Monitoreo</span><span class="val">HWInfo64</span></div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-4">
+            <div style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:1.5rem;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:0.8rem;letter-spacing:2px;margin-bottom:1.2rem;">
+                <i class="bi bi-rocket-takeoff text-acento me-2"></i>Mejoras Planificadas
+              </h4>
+              <div class="sr"><span class="lbl">OS layer</span><span class="val">WinOs Unify Corps v1.2</span></div>
+              <div class="sr"><span class="lbl">Backend</span><span class="val">llama.cpp optimizado</span></div>
+              <div class="sr"><span class="lbl">Memory</span><span class="val">Adaptive pipeline</span></div>
+              <div class="sr"><span class="lbl">CUDA</span><span class="val">Scheduling refinement</span></div>
+              <div class="sr"><span class="lbl">Distribución</span><span class="val">CUDA clustering</span></div>
+              <div class="sr"><span class="lbl">Agentes</span><span class="val">Autonomous AI nodes</span></div>
+              <div class="sr"><span class="lbl">Migración</span><span class="val">Linux (comparativo)</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================
+         TECNOLOGÍAS
+         ================================================ -->
+    <section id="tecnologias" class="section-darker" aria-labelledby="tech-nc-titulo">
+      <div class="container text-center">
+        <h3 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:0.9rem;letter-spacing:2px;margin-bottom:1.5rem;" id="tech-nc-titulo">
+          <i class="bi bi-tools text-acento me-2"></i>Stack Tecnológico
+        </h3>
+        <div>
+          <span class="tech-pill"><i class="bi bi-cpu"></i>Intel i5-8250U</span>
+          <span class="tech-pill"><i class="bi bi-windows"></i>Win 10 Pro</span>
+          <span class="tech-pill"><i class="bi bi-robot"></i>Codestral 22B Q4_K_M</span>
+          <span class="tech-pill"><i class="bi bi-terminal"></i>llama.cpp</span>
+          <span class="tech-pill"><i class="bi bi-filetype-py"></i>Python</span>
+          <span class="tech-pill"><i class="bi bi-hdd"></i>VirtualBox</span>
+          <span class="tech-pill"><i class="bi bi-graph-up"></i>HWInfo64</span>
+          <span class="tech-pill"><i class="bi bi-gear"></i>WinOs Unify Corps</span>
+          <span class="tech-pill"><i class="bi bi-shield-check"></i>Registry Policies</span>
+          <span class="tech-pill"><i class="bi bi-display"></i>DXGI · D3D11</span>
+          <span class="tech-pill"><i class="bi bi-diagram-3"></i>LUID Orchestration</span>
+          <span class="tech-pill"><i class="bi bi-bar-chart"></i>TaskMgr · Perf. Monitor</span>
+        </div>
+        <hr class="divider mt-5">
+        <div class="d-flex flex-wrap gap-3 justify-content-center mt-4">
+          <a href="portfolio.html" class="btn-tech"><i class="bi bi-arrow-left me-2"></i>Volver al Portafolio</a>
+          <a href="detalle-robonexis-n1.html" class="btn-tech btn-tech-solid"><i class="bi bi-arrow-right me-2"></i>Ver RoboNexis N1</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 <a href="index.html">TechLab</a> · Alexis Negrón Rodríguez · San Juan, Puerto Rico</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function onVisible(id, cb) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const o = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) { cb(); o.disconnect(); } });
+      }, { threshold: 0.35 });
+      o.observe(el);
+    }
+
+    /* Comparativa A: vs i9-13900K — ST 44/100, MT 219/1849 */
+    onVisible('a-st-nx', () => setTimeout(() => {
+      document.getElementById('a-st-nx').style.width  = '44%';
+      document.getElementById('a-st-ref').style.width = '100%';
+      document.getElementById('a-mt-nx').style.width  = '11.8%';
+      document.getElementById('a-mt-ref').style.width = '100%';
+    }, 150));
+
+    /* Comparativa B: vs i5-7600K — ST 371.4/480, MT 1490/1837 */
+    onVisible('b-st-nx', () => setTimeout(() => {
+      document.getElementById('b-st-nx').style.width  = '77.4%';
+      document.getElementById('b-st-ref').style.width = '100%';
+      document.getElementById('b-mt-nx').style.width  = '81.1%';
+      document.getElementById('b-mt-ref').style.width = '100%';
+    }, 150));
+
+    /* Barra de saturación de memoria — 23.9/24 = 99.6% */
+    onVisible('sat-bar', () => setTimeout(() => {
+      document.getElementById('sat-bar').style.width = '99.6%';
+    }, 150));
+  </script>
+
+</body>
+</html>

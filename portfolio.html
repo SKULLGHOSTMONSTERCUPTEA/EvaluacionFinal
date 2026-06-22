@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<!--TechLab Portfolio - Página de Portafolio
+  Autor: Alexis Negrón Rodríguez
+  Archivo: portfolio.html
+
+  Estructura HTML5:
+  - <nav>: Navbar Bootstrap (reutilizada en todas las páginas)
+  - <header>: Encabezado de sección con título de página
+  - <main>: Contenido principal
+      · <section id="proyectos">: Grid de Bootstrap Cards
+        Cada card incluye imagen, título, descripción,
+        botón "Leer Más" hacia la página de detalle, y un
+        atributo data-project usado por js/app.js para:
+          - resaltar la tarjeta al pasar el mouse (mouseenter)
+          - abrir un modal con un resumen rápido al hacer clic
+        Layout responsivo: col-lg-4 → 3 col en escritorio,
+        col-sm-6 → 2 col en tablet, 1 col apilada en móvil.
+  - <footer>: Pie de página
+
+  JavaScript (js/app.js):
+  - initProjectCardInteractions() agrega mouseenter/mouseleave
+    (clase .card-resaltada) y un listener de clic que abre
+    #projectModal con los datos de proyectosData[clave].-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Portafolio de proyectos de IA, robótica y Linux — Alexis TechLab">
+  <title>TechLab | Portafolio</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+
+  <!--NAVBAR (Barra de navegación responsiva)-->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" aria-label="Navegación principal">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">
+        <i class="bi bi-cpu-fill me-2"></i>TECHLAB
+      </a>
+      <button class="navbar-toggler" type="button"
+              data-bs-toggle="collapse" data-bs-target="#navbarMain"
+              aria-controls="navbarMain" aria-expanded="false"
+              aria-label="Alternar navegación">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav ms-auto gap-lg-2">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html"><i class="bi bi-house me-1"></i>Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="portfolio.html">
+              <i class="bi bi-grid me-1"></i>Portafolio
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="contacto.html"><i class="bi bi-envelope me-1"></i>Contacto</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HEADER — Encabezado de página-->
+  <header class="section-darker py-5 text-center border-bottom" style="border-color:rgba(255,255,255,0.06)!important;">
+    <div class="container">
+      <p style="font-size:0.75rem; letter-spacing:3px; text-transform:uppercase; color:var(--acento); margin-bottom:0.5rem;">
+        Mis Trabajos
+      </p>
+      <h1 class="section-title">Portafolio</h1>
+      <div class="section-line"></div>
+      <p style="color:#888; max-width:480px; margin:0 auto; font-size:0.95rem; line-height:1.8;">
+        Proyectos de inteligencia artificial, robótica y sistemas operativos
+        desarrollados con tecnologías de código abierto. Pasa el mouse sobre
+        cualquier tarjeta o haz clic para ver un resumen rápido.
+      </p>
+    </div>
+  </header>
+
+  <!--MAIN-->
+  <main>
+    <section id="proyectos" class="section-dark" aria-labelledby="proyectos-titulo">
+      <div class="container">
+
+        <!-- Título interno (para mayor acceso) -->
+        <h2 class="visually-hidden" id="proyectos-titulo">Lista de Proyectos</h2>
+
+        <!--
+             grid responsivo de cards — Bootstrap 5
+             - col-sm-6: 2 columnas en tablets
+             - col-lg-4: 3 columnas en escritorio
+             - 1 columna apilada en móvil (por defecto) -->
+        <div class="row g-4">
+
+          <!--CARD 1: RoboNexis — data-project enlaza con js/app.js-->
+          <div class="col-sm-6 col-lg-4 d-flex">
+            <div class="card w-100" data-project="robonexis">
+              <!-- Imagen del proyecto -->
+              <img
+                src="img/robonexis.jpg"
+                class="card-img-top"
+                alt="RoboNexis — sistema robótico con IA"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+              >
+              <!-- Placeholder si la imagen no carga -->
+              <div class="card-img-top" style="display:none; background:linear-gradient(135deg,#001830,#003366); height:200px; align-items:center; justify-content:center; font-size:3rem; color:var(--acento);">
+                <i class="bi bi-robot"></i>
+              </div>
+              <div class="card-body d-flex flex-column">
+                <span class="card-tag"><i class="bi bi-tag me-1"></i>IA · Robótica</span>
+                <h3 class="card-title">RoboNexis</h3>
+                <p class="card-text flex-grow-1">
+                  Sistema robótico con reconocimiento de voz e inteligencia artificial.
+                  Integra visión por computadora y modelos de lenguaje local para operar
+                  de forma autónoma.
+                </p>
+                <a href="detalle-robonexis-n1.html" class="btn-tech mt-3 text-center">
+                  <i class="bi bi-arrow-right me-1"></i>Leer Más
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!--CARD 2: P51-->
+          <div class="col-sm-6 col-lg-4 d-flex">
+            <div class="card w-100" data-project="p51">
+              <img
+                src="img/p51.jpg"
+                class="card-img-top"
+                alt="P51 — asistente modular IA"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+              >
+              <div class="card-img-top" style="display:none; background:linear-gradient(135deg,#0a1a0a,#1a4a1a); height:200px; align-items:center; justify-content:center; font-size:3rem; color:var(--acento);">
+                <i class="bi bi-lightning-charge"></i>
+              </div>
+              <div class="card-body d-flex flex-column">
+                <span class="card-tag"><i class="bi bi-tag me-1"></i>IA · Automatización</span>
+                <h3 class="card-title">P51</h3>
+                <p class="card-text flex-grow-1">
+                  Sistema modular de asistencia basado en IA y automatización. Permite
+                  comunicación en tiempo real entre múltiples dispositivos mediante
+                  WebSockets y procesamiento de voz offline.
+                </p>
+                <a href="detalle-P51.html" class="btn-tech mt-3 text-center">
+                  <i class="bi bi-arrow-right me-1"></i>Leer Más
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!--CARD 3: CryoStorm-->
+          <div class="col-sm-6 col-lg-4 d-flex">
+            <div class="card w-100" data-project="cryostorm">
+              <img
+                src="img/Crystorm.jpg"
+                class="card-img-top"
+                alt="CryoStorm — sistema operativo optimizado"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+              >
+              <div class="card-img-top" style="display:none; background:linear-gradient(135deg,#0a0a20,#1a1a40); height:200px; align-items:center; justify-content:center; font-size:3rem; color:var(--acento);">
+                <i class="bi bi-snow"></i>
+              </div>
+              <div class="card-body d-flex flex-column">
+                <span class="card-tag"><i class="bi bi-tag me-1"></i>Linux · Hardware</span>
+                <h3 class="card-title">CryoStorm</h3>
+                <p class="card-text flex-grow-1">
+                  Sistema operativo optimizado para alto rendimiento en hardware de bajo
+                  consumo. Basado en Linux con kernel personalizado, gestión de memoria
+                  avanzada y perfil térmico adaptativo.
+                </p>
+                <a href="#" class="btn-tech mt-3 text-center" style="opacity:0.5; cursor:default;"
+                   aria-disabled="true" title="Página de detalle próximamente">
+                  <i class="bi bi-clock me-1"></i>Próximamente
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!--CARD 4: EGPU Mainframe-->
+          <div class="col-sm-6 col-lg-4 d-flex">
+            <div class="card w-100" data-project="mainframe">
+              <img
+                src="img/laboratorio.jpg"
+                class="card-img-top"
+                alt="Mainframe — Egpu Infraestructura Optimizado"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+              >
+              <div class="card-img-top" style="display:none; background:linear-gradient(135deg,#0a0a20,#1a1a40); height:200px; align-items:center; justify-content:center; font-size:3rem; color:var(--acento);">
+                <i class="bi bi-snow"></i>
+              </div>
+              <div class="card-body d-flex flex-column">
+                <span class="card-tag"><i class="bi bi-tag me-1"></i>Linux · Hardware</span>
+                <h3 class="card-title">EGPU Mainframe</h3>
+                <p class="card-text flex-grow-1">
+                   El sistema combina aceleración gráfica externa vía Thunderbolt con almacenamiento
+                   redundante y control térmico activo en un chasis S2200 modificado.
+                </p>
+                <a href="detalle-mainframe.html" class="btn-tech mt-3 text-center">
+                <i class="bi bi-arrow-right me-1"></i>Leer Más
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!--CARD 5: NexCore-->
+          <div class="col-sm-6 col-lg-4 d-flex">
+            <div class="card w-100" data-project="nexcore">
+              <img
+                src="img/Nexcore.jpg"
+                class="card-img-top"
+                alt="NexCore - Sistema"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+              >
+              <div class="card-img-top" style="display:none; background:linear-gradient(135deg,#0a0a20,#1a1a40); height:200px; align-items:center; justify-content:center; font-size:3rem; color:var(--acento);">
+                <i class="bi bi-snow"></i>
+              </div>
+              <div class="card-body d-flex flex-column">
+                <span class="card-tag"><i class="bi bi-tag me-1"></i>Linux · Hardware</span>
+                <h3 class="card-title">NexCore</h3>
+                <p class="card-text flex-grow-1">
+                 Robonexis robot diseñado para integrar sistemas físicos y digitales en una unidad autónoma capaz de operar con
+                 reconocimiento, comunicación, navegación y respuesta adaptativa en tiempo real, sin depender
+                 de infraestructura externa ni conexión a la nube.
+                </p>
+                <a href="detalle-NexCore.html" class="btn-tech mt-3 text-center">
+                <i class="bi bi-arrow-right me-1"></i>Leer Más
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!--CARD 6: AsusE210M-->
+          <div class="col-sm-6 col-lg-4 d-flex">
+            <div class="card w-100" data-project="asus">
+              <img
+                src="img/Asus.jpg"
+                class="card-img-top"
+                alt="Asus — sistema operativo optimizado"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+              >
+              <div class="card-img-top" style="display:none; background:linear-gradient(135deg,#0a0a20,#1a1a40); height:200px; align-items:center; justify-content:center; font-size:3rem; color:var(--acento);">
+                <i class="bi bi-snow"></i>
+              </div>
+              <div class="card-body d-flex flex-column">
+                <span class="card-tag"><i class="bi bi-tag me-1"></i>Linux · Hardware</span>
+                <h3 class="card-title">AsusE210M</h3>
+                <p class="card-text flex-grow-1">
+                  Sistema operativo optimizado para alto rendimiento en hardware de bajo
+                  consumo. Basado en Windows con kernel personalizado, gestión de memoria
+                  avanzada y perfil térmico adaptativo.
+                </p>
+                <a href="detalle-asus-e210m.html" class="btn-tech mt-3 text-center">
+                <i class="bi bi-arrow-right me-1"></i>Leer Más
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!--CARD 7: Miniframe -->
+          <div class="col-sm-6 col-lg-4 d-flex">
+            <div class="card w-100" data-project="miniframe">
+              <img
+                src="img/miniframe.jpg"
+                class="card-img-top"
+                alt="Minframe — sistema operativo optimizado"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+              >
+              <div class="card-img-top" style="display:none; background:linear-gradient(135deg,#0a0a20,#1a1a40); height:200px; align-items:center; justify-content:center; font-size:3rem; color:var(--acento);">
+                <i class="bi bi-snow"></i>
+              </div>
+              <div class="card-body d-flex flex-column">
+                <span class="card-tag"><i class="bi bi-tag me-1"></i>Linux · Hardware</span>
+                <h3 class="card-title">Miniframe</h3>
+                <p class="card-text flex-grow-1">
+                  Sistema operativo optimizado para alto rendimiento en hardware de bajo
+                  consumo. Basado en Windows con kernel personalizado, gestión de memoria
+                  avanzada y perfil térmico adaptativo.
+                </p>
+                <a href="detalle-micromainframe.html" class="btn-tech mt-3 text-center">
+                <i class="bi bi-arrow-right me-1"></i>Leer Más
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!--CARD 8: Hydra Prometheus-X2 -->
+          <div class="col-sm-6 col-lg-4 d-flex">
+            <div class="card w-100" data-project="hydra">
+              <img
+                src="img/Hydra.jpg"
+                class="card-img-top"
+                alt="Hydra Prometheus-X2 — GPU modificada para IA"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+              >
+              <div class="card-img-top" style="display:none; background:linear-gradient(135deg,#0a0a20,#1a1a40); height:200px; align-items:center; justify-content:center; font-size:3rem; color:var(--acento);">
+                <i class="bi bi-snow"></i>
+              </div>
+              <div class="card-body d-flex flex-column">
+                <span class="card-tag"><i class="bi bi-tag me-1"></i>Linux · Hardware</span>
+                <h3 class="card-title">Hydra Prometheus-X2 </h3>
+                <p class="card-text flex-grow-1">
+                  RTX 3090 Hydra Prometheus X2 tarjeta grafica modificada para cargas extensas de AI inference.
+                </p>
+                <a href="detalles-HydraPrometheus-X2.html" class="btn-tech mt-3 text-center">
+                <i class="bi bi-arrow-right me-1"></i>Leer Más
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!--CARD 9: TouchPi-->
+          <div class="col-sm-6 col-lg-4 d-flex">
+            <div class="card w-100" data-project="touchpi">
+              <img
+                src="img/touchpi.jpg"
+                class="card-img-top"
+                alt="TouchPi — sistema modular HPC"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+              >
+              <div class="card-img-top" style="display:none; background:linear-gradient(135deg,#0a1a0a,#1a4a1a); height:200px; align-items:center; justify-content:center; font-size:3rem; color:var(--acento);">
+                <i class="bi bi-lightning-charge"></i>
+              </div>
+              <div class="card-body d-flex flex-column">
+                <span class="card-tag"><i class="bi bi-tag me-1"></i>IA · Automatización</span>
+                <h3 class="card-title">TouchPi</h3>
+                <p class="card-text flex-grow-1">
+                  Sistema modular HPC con integracion entre Windows/Linux y enfocado en inferencia en IA y automatización. Permite
+                  comunicación en tiempo real entre múltiples dispositivos mediante
+                  WebSockets y procesamiento de voz offline cuenta con EGPU integracion.
+                </p>
+                <a href="detalle-touchpi.html" class="btn-tech mt-3 text-center">
+                  <i class="bi bi-arrow-right me-1"></i>Leer Más
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /row -->
+
+        <!--Separador y CTA inferior-->
+        <hr class="divider mt-5">
+        <div class="text-center mt-4">
+          <p style="color:#666; margin-bottom:1.2rem;">¿Interesado en colaborar?</p>
+          <a href="contacto.html" class="btn-tech">
+            <i class="bi bi-envelope me-2"></i>Contáctame
+          </a>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!--FOOTER-->
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 <a href="index.html">TechLab</a> · Alexis Negrón Rodríguez · San Juan, Puerto Rico</p>
+    </div>
+  </footer>
+
+  <!-- ════════════════════════════════════════════════════════════
+       MODAL DE DETALLES DE PROYECTO (Bootstrap 5)
+       Se llena dinámicamente desde el  js/app.js utilizando (mostrarDetalleProyecto)
+       cada vez que el usuario hace clic sobre una tarjeta seleccionada.
+       ════════════════════════════════════════════════════════════ -->
+  <div class="modal fade" id="projectModal" tabindex="-1" aria-labelledby="projectModalTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="projectModalTitulo">Proyecto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <img id="projectModalImagen" src="" alt="">
+          <span id="projectModalCategoria"></span>
+          <p id="projectModalDescripcion"></p>
+          <div id="projectModalTags"></div>
+          <p class="mb-0">
+            Estado: <span id="projectModalEstado" class="modal-estado-badge"></span>
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-tech" data-bs-dismiss="modal">
+            <i class="bi bi-x-lg me-1"></i>Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- JavaScript propio del proyecto: hover y modal de detalles -->
+  <script src="js/app.js"></script>
+</body>
+</html>
