@@ -135,7 +135,7 @@ PÁGINAS DEL SITIO WEB (12 EN TOTAL)
      detalle-P51.html, detalle-NexCore.html, detalle-asus-e210m.html,
      detalle-mainframe.html, detalle-micromainframe.html,
      detalle-touchpi.html, detalles-HydraPrometheus-X2.html
-   - Cada una incluye: hero con imagen de fondo del proyecto,
+   - Cada una incluye: hero con su respectiva imagen de fondo del proyecto,
      descripción completa, tags de tecnologías utilizadas,
      panel con datos del proyecto (estado, plataforma) y
      navegación de regreso al portafolio
@@ -144,8 +144,8 @@ PÁGINAS DEL SITIO WEB (12 EN TOTAL)
 INTERACCIÓN CON JAVASCRIPT (js/app.js)
 ---------------------------------------------
 
-El archivo js/app.js centraliza toda la lógica interactiva del
-sitio y se enlaza desde las 12 páginas con <script src="js/app.js">.
+El archivo js/app.js contiene toda la lógica de interaccion del
+sitio y este se enlaza desde las 12 páginas con <script src="js/app.js">.
 Contiene 4 módulos, cada uno verifica si su sección existe en la
 página actual antes de ejecutarse:
 
@@ -203,7 +203,7 @@ DISEÑO RESPONSIVO
   - Tamaños de fuente fluidos con clamp()
 
 ---------------------------------------------
-PERSONALIZACIÓN DE ESTILOS (css/style.css)
+PERSONALIZACIÓN DE ESTILOS (css/style.css) Colores Utilizados En el Mismo
 ---------------------------------------------
 
   Paleta de colores (variables CSS :root):
@@ -233,7 +233,7 @@ PERSONALIZACIÓN DE ESTILOS (css/style.css)
 REPOSITORIO GITHUB
 ---------------------------------------------
 
-  https://github.com/SKULLGHOSTMONSTERCUPTEA/Laboratorio5.1PortafolioTecnico
+https://github.com/SKULLGHOSTMONSTERCUPTEA/EvaluacionFinal
 
   (Ver también enlace_github.docx adjunto)
 
