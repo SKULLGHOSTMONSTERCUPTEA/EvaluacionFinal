@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<!--
+  =============================================
+  TechLab Portfolio — Detalle: CryoStorm
+  Autor: Alexis Negrón Rodríguez
+  Archivo: detalle-cryostorm.html
+
+  Estructura HTML5:
+  - <nav>: Navbar Bootstrap 5 responsiva
+  - <header>: Hero con overlay y título
+  - <main>:
+      · <section id="overview">: Resumen del proyecto V2,
+        objetivos, plataforma base (Acer Nitro 5 AN515-58,
+        i7-12650H, RTX 4060). 4 KPIs: 90°C→spikes eliminados,
+        39°C→30-32°C disipador, ~12 heatpipes, CPU 38-53°C
+      · <section id="v1vs2">: Comparativa V1 (Nitro 4060
+        generación anterior) vs V2 (i7-12650H/RTX4060 actual) —
+        tabla lado a lado de approach y resultados
+      · <section id="modificaciones">: Rediseño de flujo de aire
+        (ventiladores 22U + PNY 4090 series), optimización RAM
+        (heatsink PS3 PCH + CrimsonLayer TIM), X2 Quad Heatsink
+        Architecture (~12 heatpipes, dual CPU/GPU)
+      · <section id="resultados">: Antes/después con barras
+        comparativas — spikes 90°C eliminados, disipador
+        39°C→30-32°C, CPU 38-53°C inferencia, GPU ~43°C full load
+        / ~35°C mejores escenarios. Tabla destacada final.
+      · <section id="mantenimiento">: Arquitectura modular —
+        tapa trasera modificada, tornillería accesible,
+        extracción rápida, acceso directo a componentes
+      · <section id="tecnologias">: Stack y navegación
+  - <footer>: Pie de página
+  =============================================
+-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CryoStorm — Control Térmico Predictivo Adaptativo · Acer Nitro 5 i7-12650H/RTX4060 · X2 Quad Heatsink — Alexis TechLab">
+  <title>TechLab | CryoStorm</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+
+  <style>
+    .mt{width:100%;border-collapse:collapse;font-size:.88rem}
+    .mt th{font-family:var(--fuente-titulo);font-size:.67rem;letter-spacing:2px;text-transform:uppercase;color:#555;padding:.55rem 1rem;border-bottom:1px solid rgba(255,255,255,.08);text-align:left}
+    .mt td{padding:.65rem 1rem;border-bottom:1px solid rgba(255,255,255,.05);color:#bbb;vertical-align:middle}
+    .mt tr:last-child td{border-bottom:none}
+    .mt tr:hover td{background:rgba(0,200,255,.03)}
+    .hi{color:var(--acento);font-weight:700;font-family:var(--fuente-titulo);letter-spacing:1px}
+    .ok{color:#00ff88;font-weight:600}
+    .bad{color:#ff4466;font-weight:600}
+    .kpi{background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.1rem;text-align:center}
+    .kpi-lbl{font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:.3rem}
+    .kpi-val{font-family:var(--fuente-titulo);font-size:1.4rem;color:var(--acento);margin:0;line-height:1.1}
+    .kpi-sub{font-size:.65rem;color:#444;margin:0}
+    .sr{display:flex;justify-content:space-between;align-items:baseline;padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.05)}
+    .sr:last-child{border-bottom:none}
+    .sr .lb{color:#555;font-size:.73rem;letter-spacing:1px;text-transform:uppercase}
+    .sr .vl{color:#bbb;font-family:var(--fuente-titulo);font-size:.83rem;letter-spacing:1px}
+    .sr .vl.a{color:var(--acento)}
+    .sr .vl.g{color:#00ff88}
+    .sr .vl.r{color:#ff4466}
+
+    /* Antes/Después comparativa */
+    .ba-col{background:#111;border-radius:4px;padding:1.4rem;height:100%}
+    .ba-before{border:1px solid rgba(255,68,102,.18)}
+    .ba-after{border:1px solid rgba(0,255,136,.18)}
+    .ba-tag{font-size:.65rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:.4rem}
+    .ba-temp{font-family:var(--fuente-titulo);font-size:2.2rem;margin:.3rem 0;line-height:1}
+    .ba-desc{font-size:.82rem;color:#666;line-height:1.6;margin:0}
+    .ba-arrow{display:flex;align-items:center;justify-content:center;font-size:1.8rem;color:rgba(0,200,255,.4)}
+
+    /* Temp bar */
+    .tbar-wrap{margin-bottom:1rem}
+    .tbar-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.22rem}
+    .tbar-label{font-size:.8rem;color:#888}
+    .tbar-val{font-family:var(--fuente-titulo);font-size:.85rem}
+    .tbar-bg{background:rgba(255,255,255,.05);border-radius:2px;height:9px;overflow:hidden}
+    .tbar{height:100%;border-radius:2px;width:0;transition:width 1.5s cubic-bezier(.22,1,.36,1)}
+
+    /* Heatpipe visual */
+    .hp-visual{display:flex;justify-content:center;gap:3px;margin:1.2rem 0;flex-wrap:wrap}
+    .hp-pipe{width:6px;height:38px;background:linear-gradient(to bottom,#ff8c42,#cc4422);border-radius:3px;opacity:.85}
+
+    /* Mod card */
+    .mod-card{background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.4rem;height:100%;transition:border-color .3s}
+    .mod-card:hover{border-color:rgba(0,200,255,.2)}
+    .mod-icon{width:42px;height:42px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.2);border-radius:2px;display:flex;align-items:center;justify-content:center;color:var(--acento);font-size:1.1rem;margin-bottom:1rem}
+    .mod-title{font-family:var(--fuente-titulo);font-size:.8rem;color:var(--blanco);letter-spacing:1.5px;margin-bottom:.7rem}
+    .mod-list{list-style:none;padding:0;margin:0}
+    .mod-list li{font-size:.84rem;color:#888;padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;gap:.5rem;line-height:1.5}
+    .mod-list li:last-child{border-bottom:none}
+    .mod-list li::before{content:'';width:4px;height:4px;background:var(--acento);border-radius:50%;flex-shrink:0}
+
+    /* Tabla destacada final */
+    .feature-table{width:100%;border-collapse:collapse}
+    .feature-table th{font-family:var(--fuente-titulo);font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--blanco);padding:.8rem 1.2rem;background:rgba(0,200,255,.06);text-align:left;border-bottom:1px solid rgba(0,200,255,.15)}
+    .feature-table td{padding:.8rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.05);color:#bbb;font-size:.9rem}
+    .feature-table tr:last-child td{border-bottom:none}
+    .feature-table tr:hover td{background:rgba(0,200,255,.03)}
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" aria-label="Navegación principal">
+    <div class="container">
+      <a class="navbar-brand" href="index.html"><i class="bi bi-cpu-fill me-2"></i>TECHLAB</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+              data-bs-target="#navbarMain" aria-controls="navbarMain"
+              aria-expanded="false" aria-label="Alternar navegación">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav ms-auto gap-lg-2">
+          <li class="nav-item"><a class="nav-link" href="index.html"><i class="bi bi-house me-1"></i>Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="resumen.html"><i class="bi bi-file-person me-1"></i>Resumen</a></li>
+          <li class="nav-item"><a class="nav-link active" href="portfolio.html"><i class="bi bi-grid me-1"></i>Portafolio</a></li>
+          <li class="nav-item"><a class="nav-link" href="contacto.html"><i class="bi bi-envelope me-1"></i>Contacto</a></li>
+          <li class="nav-item"><a class="nav-link" href="recursos.html"><i class="bi bi-envelope me-1"></i>Recursos Adicionales
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header>
+    <div class="detail-hero" style="background-image:url('img/laboratorio.jpg');" role="banner">
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(13,13,13,1) 0%,rgba(0,15,35,.76) 100%);"></div>
+      <div class="detail-hero-content container w-100" style="position:relative;z-index:1;">
+        <nav aria-label="Ruta de navegación" style="margin-bottom:.5rem;">
+          <ol class="breadcrumb" style="background:transparent;padding:0;margin:0;">
+            <li class="breadcrumb-item"><a href="portfolio.html" style="color:#888;text-decoration:none;font-size:.8rem;letter-spacing:1px;">Portafolio</a></li>
+            <li class="breadcrumb-item active" style="color:var(--acento);font-size:.8rem;letter-spacing:1px;">CryoStorm</li>
+          </ol>
+        </nav>
+        <span style="font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">
+          Control Térmico Predictivo · X2 Quad Heatsink · Acer Nitro 5
+        </span>
+        <h1 class="section-title mt-1">CryoStorm</h1>
+        <p style="color:rgba(255,255,255,.5);font-size:.88rem;letter-spacing:1px;margin-top:.4rem;">
+          Sistema Experimental de Ingeniería Térmica Adaptativa · V1 → V2
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- OVERVIEW -->
+    <section id="overview" class="section-dark" aria-labelledby="cs-titulo">
+      <div class="container">
+        <h2 class="visually-hidden" id="cs-titulo">Detalle del proyecto CryoStorm</h2>
+        <div class="row g-5">
+
+          <div class="col-lg-8">
+            <p class="about-text">
+              <strong style="color:var(--blanco);">CryoStorm</strong> es una plataforma experimental de
+              ingeniería térmica desarrollada para optimizar la disipación de calor en sistemas portátiles
+              de alto rendimiento sometidos a cargas prolongadas de procesamiento e inferencia de
+              inteligencia artificial. El proyecto evolucionó de una primera versión (V1) basada en la
+              generación anterior del Acer Nitro 5 a la versión actual (V2), centrada en la reingeniería
+              completa del sistema de ventilación sobre un
+              <strong style="color:var(--blanco);">Acer Nitro 5 AN515-58</strong> con
+              <strong style="color:var(--blanco);">Intel Core i7-12650H</strong> y
+              <strong style="color:var(--blanco);">NVIDIA RTX 4060</strong>.
+            </p>
+            <p class="about-text">
+              El objetivo central fue reducir la temperatura sostenida de CPU y GPU bajo cargas
+              prolongadas, minimizar picos térmicos (thermal spikes), mejorar la eficiencia del disipador
+              principal y optimizar la distribución interna del flujo de aire — sin incrementar
+              significativamente el ruido operativo. El resultado más visible es la eliminación práctica
+              de los picos térmicos extremos: spikes que alcanzaban cerca de
+              <strong style="color:#ff4466;">90°C</strong> en el diseño original desaparecieron tras
+              el rediseño.
+            </p>
+            <p class="about-text">
+              El sistema incorpora la arquitectura
+              <strong style="color:var(--blanco);">X2 Quad Heatsink</strong> — aproximadamente
+              <strong style="color:var(--acento);">12 heatpipes</strong> operando conjuntamente en
+              configuración dual para CPU y GPU, basada en componentes originales de la serie Nitro
+              con integración estructural mediante fijación mecánica y unión térmica especializada.
+            </p>
+
+            <hr class="divider">
+
+            <div class="row g-3">
+              <div class="col-6 col-md-3">
+                <div class="kpi" style="border-color:rgba(255,68,102,.15);">
+                  <p class="kpi-lbl">Spikes eliminados</p>
+                  <p class="kpi-val" style="color:#ff4466;">90°C</p>
+                  <p class="kpi-sub">antes → eliminados</p>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="kpi" style="border-color:rgba(0,255,136,.15);">
+                  <p class="kpi-lbl">Disipador principal</p>
+                  <p class="kpi-val" style="color:#00ff88;">30–32°C</p>
+                  <p class="kpi-sub">antes: ~39°C</p>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="kpi">
+                  <p class="kpi-lbl">Heatpipes totales</p>
+                  <p class="kpi-val">~12</p>
+                  <p class="kpi-sub">dual quad heatsink</p>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="kpi">
+                  <p class="kpi-lbl">CPU inferencia</p>
+                  <p class="kpi-val" style="font-size:1.2rem;">38–53°C</p>
+                  <p class="kpi-sub">i7-12650H sostenido</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <div style="background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.5rem;position:sticky;top:80px;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.82rem;letter-spacing:2px;margin-bottom:1.4rem;padding-bottom:.8rem;border-bottom:1px solid rgba(255,255,255,.08);">
+                <i class="bi bi-laptop text-acento me-2"></i>Plataforma V2
+              </h4>
+              <div class="sr"><span class="lb">Estado</span><span class="vl g"><i class="bi bi-circle-fill me-1" style="font-size:.5rem;"></i>Validado</span></div>
+              <div class="sr"><span class="lb">Equipo</span><span class="vl">Acer Nitro 5 AN515-58</span></div>
+              <div class="sr"><span class="lb">CPU</span><span class="vl a">Intel i7-12650H</span></div>
+              <div class="sr"><span class="lb">GPU</span><span class="vl a">NVIDIA RTX 4060</span></div>
+              <div class="sr"><span class="lb">Arquitectura térmica</span><span class="vl">X2 Quad Heatsink</span></div>
+              <div class="sr"><span class="lb">Heatpipes</span><span class="vl">~12</span></div>
+              <div class="sr"><span class="lb">Ventiladores aux.</span><span class="vl">2</span></div>
+              <div class="sr"><span class="lb">TIM zona RAM</span><span class="vl a">CrimsonLayer TIM</span></div>
+              <div class="sr"><span class="lb">Heatsink RAM</span><span class="vl">Tipo PS3 PCH</span></div>
+              <div class="sr"><span class="lb">Tapa modular</span><span class="vl g">Sí</span></div>
+              <div class="sr"><span class="lb">Mantenimiento rápido</span><span class="vl g">Sí</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- V1 vs V2 -->
+    <section id="v1vs2" class="section-darker" aria-labelledby="v1v2-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">Evolución del proyecto</p>
+          <h2 class="section-title" id="v1v2-titulo">CryoStorm V1 → V2</h2>
+          <div class="section-line"></div>
+        </div>
+
+        <div class="row g-4">
+
+          <div class="col-lg-6">
+            <div style="background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.5rem;height:100%;">
+              <p style="font-size:.65rem;letter-spacing:3px;text-transform:uppercase;color:#777;margin-bottom:.3rem;">Versión 1</p>
+              <h3 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.9rem;letter-spacing:1.5px;margin-bottom:1rem;">Control Térmico Predictivo</h3>
+              <p style="font-size:.82rem;color:#666;margin-bottom:1.2rem;line-height:1.7;">
+                Sistema experimental basado en la generación anterior del Acer Nitro 5 (modelo base 4060)
+                con sistema cuádruple de disipación pulido, mecanizado y calibrado para mantener
+                propiedades y compuestos estables.
+              </p>
+              <ul class="mod-list">
+                <li>Sensores térmicos en tiempo real</li>
+                <li>Análisis de tendencias (no solo valores instantáneos)</li>
+                <li>Ajustes automáticos preventivos</li>
+                <li>Coordinación con WinOsCore</li>
+                <li>Curvas térmicas suavizadas</li>
+                <li>Prevención de throttling agresivo</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div style="background:#111;border:1px solid rgba(0,200,255,.15);border-radius:4px;padding:1.5rem;height:100%;">
+              <p style="font-size:.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);margin-bottom:.3rem;">Versión 2 — Actual</p>
+              <h3 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.9rem;letter-spacing:1.5px;margin-bottom:1rem;">Ingeniería Térmica Adaptativa</h3>
+              <p style="font-size:.82rem;color:#666;margin-bottom:1.2rem;line-height:1.7;">
+                Reingeniería completa sobre Acer Nitro 5 AN515-58 (i7-12650H / RTX 4060) con rediseño
+                total del flujo de aire, X2 Quad Heatsink Architecture y disipación dedicada para RAM.
+              </p>
+              <ul class="mod-list">
+                <li>Rediseño completo de flujo de aire</li>
+                <li>Ventilador serie 22U dedicado a CPU</li>
+                <li>Ventilador serie PNY RTX 4090 para GPU</li>
+                <li>X2 Quad Heatsink — ~12 heatpipes</li>
+                <li>Disipación RAM con CrimsonLayer TIM</li>
+                <li>Tapa modular para mantenimiento rápido</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- MODIFICACIONES -->
+    <section id="modificaciones" class="section-dark" aria-labelledby="mod-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">Ingeniería aplicada</p>
+          <h2 class="section-title" id="mod-titulo">Modificaciones Implementadas</h2>
+          <div class="section-line"></div>
+        </div>
+
+        <div class="row g-4 mb-4">
+
+          <div class="col-md-6 col-lg-4 d-flex">
+            <div class="mod-card w-100">
+              <div class="mod-icon" aria-hidden="true"><i class="bi bi-wind"></i></div>
+              <p class="mod-title">Rediseño de Flujo de Aire</p>
+              <ul class="mod-list">
+                <li>Reubicación de ventiladores auxiliares</li>
+                <li>Túneles de aire dedicados</li>
+                <li>Ventilador 22U para procesador</li>
+                <li>Ventilador serie PNY RTX 4090 para GPU</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-4 d-flex">
+            <div class="mod-card w-100">
+              <div class="mod-icon" aria-hidden="true"><i class="bi bi-memory"></i></div>
+              <p class="mod-title">Optimización de Memoria RAM</p>
+              <ul class="mod-list">
+                <li>Heatsink tipo PS3 PCH</li>
+                <li>Interfaz térmica CrimsonLayer TIM</li>
+                <li>Ventilación activa centralizada</li>
+                <li>Reducción de acumulación térmica</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-4 d-flex">
+            <div class="mod-card w-100" style="border-color:rgba(255,140,66,.18);">
+              <div class="mod-icon" aria-hidden="true" style="background:rgba(255,140,66,.08);border-color:rgba(255,140,66,.25);color:#ff8c42;"><i class="bi bi-fire"></i></div>
+              <p class="mod-title">X2 Quad Heatsink Architecture</p>
+              <ul class="mod-list">
+                <li>Basado en componentes serie Nitro</li>
+                <li>Fijación mecánica + unión térmica</li>
+                <li>Sistema dual CPU / GPU</li>
+                <li>~12 heatpipes operando conjuntamente</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Heatpipe visual -->
+        <div style="background:#111;border:1px solid rgba(255,140,66,.12);border-radius:4px;padding:1.5rem;text-align:center;">
+          <p style="font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:#777;margin-bottom:.5rem;">X2 Quad Heatsink — ~12 heatpipes en configuración dual</p>
+          <div class="hp-visual" aria-label="Representación visual de 12 heatpipes en configuración dual CPU/GPU">
+            <div class="hp-pipe"></div><div class="hp-pipe"></div><div class="hp-pipe"></div><div class="hp-pipe"></div><div class="hp-pipe"></div><div class="hp-pipe"></div>
+            <div style="width:14px;"></div>
+            <div class="hp-pipe"></div><div class="hp-pipe"></div><div class="hp-pipe"></div><div class="hp-pipe"></div><div class="hp-pipe"></div><div class="hp-pipe"></div>
+          </div>
+          <p style="font-size:.78rem;color:#555;margin:0;">Objetivo: distribuir la carga calórica sobre una superficie efectiva significativamente mayor que la configuración original.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTADOS / ANTES-DESPUÉS -->
+    <section id="resultados" class="section-darker" aria-labelledby="res-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">Validación empírica</p>
+          <h2 class="section-title" id="res-titulo">Resultados — Antes y Después</h2>
+          <div class="section-line"></div>
+        </div>
+
+        <!-- Comparativa visual antes/después: spikes -->
+        <div class="row g-3 align-items-center mb-5">
+          <div class="col-md-5">
+            <div class="ba-col ba-before">
+              <p class="ba-tag" style="color:#ff4466;">Antes del rediseño</p>
+              <p class="ba-temp" style="color:#ff4466;">~90°C</p>
+              <p class="ba-desc">Spikes térmicos observados — picos abruptos durante cargas variables, comportamiento inestable.</p>
+            </div>
+          </div>
+          <div class="col-md-2 ba-arrow"><i class="bi bi-arrow-right d-none d-md-block"></i><i class="bi bi-arrow-down d-block d-md-none"></i></div>
+          <div class="col-md-5">
+            <div class="ba-col ba-after">
+              <p class="ba-tag" style="color:#00ff88;">Después del rediseño</p>
+              <p class="ba-temp" style="color:#00ff88;">Eliminados</p>
+              <p class="ba-desc">Eliminación práctica de picos térmicos extremos. Comportamiento mucho más estable durante cargas variables.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-5">
+
+          <!-- Barras CPU/GPU -->
+          <div class="col-lg-6">
+            <div style="background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.5rem;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.82rem;letter-spacing:2px;margin-bottom:1.3rem;">
+                <i class="bi bi-cpu text-acento me-2"></i>CPU — Intel i7-12650H (Inferencia)
+              </h4>
+              <div class="tbar-wrap">
+                <div class="tbar-header"><span class="tbar-label">Rango observado</span><span class="tbar-val" style="color:var(--acento);">38°C – 53°C</span></div>
+                <div class="tbar-bg"><div class="tbar" id="cpu-bar" style="background:var(--acento);"></div></div>
+              </div>
+              <p style="font-size:.8rem;color:#555;margin-bottom:1.5rem;line-height:1.6;">Cargas prolongadas de inferencia con modelos locales en CPU — estabilidad sostenida, sin thermal spikes significativos.</p>
+
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.82rem;letter-spacing:2px;margin-bottom:1.3rem;">
+                <i class="bi bi-gpu-card text-acento me-2"></i>GPU — RTX 4060 (Carga gráfica)
+              </h4>
+              <div class="tbar-wrap">
+                <div class="tbar-header"><span class="tbar-label">Sostenido full load</span><span class="tbar-val" style="color:#ff8c42;">~43°C</span></div>
+                <div class="tbar-bg"><div class="tbar" id="gpu-sostenido" style="background:#ff8c42;"></div></div>
+              </div>
+              <div class="tbar-wrap" style="margin-bottom:0;">
+                <div class="tbar-header"><span class="tbar-label">Mejores escenarios</span><span class="tbar-val" style="color:#00ff88;">~35°C</span></div>
+                <div class="tbar-bg"><div class="tbar" id="gpu-mejor" style="background:#00ff88;"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Disipador principal -->
+          <div class="col-lg-6">
+            <div style="background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.5rem;">
+              <h4 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.82rem;letter-spacing:2px;margin-bottom:1.3rem;">
+                <i class="bi bi-thermometer-half text-acento me-2"></i>Disipador Principal (NTC Thermistor)
+              </h4>
+              <table class="mt" style="margin-bottom:1.2rem;">
+                <thead><tr><th>Condición</th><th>Diseño anterior</th><th>CryoStorm</th></tr></thead>
+                <tbody>
+                  <tr><td>Carga sostenida</td><td><span class="bad">~39°C</span></td><td><span class="ok">30–32°C</span></td></tr>
+                  <tr><td>Baja carga</td><td style="color:#555;">—</td><td><span class="ok">~29°C</span></td></tr>
+                  <tr><td>Modo balanceado</td><td style="color:#555;">—</td><td><span class="ok">~31°C</span></td></tr>
+                </tbody>
+              </table>
+              <div style="background:rgba(0,255,136,.04);border:1px solid rgba(0,255,136,.12);border-radius:4px;padding:1rem;">
+                <p style="font-size:.82rem;color:#666;line-height:1.7;margin:0;">
+                  <i class="bi bi-info-circle" style="color:#00ff88;margin-right:6px;"></i>
+                  Reducción de <strong style="color:#00ff88;">7–10°C</strong> sostenidos en el disipador
+                  principal frente al diseño anterior, validando la efectividad del rediseño de flujo
+                  de aire y el sistema X2 Quad Heatsink.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Tabla destacada final -->
+        <div class="row mt-5">
+          <div class="col-12">
+            <div style="background:#111;border:1px solid rgba(0,200,255,.15);border-radius:4px;overflow:hidden;">
+              <table class="feature-table">
+                <thead><tr><th>Característica</th><th>CryoStorm</th></tr></thead>
+                <tbody>
+                  <tr><td>Heatpipes Totales</td><td><span class="hi">~12</span></td></tr>
+                  <tr><td>Arquitectura</td><td>Dual Quad Heatsink</td></tr>
+                  <tr><td>Ventiladores Auxiliares</td><td>2</td></tr>
+                  <tr><td>Mantenimiento Rápido</td><td><span class="ok">Sí</span></td></tr>
+                  <tr><td>Tapa Modular</td><td><span class="ok">Sí</span></td></tr>
+                  <tr><td>Inferencia AI Prolongada</td><td><span class="ok">Sí</span></td></tr>
+                  <tr><td>Thermal Spikes</td><td><span class="ok">Reducidos</span></td></tr>
+                  <tr><td>GPU Full Load</td><td><span class="hi">~43°C</span></td></tr>
+                  <tr><td>CPU Bajo Inferencia</td><td><span class="hi">38–53°C</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- MANTENIMIENTO -->
+    <section id="mantenimiento" class="section-dark" aria-labelledby="mant-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">Diseño orientado a longevidad</p>
+          <h2 class="section-title" id="mant-titulo">Arquitectura Modular y Mantenimiento</h2>
+          <div class="section-line"></div>
+          <p style="color:#555;max-width:540px;margin:0 auto;font-size:.88rem;line-height:1.8;">
+            Uno de los objetivos del rediseño fue preservar la accesibilidad del sistema para
+            futuras inspecciones, limpieza y modificaciones sin desmontajes extensivos.
+          </p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+          <div class="col-md-6 col-lg-3 d-flex">
+            <div class="mod-card w-100 text-center">
+              <div class="mod-icon mx-auto" aria-hidden="true"><i class="bi bi-back"></i></div>
+              <p class="mod-title">Tapa Trasera Modificada</p>
+              <p style="font-size:.82rem;color:#666;margin:0;line-height:1.6;">Completamente optimizada para refrigeración</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3 d-flex">
+            <div class="mod-card w-100 text-center">
+              <div class="mod-icon mx-auto" aria-hidden="true"><i class="bi bi-wrench-adjustable"></i></div>
+              <p class="mod-title">Fijación Accesible</p>
+              <p style="font-size:.82rem;color:#666;margin:0;line-height:1.6;">Tornillería externa de fácil acceso</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3 d-flex">
+            <div class="mod-card w-100 text-center">
+              <div class="mod-icon mx-auto" aria-hidden="true"><i class="bi bi-lightning"></i></div>
+              <p class="mod-title">Extracción Rápida</p>
+              <p style="font-size:.82rem;color:#666;margin:0;line-height:1.6;">Sin comprometer integridad estructural</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3 d-flex">
+            <div class="mod-card w-100 text-center">
+              <div class="mod-icon mx-auto" aria-hidden="true"><i class="bi bi-tools"></i></div>
+              <p class="mod-title">Acceso Directo</p>
+              <p style="font-size:.82rem;color:#666;margin:0;line-height:1.6;">Mantenimiento preventivo y correctivo</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TECNOLOGÍAS -->
+    <section id="tecnologias" class="section-darker" aria-labelledby="tech-cs-titulo">
+      <div class="container text-center">
+        <h3 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.9rem;letter-spacing:2px;margin-bottom:1.5rem;" id="tech-cs-titulo">
+          <i class="bi bi-tools text-acento me-2"></i>Stack Tecnológico
+        </h3>
+        <div>
+          <span class="tech-pill"><i class="bi bi-cpu"></i>Intel i7-12650H</span>
+          <span class="tech-pill"><i class="bi bi-gpu-card"></i>NVIDIA RTX 4060</span>
+          <span class="tech-pill"><i class="bi bi-fire"></i>X2 Quad Heatsink</span>
+          <span class="tech-pill" style="border-color:rgba(255,140,66,.3);color:#ff8c42;"><i class="bi bi-layers"></i>CrimsonLayer TIM</span>
+          <span class="tech-pill"><i class="bi bi-thermometer-half"></i>NTC Thermistor</span>
+          <span class="tech-pill"><i class="bi bi-wind"></i>Ventilador 22U</span>
+          <span class="tech-pill"><i class="bi bi-fan"></i>Serie PNY RTX 4090</span>
+          <span class="tech-pill"><i class="bi bi-memory"></i>Heatsink PS3 PCH</span>
+          <span class="tech-pill"><i class="bi bi-windows"></i>WinOsCore</span>
+        </div>
+        <hr class="divider mt-5">
+        <div class="d-flex flex-wrap gap-3 justify-content-center mt-4">
+          <a href="portfolio.html" class="btn-tech"><i class="bi bi-arrow-left me-2"></i>Volver al Portafolio</a>
+          <a href="detalle-micromainframe.html" class="btn-tech btn-tech-solid"><i class="bi bi-arrow-right me-2"></i>Ver Micro-Mainframe</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 <a href="index.html">TechLab</a> · Alexis Negrón Rodríguez · San Juan, Puerto Rico</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function onVisible(id, cb) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const o = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) { cb(); o.disconnect(); } });
+      }, { threshold: 0.35 });
+      o.observe(el);
+    }
+    /* Base 60°C = 100% para visualizar proporcionalmente */
+    onVisible('cpu-bar', () => setTimeout(() => {
+      document.getElementById('cpu-bar').style.width = '88%';       /* 53/60 */
+      document.getElementById('gpu-sostenido').style.width = '72%'; /* 43/60 */
+      document.getElementById('gpu-mejor').style.width = '58%';     /* 35/60 */
+    }, 150));
+  </script>
+
+</body>
+</html>

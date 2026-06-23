@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<!--
+  =============================================
+  TechLab Portfolio — Resumen Ejecutivo
+  Autor: Alexis Negrón Rodríguez
+  Archivo: resumen.html
+
+  Estructura HTML5:
+  - <nav>: Navbar Bootstrap 5 con enlace activo "Resumen"
+  - <header>: Hero personal con nombre, título, grado académico
+    y frases personales de enfoque
+  - <main>:
+      · <section id="perfil">: Resumen ejecutivo completo —
+        15+ años R&D, Bachelor Information Assurance & Security,
+        4 áreas de especialización (Sistemas/SO, Térmica,
+        IA/Edge, Ciberseguridad) con sus competencias detalladas
+      · <section id="kpis">: 8 KPIs globales del portafolio —
+        los números más fuertes de todos los proyectos combinados:
+        93 t/s · 920 MB seguridad ON · 42h CPU raw · 1,445 MB/s TX
+        · 60 FPS Epic · 400°C TIM · 47°C V100 250W · 40K milestones
+      · <section id="proyectos">: 8 cards de proyectos compactas,
+        una por proyecto, con nombre + KPI más impactante +
+        enlace a la página de detalle correspondiente
+      · <section id="stack">: Core Technologies agrupadas por
+        dominio: Lenguajes · AI · Embedded · GPU · OS ·
+        Monitoreo · Networking · Hardware
+      · <section id="logros">: Logros técnicos destacados del
+        resumen ejecutivo: WinOs (+42h), Hydra Prometheus (VRAM 60°C),
+        Inferencia LLM HW bajo perfil, eGPU V100/P100 41°C 250W,
+        caso de estudio Codestral 22B Q4_K_M completo con tabla
+      · <section id="cta">: Llamado a la acción — portafolio
+        completo, contacto, frases personales de enfoque
+  - <footer>: Pie de página
+  =============================================
+-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Resumen Ejecutivo — Alexis Negrón Rodríguez · Information Assurance & Security · 15+ años R&D Hardware/Software · IA · Ingeniería Térmica">
+  <title>TechLab | Resumen Ejecutivo — Alexis Negrón Rodríguez</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+
+  <style>
+    /* KPI global */
+    .gkpi{background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.2rem;text-align:center;height:100%;transition:border-color .3s}
+    .gkpi:hover{border-color:rgba(0,200,255,.25)}
+    .gkpi-lbl{font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:.3rem}
+    .gkpi-val{font-family:var(--fuente-titulo);font-size:1.55rem;color:var(--acento);margin:0;line-height:1.1}
+    .gkpi-sub{font-size:.66rem;color:#444;margin:0;line-height:1.4}
+    .gkpi-src{font-size:.62rem;color:#333;margin:.3rem 0 0;letter-spacing:1px}
+
+    /* Project card resumen */
+    .pc{background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.2rem;height:100%;transition:border-color .3s,transform .3s;text-decoration:none;display:block}
+    .pc:hover{border-color:rgba(0,200,255,.3);transform:translateY(-3px)}
+    .pc-num{font-size:.62rem;letter-spacing:2px;text-transform:uppercase;color:#444;margin-bottom:.2rem}
+    .pc-name{font-family:var(--fuente-titulo);font-size:.82rem;color:var(--blanco);letter-spacing:1.5px;margin-bottom:.5rem}
+    .pc-kpi{font-size:.88rem;color:var(--acento);font-family:var(--fuente-titulo);margin-bottom:.4rem;letter-spacing:1px}
+    .pc-desc{font-size:.78rem;color:#666;line-height:1.5;margin:0}
+    .pc-link{font-size:.7rem;color:rgba(0,200,255,.5);letter-spacing:1px;text-transform:uppercase;margin-top:.6rem;display:block}
+
+    /* Competencia item */
+    .comp-area{margin-bottom:1.8rem}
+    .comp-area-title{font-family:var(--fuente-titulo);font-size:.78rem;color:var(--blanco);letter-spacing:2px;text-transform:uppercase;margin-bottom:.8rem;padding-bottom:.5rem;border-bottom:1px solid rgba(255,255,255,.06)}
+    .comp-list{list-style:none;padding:0;margin:0}
+    .comp-list li{font-size:.84rem;color:#888;padding:.25rem 0;display:flex;align-items:center;gap:.5rem}
+    .comp-list li::before{content:'';width:4px;height:4px;background:var(--acento);border-radius:50%;flex-shrink:0}
+
+    /* Stack tech tabla */
+    .st-row{display:flex;align-items:baseline;gap:1rem;padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.05)}
+    .st-row:last-child{border-bottom:none}
+    .st-cat{font-family:var(--fuente-titulo);font-size:.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--acento);min-width:100px;flex-shrink:0}
+    .st-vals{font-size:.84rem;color:#888;line-height:1.5}
+
+    /* Logro card */
+    .logro{background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.4rem;margin-bottom:1rem;transition:border-color .3s}
+    .logro:hover{border-color:rgba(0,200,255,.2)}
+    .logro-num{font-family:var(--fuente-titulo);font-size:.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);margin-bottom:.3rem}
+    .logro-title{font-family:var(--fuente-titulo);font-size:.9rem;color:var(--blanco);letter-spacing:1.5px;margin-bottom:.7rem}
+    .logro-body{font-size:.85rem;color:#777;line-height:1.75;margin:0}
+
+    /* Metrics tabla inline */
+    .mt{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:.8rem}
+    .mt th{font-family:var(--fuente-titulo);font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:#555;padding:.5rem .9rem;border-bottom:1px solid rgba(255,255,255,.08);text-align:left}
+    .mt td{padding:.6rem .9rem;border-bottom:1px solid rgba(255,255,255,.05);color:#bbb}
+    .mt tr:last-child td{border-bottom:none}
+    .hi{color:var(--acento);font-weight:700;font-family:var(--fuente-titulo);letter-spacing:1px}
+    .ok{color:#00ff88;font-weight:600}
+
+    /* Frase personal */
+    .frase{border-left:3px solid var(--acento);padding:.8rem 1.2rem;margin:.8rem 0;background:rgba(0,200,255,.04)}
+    .frase p{font-style:italic;color:#666;font-size:.92rem;margin:0;line-height:1.7}
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" aria-label="Navegación principal">
+    <div class="container">
+      <a class="navbar-brand" href="index.html"><i class="bi bi-cpu-fill me-2"></i>TECHLAB</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+              data-bs-target="#navbarMain" aria-controls="navbarMain"
+              aria-expanded="false" aria-label="Alternar navegación">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav ms-auto gap-lg-2">
+          <li class="nav-item"><a class="nav-link" href="index.html"><i class="bi bi-house me-1"></i>Inicio</a></li>
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="resumen.html"><i class="bi bi-file-person me-1"></i>Resumen</a></li>
+          <li class="nav-item"><a class="nav-link" href="portfolio.html"><i class="bi bi-grid me-1"></i>Portafolio</a></li>
+          <li class="nav-item"><a class="nav-link" href="contacto.html"><i class="bi bi-grid me-1"></i>Contacto</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header>
+    <div class="hero" role="banner">
+      <div class="hero-content container">
+        <p class="hero-subtitle fade-in-up" style="font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">
+          Portafolio Ejecutivo de Proyectos e Innovaciones
+        </p>
+        <h1 class="hero-title fade-in-up fade-delay-1">Alexis Negrón Rodríguez</h1>
+        <div class="hero-line fade-in-up fade-delay-1"></div>
+        <p class="hero-subtitle fade-in-up fade-delay-2">
+          Bachelor Degree in Technology · Major in Information Assurance &amp; Security<br>
+          <span style="font-size:.85rem;color:rgba(255,255,255,.45);">15+ años R&amp;D · Hardware · Software · IA · Ingeniería Térmica</span>
+        </p>
+        <div class="fade-in-up fade-delay-3" style="display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin-top:1.5rem;">
+          <a href="portfolio.html" class="btn-tech"><i class="bi bi-grid me-2"></i>Ver Portafolio Completo</a>
+          <a href="contacto.html" class="btn-tech btn-tech-solid"><i class="bi bi-envelope me-2"></i>Contacto</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- PERFIL Y COMPETENCIAS -->
+    <section id="perfil" class="section-dark" aria-labelledby="perfil-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">Resumen Ejecutivo</p>
+          <h2 class="section-title" id="perfil-titulo">Perfil Profesional</h2>
+          <div class="section-line"></div>
+        </div>
+
+        <div class="row g-5">
+
+          <div class="col-lg-7">
+            <p class="about-text">
+              Profesional con sólida base en
+              <strong style="color:var(--blanco);">Information Assurance &amp; Security</strong>
+              y más de <strong style="color:var(--blanco);">15 años de experiencia</strong> en
+              investigación y desarrollo (R&amp;D) de hardware y software. Experto en optimización
+              de sistemas críticos, ingeniería térmica avanzada y despliegue de
+              <strong style="color:var(--blanco);">Inteligencia Artificial en entornos de recursos limitados</strong>.
+            </p>
+            <p class="about-text">
+              Este portafolio documenta años de experiencia técnica en el diseño, optimización y
+              mantenimiento de sistemas operativos personalizados
+              (<strong style="color:var(--blanco);">WinOs Unify Corps</strong>), así como en el
+              desarrollo de proyectos avanzados de hardware como TouchPi, CryoStorm, RoboNexis,
+              NexCore y el Mainframe eGPU. Cada proyecto representa validación empírica real bajo
+              condiciones de carga sostenida, no benchmarks sintéticos.
+            </p>
+
+            <div class="frase"><p>"La optimización no se concibe de fronteras, sino de las oportunidades que le des."</p></div>
+            <div class="frase"><p>"Meant to outperform."</p></div>
+          </div>
+
+          <div class="col-lg-5">
+            <h3 style="font-family:var(--fuente-titulo);color:var(--blanco);font-size:.82rem;letter-spacing:2px;margin-bottom:1.2rem;">
+              <i class="bi bi-award text-acento me-2"></i>Core Competencies
+            </h3>
+
+            <div class="comp-area">
+              <p class="comp-area-title"><i class="bi bi-cpu me-2" style="color:var(--acento);"></i>Ingeniería de Sistemas y SO</p>
+              <ul class="comp-list">
+                <li>Optimización de Kernel Windows LTSC</li>
+                <li>Reducción de latencia x64</li>
+                <li>Ingeniería inversa de DLLs</li>
+                <li>Gestión dinámica de memoria</li>
+                <li>Event Tracing · Kernel Providers · ACPI</li>
+              </ul>
+            </div>
+
+            <div class="comp-area">
+              <p class="comp-area-title"><i class="bi bi-thermometer-half me-2" style="color:var(--acento);"></i>Gestión Térmica y Electrónica</p>
+              <ul class="comp-list">
+                <li>Diseño de refrigeración híbrida activo/pasivo</li>
+                <li>Control volumétrico de flujo de aire</li>
+                <li>Reingeniería térmica de GPUs y VRMs</li>
+                <li>Compuestos TIM propietarios (CrimsonLayer TIM)</li>
+              </ul>
+            </div>
+
+            <div class="comp-area">
+              <p class="comp-area-title"><i class="bi bi-robot me-2" style="color:var(--acento);"></i>IA y Edge Computing</p>
+              <ul class="comp-list">
+                <li>Despliegue de LLMs en hardware restringido</li>
+                <li>Arquitecturas de agentes autónomos</li>
+                <li>Sistemas embebidos RPi / LattePanda / Coral TPU</li>
+              </ul>
+            </div>
+
+            <div class="comp-area" style="margin-bottom:0;">
+              <p class="comp-area-title"><i class="bi bi-shield-check me-2" style="color:var(--acento);"></i>Ciberseguridad</p>
+              <ul class="comp-list">
+                <li>Hardening de sistemas operativos</li>
+                <li>Information Assurance</li>
+                <li>Protocolos de comunicación cifrada</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- KPIs GLOBALES -->
+    <section id="kpis" class="section-darker" aria-labelledby="kpis-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">Evidencia de rendimiento</p>
+          <h2 class="section-title" id="kpis-titulo">Métricas Clave del Portafolio</h2>
+          <div class="section-line"></div>
+          <p style="color:#555;max-width:520px;margin:0 auto;font-size:.88rem;line-height:1.8;">
+            Resultados validados empíricamente en hardware real bajo cargas sostenidas.
+            No benchmarks sintéticos — pruebas documentadas con telemetría.
+          </p>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-6 col-md-3">
+            <div class="gkpi">
+              <p class="gkpi-lbl">Inferencia peak</p>
+              <p class="gkpi-val">~93</p>
+              <p class="gkpi-sub">tokens/seg · Codestral 22B</p>
+              <p class="gkpi-src">Mainframe eGPU · Tesla V100</p>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="gkpi">
+              <p class="gkpi-lbl">RAM standby · seguridad ON</p>
+              <p class="gkpi-val">920</p>
+              <p class="gkpi-sub">MB · Defender + Firewall + lsass</p>
+              <p class="gkpi-src">Asus E210M · Win 11 LTSC</p>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="gkpi">
+              <p class="gkpi-lbl">Entrenamiento CPU raw</p>
+              <p class="gkpi-val">42+</p>
+              <p class="gkpi-sub">horas · modelo 12B–16B</p>
+              <p class="gkpi-src">NexCore · Getac K120</p>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="gkpi">
+              <p class="gkpi-lbl">Peak TX Mellanox</p>
+              <p class="gkpi-val">1,445</p>
+              <p class="gkpi-sub">MB/s transmisión NAS</p>
+              <p class="gkpi-src">Asus E210M · Kernel tuning</p>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="gkpi">
+              <p class="gkpi-lbl">FPS Epic eGPU</p>
+              <p class="gkpi-val">60</p>
+              <p class="gkpi-sub">estables · Celeron N4020</p>
+              <p class="gkpi-src">Micro-Mainframe · GTX 1070</p>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="gkpi">
+              <p class="gkpi-lbl">TIM punto crítico</p>
+              <p class="gkpi-val">400°C</p>
+              <p class="gkpi-sub">aislamiento dieléctrico absoluto</p>
+              <p class="gkpi-src">CrimsonLayer TIM · 11 elementos</p>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="gkpi">
+              <p class="gkpi-lbl">GPU temp. · 250W</p>
+              <p class="gkpi-val">41°C</p>
+              <p class="gkpi-sub">Tesla V100/P100 eGPU</p>
+              <p class="gkpi-src">Mainframe eGPU · inferencia</p>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="gkpi">
+              <p class="gkpi-lbl">Milestones modelo</p>
+              <p class="gkpi-val">~40K</p>
+              <p class="gkpi-sub">desarrollados · CPU only</p>
+              <p class="gkpi-src">NexCore · WinOs Unify Corps</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 PROYECTOS -->
+    <section id="proyectos" class="section-dark" aria-labelledby="proy-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">Ecosistema completo</p>
+          <h2 class="section-title" id="proy-titulo">8 Proyectos Documentados</h2>
+          <div class="section-line"></div>
+        </div>
+
+        <div class="row g-3">
+
+          <div class="col-sm-6 col-lg-3">
+            <a href="detalle-mainframe.html" class="pc">
+              <p class="pc-num">01 · CUDA · IA</p>
+              <p class="pc-name">Mainframe eGPU</p>
+              <p class="pc-kpi">~93 t/s inferencia</p>
+              <p class="pc-desc">Tesla V100 · NAS · Dual PSU · Thunderbolt · WinOs 2.1</p>
+              <span class="pc-link">Ver detalle →</span>
+            </a>
+          </div>
+
+          <div class="col-sm-6 col-lg-3">
+            <a href="detalle-robonexis-n1.html" class="pc">
+              <p class="pc-num">02 · Robótica · Edge AI</p>
+              <p class="pc-name">RoboNexis N1</p>
+              <p class="pc-kpi">6h autonomía · solar</p>
+              <p class="pc-desc">RPi 3B · LoRa Mesh · 15 celdas Li-ion · orejas dinámicas</p>
+              <span class="pc-link">Ver detalle →</span>
+            </a>
+          </div>
+
+          <div class="col-sm-6 col-lg-3">
+            <a href="detalle-nexcore.html" class="pc">
+              <p class="pc-num">03 · Supervisión · LLM</p>
+              <p class="pc-name">NexCore</p>
+              <p class="pc-kpi">42h · 40K milestones</p>
+              <p class="pc-desc">Getac K120 · i7-8250U · CPU raw · VirtualBox · HWInfo</p>
+              <span class="pc-link">Ver detalle →</span>
+            </a>
+          </div>
+
+          <div class="col-sm-6 col-lg-3">
+            <a href="detalle-touchpi.html" class="pc">
+              <p class="pc-num">04 · Edge AI · Híbrido</p>
+              <p class="pc-name">TouchPi Node</p>
+              <p class="pc-kpi">45°C RPi4B compilando</p>
+              <p class="pc-desc">RPi 4B + LattePanda · Dual BFB1012 · Win/Linux</p>
+              <span class="pc-link">Ver detalle →</span>
+            </a>
+          </div>
+
+          <div class="col-sm-6 col-lg-3">
+            <a href="detalle-asus-e210m.html" class="pc">
+              <p class="pc-num">05 · OS · Optimización</p>
+              <p class="pc-name">Asus E210M</p>
+              <p class="pc-kpi">920 MB · seguridad ON</p>
+              <p class="pc-desc">Celeron N4020 · Win 11 LTSC · Mellanox 1,445 MB/s</p>
+              <span class="pc-link">Ver detalle →</span>
+            </a>
+          </div>
+
+          <div class="col-sm-6 col-lg-3">
+            <a href="detalle-micromainframe.html" class="pc">
+              <p class="pc-num">06 · R&D · Térmica</p>
+              <p class="pc-name">Custom Micro-Mainframe</p>
+              <p class="pc-kpi">52°C full load · 60 FPS</p>
+              <p class="pc-desc">CrimsonLayer TIM · M.2 eGPU · GTX 1070 · 11×10 in.</p>
+              <span class="pc-link">Ver detalle →</span>
+            </a>
+          </div>
+
+          <div class="col-sm-6 col-lg-3">
+            <a href="detalle-thunderdeck.html" class="pc">
+              <p class="pc-num">07 · IA · Automatización</p>
+              <p class="pc-name">Thunderdeck</p>
+              <p class="pc-kpi">Multi-nodo · offline</p>
+              <p class="pc-desc">WebSockets · Vosk · GPT4All · Linux · WinOs</p>
+              <span class="pc-link">Ver detalle →</span>
+            </a>
+          </div>
+
+          <div class="col-sm-6 col-lg-3">
+            <a href="detalle-robonexis.html" class="pc">
+              <p class="pc-num">08 · IA · Visión</p>
+              <p class="pc-name">RoboNexis (Sistema)</p>
+              <p class="pc-kpi">Codestral 22B · 14GB VRAM</p>
+              <p class="pc-desc">OpenCV · Coral TPU · RPi · GPT4All · Vosk</p>
+              <span class="pc-link">Ver detalle →</span>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- CORE TECHNOLOGIES -->
+    <section id="stack" class="section-darker" aria-labelledby="stack-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">Stack técnico</p>
+          <h2 class="section-title" id="stack-titulo">Core Technologies</h2>
+          <div class="section-line"></div>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+          <div class="col-lg-8">
+            <div style="background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.5rem;">
+              <div class="st-row"><span class="st-cat">Lenguajes</span><span class="st-vals">C++ · Python · PowerShell · Bash</span></div>
+              <div class="st-row"><span class="st-cat">AI</span><span class="st-vals">GPT4All · llama.cpp · CUDA · Codestral 22B · Vosk · OpenCV</span></div>
+              <div class="st-row"><span class="st-cat">Embedded</span><span class="st-vals">Raspberry Pi · LattePanda · Coral TPU · GPIO · LoRa</span></div>
+              <div class="st-row"><span class="st-cat">GPU</span><span class="st-vals">CUDA · DX11 · DXGI · eGPU · Tesla V100 · RTX 3090</span></div>
+              <div class="st-row"><span class="st-cat">OS</span><span class="st-vals">Windows LTSC 24H2 · WinOs Unify Corps · Debian Buster Custom</span></div>
+              <div class="st-row"><span class="st-cat">Monitoreo</span><span class="st-vals">HWInfo64 · OpenHardwareMonitor · perfmon · GPU-Z · TaskMgr</span></div>
+              <div class="st-row"><span class="st-cat">Networking</span><span class="st-vals">TCP/IP · LoRa Mesh · VPN · Mellanox InfiniBand · WebSockets</span></div>
+              <div class="st-row"><span class="st-cat">Hardware</span><span class="st-vals">Thermal Engineering · PSU chaining · CrimsonLayer TIM · M.2 eGPU · STC-1000</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LOGROS TÉCNICOS -->
+    <section id="logros" class="section-dark" aria-labelledby="logros-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);">Casos documentados</p>
+          <h2 class="section-title" id="logros-titulo">Logros Técnicos Destacados</h2>
+          <div class="section-line"></div>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-lg-6">
+
+            <div class="logro">
+              <p class="logro-num">Logro 01 · WinOs Unify Corps</p>
+              <p class="logro-title">Arquitectura OS personalizada — +42 horas estabilidad</p>
+              <p class="logro-body">Entorno personalizado orientado a latencia reducida y estabilidad extrema. Gestión proactiva de recursos mediante monitoreo dinámico. Estabilidad térmica sostenida durante sesiones de inferencia AI de +42 horas con ~40,000 milestones desarrollados en CPU raw only. Resultados logrados sin WinOs completamente activado, indicando margen de optimización adicional disponible.</p>
+            </div>
+
+            <div class="logro">
+              <p class="logro-num">Logro 02 · Hydra Prometheus X2</p>
+              <p class="logro-title">Ingeniería térmica — VRAM 60°C bajo carga completa</p>
+              <p class="logro-body">Reingeniería térmica de RTX 3090 (Zotac) con sistema de refrigeración híbrido activo/pasivo multicapa. Reducción de temperaturas VRAM desde niveles críticos a 60°C estables bajo carga completa al 100%. Núcleo GPU: 60°C máx · Hotspot: 45–60°C. Procedimiento experimental: lijado calibrado, inspección microscópica, análisis de porosidad, ciclos térmicos controlados.</p>
+            </div>
+
+            <div class="logro">
+              <p class="logro-num">Logro 03 · LLM en hardware limitado</p>
+              <p class="logro-title">Inferencia 22B en GPUs de 4GB VRAM</p>
+              <p class="logro-body">Optimización de modelos LLM (12B–22B parámetros) para ejecución en GPUs con solo 4GB VRAM, superando limitaciones estándar de la industria mediante ajustes en el pipeline de memoria y offloading adaptativo. Validado en múltiples plataformas: CPU raw, eGPU Thunderbolt, entorno virtual concurrente.</p>
+            </div>
+
+          </div>
+
+          <div class="col-lg-6">
+
+            <div class="logro">
+              <p class="logro-num">Logro 04 · Mainframe eGPU</p>
+              <p class="logro-title">Tesla V100/P100 — 41°C a 250W sostenidos</p>
+              <p class="logro-body">Adaptación de hardware enterprise a entorno eGPU externo vía Thunderbolt, manteniendo temperaturas operativas de 41°C a 250W sostenidos. Garantiza máxima vida útil del hardware bajo inferencia prolongada. Sistema con control térmico STC-1000, sensores NTC físicos y ventilación Delta industrial.</p>
+            </div>
+
+            <!-- Caso de estudio Codestral -->
+            <div class="logro" style="border-color:rgba(0,200,255,.15);">
+              <p class="logro-num">Logro 05 · Caso de Estudio — Inferencia LLM alto rendimiento</p>
+              <p class="logro-title">Codestral 22B Q4_K_M · Tesla V100 eGPU · RoboNexis</p>
+              <p class="logro-body" style="margin-bottom:.8rem;">Sistema validado de inferencia local basado en Codestral-22B Q4_K_M sobre Tesla V100 (eGPU vía Thunderbolt 3) dentro del ecosistema RoboNexis CLI Inference System v1.1.</p>
+              <table class="mt">
+                <thead><tr><th>Parámetro</th><th>Resultado</th></tr></thead>
+                <tbody>
+                  <tr><td>Tokens generados</td><td><span class="hi">330</span></td></tr>
+                  <tr><td>Tiempo de inferencia</td><td><span class="hi">13.87 s</span></td></tr>
+                  <tr><td>Velocidad promedio</td><td><span class="hi">23.79 t/s</span></td></tr>
+                  <tr><td>Consumo pico</td><td style="color:#bbb;">169 W</td></tr>
+                  <tr><td>Temperatura GPU</td><td><span class="ok">47 °C estable</span></td></tr>
+                  <tr><td>VRAM utilizada</td><td><span class="hi">~14.2 GB / 16 GB</span></td></tr>
+                  <tr><td>Eventos OOM</td><td><span class="ok">Ninguno</span></td></tr>
+                  <tr><td>Thermal throttling</td><td><span class="ok">No detectado</span></td></tr>
+                  <tr><td>Bus TX promedio</td><td style="color:#bbb;">60–1,000 MB/s</td></tr>
+                  <tr><td>Saturación enlace PCIe</td><td><span class="ok">No alcanzada</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section id="cta" class="section-blue" aria-labelledby="cta-titulo">
+      <div class="container text-center">
+        <h2 class="section-title" id="cta-titulo">Portafolio Técnico Completo</h2>
+        <div class="section-line"></div>
+        <p style="color:rgba(255,255,255,.7);max-width:560px;margin:0 auto 1rem;font-size:1rem;line-height:1.8;">
+          Cada proyecto cuenta con documentación técnica extendida, tablas de métricas reales,
+          análisis de casos de estudio y evidencia fotográfica y de telemetría.
+          La documentación física suma más de 122 páginas validadas.
+        </p>
+        <p style="color:rgba(255,255,255,.4);max-width:500px;margin:0 auto 2rem;font-size:.85rem;line-height:1.7;">
+          Documentos PDF con imágenes de telemetría, capturas de HWInfo, Task Manager,
+          GPU-Z y resultados de inferencia disponibles como evidencia complementaria.
+        </p>
+        <div style="display:flex;flex-wrap:wrap;gap:.8rem;justify-content:center;">
+          <a href="portfolio.html" class="btn-tech"><i class="bi bi-grid me-2"></i>Ver los 8 Proyectos</a>
+          <a href="contacto.html" class="btn-tech btn-tech-solid"><i class="bi bi-send me-2"></i>Contacto</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 <a href="index.html">TechLab</a> · Alexis Negrón Rodríguez · San Juan, Puerto Rico · Bachelor Degree in Technology — Information Assurance &amp; Security</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
