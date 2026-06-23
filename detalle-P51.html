@@ -2,21 +2,28 @@
 <!--
   TechLab Portfolio - Detalle: P51
   Autor: Alexis Negrón Rodríguez
-  Archivo Seleccionado: detalle-P51.html
+  Archivo: detalle-P51.html
 
   Estructura HTML5:
   - <nav>: Navbar Bootstrap 5 responsiva
   - <header>: Hero de detalle con overlay y título
   - <main>:
-      · <section id="detalle">: Descripción del proyecto,
-        tecnologías usadas como tags estilizados,
-        y panel lateral con info del proyecto.
-  - <footer>: Pie de página con créditos-->
+      · <section id="overview">: Resumen del proyecto, plataforma base
+        y panel lateral con datos del sistema
+      · <section id="termico">: Arquitectura térmica personalizada
+        (disipadores GRID K2, presión controlada, compuesto térmico)
+      · <section id="ventilacion">: Sistema de ventilación multi-etapa
+        y soporte de presión/circulación
+      · <section id="software-resultados">: Plataforma de software,
+        casos de uso y resultados destacados de inferencia
+      · <section id="tecnologias">: Tags de tecnologías utilizadas
+  - <footer>: Pie de página con navegación entre proyectos
+-->
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="P51 — asistente modular basado en IA y automatización por Alexis TechLab">
+  <meta name="description" content="P51 — Estación de trabajo móvil experimental para inferencia local de IA, sobre Lenovo ThinkPad P51 con arquitectura térmica personalizada — Alexis TechLab">
   <title>TechLab | P51</title>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -24,10 +31,96 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link href="css/style.css" rel="stylesheet">
   <script src="js/app.js"></script>
+
+  <style>
+    .spec-box {
+      background: rgba(0,200,255,0.05);
+      border: 1px solid rgba(0,200,255,0.12);
+      border-radius: 4px;
+      padding: 1rem;
+      height: 100%;
+    }
+    .spec-box p.label {
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--acento);
+      margin-bottom: 0.4rem;
+    }
+    .spec-box p.value {
+      color: #ccc;
+      font-size: 0.88rem;
+      margin: 0;
+      line-height: 1.7;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .feature-item:last-child { border-bottom: none; }
+    .feature-icon {
+      width: 38px;
+      height: 38px;
+      background: rgba(0,200,255,0.08);
+      border: 1px solid rgba(0,200,255,0.2);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--acento);
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .feature-item h6 {
+      font-family: var(--fuente-titulo);
+      font-size: 0.78rem;
+      color: var(--blanco);
+      letter-spacing: 1.5px;
+      margin-bottom: 0.15rem;
+    }
+    .feature-item p {
+      font-size: 0.85rem;
+      color: #888;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .result-card {
+      background: #111;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 4px;
+      padding: 1.2rem;
+      text-align: center;
+      height: 100%;
+    }
+    .result-card .val {
+      font-family: var(--fuente-titulo);
+      font-size: 1.7rem;
+      color: var(--acento);
+      line-height: 1;
+      margin: 0;
+    }
+    .result-card .lbl {
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 0.4rem;
+    }
+    .result-card .sub {
+      font-size: 0.72rem;
+      color: #555;
+      margin: 0;
+    }
+  </style>
 </head>
 <body>
 
-  <!--NAVBAR-->
+  <!-- NAVBAR -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" aria-label="Navegación principal">
     <div class="container">
       <a class="navbar-brand" href="index.html">
@@ -45,17 +138,17 @@
             <a class="nav-link" href="index.html"><i class="bi bi-house me-1"></i>Inicio</a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="resumen.html"><i class="bi bi-file-person me-1"></i>Resumen</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link active" href="portfolio.html"><i class="bi bi-grid me-1"></i>Portafolio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="recursos.html"><i class="bi bi-folder2-open me-1"></i>Recursos Adicionales</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="contacto.html"><i class="bi bi-envelope me-1"></i>Contacto</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="recursos.html">
-              <i class="bi bi-envelope me-1"></i>Recursos Adicionales
-            </a>
-          </li>
-                    <li class="nav-item"><a class="nav-link" href="contacto.html"><i class="bi bi- me-1"></i>Contacto</a></li><li class="nav-item"><a class="nav-link" aria-current="page" href="resumen.html"><i class="bi bi-file-person me-1"></i>Resumen</a>
         </ul>
       </div>
     </div>
@@ -64,7 +157,6 @@
   <!--HEADER — Hero de detalle-->
   <header>
     <div class="detail-hero" style="background-image:url('img/p51.jpg');" role="banner">
-      <!-- Overlay extra utilizado para este proyecto (En este caso verde oscuro) -->
       <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(13,13,13,1) 0%, rgba(0,40,10,0.5) 100%);"></div>
       <div class="detail-hero-content container w-100" style="position:relative;z-index:1;">
         <nav aria-label="Ruta de navegación" style="margin-bottom:0.5rem;">
@@ -80,108 +172,121 @@
           </ol>
         </nav>
         <span style="font-size:0.72rem; letter-spacing:3px; text-transform:uppercase; color:var(--acento);">
-          IA · Automatización · Linux
+          IA Móvil · Térmica · Inferencia Local
         </span>
         <h1 class="section-title mt-1">P51</h1>
+        <p style="color:rgba(255,255,255,0.6); font-size:0.88rem; letter-spacing:1px; margin-top:0.4rem;">
+          Estación de Trabajo Móvil Experimental — Lenovo ThinkPad P51
+        </p>
       </div>
     </div>
   </header>
 
-  <!--MAIN -->
+  <!--MAIN-->
   <main>
-    <section id="detalle" class="section-dark" aria-labelledby="P51-titulo">
+
+    <!-- === SECCIÓN 1: OVERVIEW === -->
+    <section id="overview" class="section-dark" aria-labelledby="P51-titulo">
       <div class="container">
         <h2 class="visually-hidden" id="P51-titulo">Detalle del proyecto P51</h2>
 
         <div class="row g-5">
 
-          <!-- Descripción del proyecto -->
           <div class="col-lg-8">
 
             <p class="about-text">
-              <strong style="color:var(--blanco);">P51</strong> es un asistente modular basado en
-              inteligencia artificial con capacidad de comunicación en tiempo real entre múltiples
-              sistemas. Su arquitectura permite que distintos nodos —corriendo en diferentes dispositivos—
-              compartan contexto, comandos y resultados de forma sincronizada.
+              <strong style="color:var(--blanco);">P51</strong> es una estación de trabajo portátil
+              experimental desarrollada sobre una plataforma
+              <strong style="color:var(--blanco);">Lenovo ThinkPad P51</strong>, equipada con un
+              procesador <strong style="color:var(--blanco);">Intel Xeon E3-1505M</strong> y
+              <strong style="color:var(--acento);">40 GB</strong> de memoria RAM.
             </p>
 
             <p class="about-text">
-              El sistema utiliza <strong style="color:var(--blanco);">WebSockets</strong> para mantener
-              conexiones persistentes entre el servidor central y los clientes, lo que permite latencias
-              mínimas en la ejecución de tareas automatizadas. El reconocimiento de voz se implementa
-              con <strong style="color:var(--blanco);">Vosk</strong>, funcionando completamente offline
-              sin enviar datos a servidores externos.
+              El objetivo principal del proyecto fue crear una plataforma móvil capaz de soportar
+              cargas prolongadas de inferencia de inteligencia artificial, análisis de datos y
+              procesamiento de alto rendimiento, manteniendo estabilidad térmica y operativa durante
+              sesiones extensivas de trabajo.
             </p>
 
             <p class="about-text">
-              El razonamiento y la generación de respuestas se delegan a
-              <strong style="color:var(--blanco);">GPT4All</strong>, un modelo de lenguaje que corre
-              localmente sobre Linux. Esto garantiza privacidad total y operación sin dependencia
-              de servicios en la nube, incluso en entornos sin internet.
+              A diferencia de una estación de trabajo convencional, P51 incorpora una
+              <strong style="color:var(--blanco);">arquitectura térmica personalizada</strong> diseñada
+              para maximizar la disipación de calor en CPU, VRM, memoria y placa base, utilizando
+              múltiples etapas de ventilación y distribución de flujo de aire.
             </p>
 
             <hr class="divider">
 
             <h3 style="font-family:var(--fuente-titulo); color:var(--blanco); font-size:0.95rem; letter-spacing:2px; margin-bottom:1.2rem;">
-              <i class="bi bi-tools text-acento me-2"></i>Tecnologías Utilizadas
+              <i class="bi bi-cpu text-acento me-2"></i>Plataforma Base
             </h3>
 
-            <div>
-              <span class="tech-tag"><i class="bi bi-terminal me-1"></i>Linux</span>
-              <span class="tech-tag"><i class="bi bi-filetype-py me-1"></i>Python</span>
-              <span class="tech-tag"><i class="bi bi-broadcast me-1"></i>WebSockets</span>
-              <span class="tech-tag"><i class="bi bi-mic me-1"></i>Vosk</span>
-              <span class="tech-tag"><i class="bi bi-robot me-1"></i>GPT4All</span>
-              <span class="tech-tag"><i class="bi bi-hdd-network me-1"></i>Socket.IO</span>
-              <span class="tech-tag"><i class="bi bi-gear me-1"></i>Systemd</span>
-            </div>
-
-            <hr class="divider">
-
-            <!-- Navegación entre proyectos -->
-            <div class="d-flex flex-wrap gap-3 justify-content-between">
-              <a href="detalle-robonexis-n1.html" class="btn-tech">
-                <i class="bi bi-arrow-left me-2"></i>Anterior: RoboNexis N1
-              </a>
-              <a href="portfolio.html" class="btn-tech btn-tech-solid">
-                <i class="bi bi-grid me-2"></i>Ver Todos los Proyectos
-              </a>
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <div class="spec-box">
+                  <p class="label">Procesador</p>
+                  <p class="value">Intel Xeon E3-1505M<br>4 núcleos / 8 hilos</p>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="spec-box">
+                  <p class="label">Memoria</p>
+                  <p class="value">40 GB RAM<br>Carga sostenida de IA</p>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="spec-box">
+                  <p class="label">Chasis</p>
+                  <p class="value">Lenovo ThinkPad P51<br>Plataforma móvil portátil</p>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="spec-box">
+                  <p class="label">Expansión Externa</p>
+                  <p class="value">Thunderbolt 3<br>Conexión a infraestructura Mainframe</p>
+                </div>
+              </div>
             </div>
 
           </div>
 
-          <!-- Panel lateral -->
           <div class="col-lg-4">
-            <div style="background:#111; border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:1.5rem;">
+            <div style="background:#111; border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:1.5rem; position:sticky; top:80px;">
               <h4 style="font-family:var(--fuente-titulo); color:var(--blanco); font-size:0.85rem; letter-spacing:2px; margin-bottom:1.5rem; padding-bottom:0.8rem; border-bottom:1px solid rgba(255,255,255,0.08);">
                 <i class="bi bi-bar-chart text-acento me-2"></i>Datos del Proyecto
               </h4>
 
               <div style="margin-bottom:1rem;">
                 <p style="font-size:0.72rem; letter-spacing:1.5px; text-transform:uppercase; color:#555; margin-bottom:0.2rem;">Estado</p>
-                <p style="color:#ffaa00; font-weight:600; margin:0;">
-                  <i class="bi bi-circle-fill me-1" style="font-size:0.6rem;"></i>Prototipo Activo
+                <p style="color:#00ff88; font-weight:600; margin:0;">
+                  <i class="bi bi-circle-fill me-1" style="font-size:0.6rem;"></i>Validado · En Uso
                 </p>
               </div>
 
               <div style="margin-bottom:1rem;">
-                <p style="font-size:0.72rem; letter-spacing:1.5px; text-transform:uppercase; color:#555; margin-bottom:0.2rem;">Versión</p>
-                <p style="color:#bbb; margin:0;">v1.2.0</p>
-              </div>
-
-              <div style="margin-bottom:1rem;">
                 <p style="font-size:0.72rem; letter-spacing:1.5px; text-transform:uppercase; color:#555; margin-bottom:0.2rem;">Plataforma</p>
-                <p style="color:#bbb; margin:0;">Linux (Debian / Ubuntu)</p>
+                <p style="color:#bbb; margin:0;">Lenovo ThinkPad P51</p>
               </div>
 
               <div style="margin-bottom:1rem;">
-                <p style="font-size:0.72rem; letter-spacing:1.5px; text-transform:uppercase; color:#555; margin-bottom:0.2rem;">Lenguaje Principal</p>
-                <p style="color:#bbb; margin:0;">Python 3.11</p>
+                <p style="font-size:0.72rem; letter-spacing:1.5px; text-transform:uppercase; color:#555; margin-bottom:0.2rem;">CPU</p>
+                <p style="color:#bbb; margin:0;">Intel Xeon E3-1505M</p>
+              </div>
+
+              <div style="margin-bottom:1rem;">
+                <p style="font-size:0.72rem; letter-spacing:1.5px; text-transform:uppercase; color:#555; margin-bottom:0.2rem;">RAM</p>
+                <p style="color:#bbb; margin:0;">40 GB</p>
+              </div>
+
+              <div style="margin-bottom:1rem;">
+                <p style="font-size:0.72rem; letter-spacing:1.5px; text-transform:uppercase; color:#555; margin-bottom:0.2rem;">Entorno OS</p>
+                <p style="color:#bbb; margin:0;">WinOs Unify Corps<br><span style="color:#666; font-size:0.8rem;">Layer 11 · v2.1</span></p>
               </div>
 
               <div style="margin-bottom:0;">
-                <p style="font-size:0.72rem; letter-spacing:1.5px; text-transform:uppercase; color:#555; margin-bottom:0.2rem;">Licencia</p>
-                <p style="color:#bbb; margin:0;">GPL v3.0</p>
+                <p style="font-size:0.72rem; letter-spacing:1.5px; text-transform:uppercase; color:#555; margin-bottom:0.2rem;">Modelo Validado</p>
+                <p style="color:#bbb; margin:0;">Codestral 22B Q4_K_M</p>
               </div>
             </div>
           </div>
@@ -189,6 +294,258 @@
         </div>
       </div>
     </section>
+
+    <!-- === SECCIÓN 2: ARQUITECTURA TÉRMICA === -->
+    <section id="termico" class="section-darker" aria-labelledby="termico-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:0.72rem; letter-spacing:3px; text-transform:uppercase; color:var(--acento);">Ingeniería térmica</p>
+          <h2 class="section-title" id="termico-titulo">Arquitectura Térmica Personalizada</h2>
+          <div class="section-line"></div>
+          <p style="color:#666; max-width:620px; margin:0 auto; font-size:0.9rem; line-height:1.8;">
+            El sistema integra una solución térmica experimental basada en disipadores
+            <strong style="color:#999;">NVIDIA GRID K2</strong> modificados y adaptados específicamente
+            para la plataforma.
+          </p>
+        </div>
+
+        <div class="row g-5">
+          <div class="col-lg-6">
+            <div class="feature-item">
+              <div class="feature-icon"><i class="bi bi-snow2"></i></div>
+              <div>
+                <h6>Disipadores GRID K2 Reacondicionados</h6>
+                <p>Mecanizados y adaptados para integración personalizada sobre el chasis P51.</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon"><i class="bi bi-droplet-half"></i></div>
+              <div>
+                <h6>Compuesto Térmico Especializado</h6>
+                <p>Aplicación dedicada para componentes sensibles del sistema.</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon"><i class="bi bi-shield-check"></i></div>
+              <div>
+                <h6>Cobertura Térmica Dedicada</h6>
+                <p>VRM, memoria RAM y zonas críticas de la placa base bajo disipación activa.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="feature-item">
+              <div class="feature-icon"><i class="bi bi-arrows-collapse"></i></div>
+              <div>
+                <h6>Presión Controlada (15–25 lb)</h6>
+                <p>Refuerzo estructural mediante sistema de presión controlada para optimizar el contacto térmico.</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon"><i class="bi bi-layers"></i></div>
+              <div>
+                <h6>Grafito y Materiales de Transferencia</h6>
+                <p>Uso de grafito para mejorar la distribución de calor entre componentes y disipadores.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === SECCIÓN 3: VENTILACIÓN MULTI-ETAPA Y CIRCULACIÓN === -->
+    <section id="ventilacion" class="section-dark" aria-labelledby="ventilacion-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:0.72rem; letter-spacing:3px; text-transform:uppercase; color:var(--acento);">Flujo de aire</p>
+          <h2 class="section-title" id="ventilacion-titulo">Ventilación Multi-Stage &amp; Circulación</h2>
+          <div class="section-line"></div>
+        </div>
+
+        <div class="row g-5">
+          <div class="col-lg-6">
+            <h4 style="font-family:var(--fuente-titulo); color:var(--blanco); font-size:0.85rem; letter-spacing:2px; margin-bottom:1.2rem;">
+              <i class="bi bi-fan text-acento me-2"></i>Configuración de Ventilación
+            </h4>
+            <div class="feature-item">
+              <div class="feature-icon"><i class="bi bi-six-circle"></i></div>
+              <div>
+                <h6>Seis Turbinas de Flujo Controlado</h6>
+                <p>Arquitectura de flujo de aire multi-etapa inspirada en sistemas de refrigeración de alto rendimiento.</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon"><i class="bi bi-speedometer2"></i></div>
+              <div>
+                <h6>Turbina BFB1012UH-A</h6>
+                <p>Alto caudal en la etapa superior del sistema de ventilación.</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon"><i class="bi bi-arrow-repeat"></i></div>
+              <div>
+                <h6>Turbinas AVB de Doble Rodamiento</h6>
+                <p>Alta presión estática en etapas inferiores, con operación asíncrona según demanda térmica.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <h4 style="font-family:var(--fuente-titulo); color:var(--blanco); font-size:0.85rem; letter-spacing:2px; margin-bottom:1.2rem;">
+              <i class="bi bi-water text-acento me-2"></i>Soporte de Presión y Circulación
+            </h4>
+            <div class="feature-item">
+              <div class="feature-icon"><i class="bi bi-gear-wide-connected"></i></div>
+              <div>
+                <h6>Bomba de Diafragma Independiente</h6>
+                <p>Sistema dedicado de soporte de presión para áreas VRM y componentes críticos.</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon"><i class="bi bi-recycle"></i></div>
+              <div>
+                <h6>Recirculación de Aire Controlada</h6>
+                <p>Gestión activa en zonas de alta densidad térmica del chasis.</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon"><i class="bi bi-pipe"></i></div>
+              <div>
+                <h6>Conductos de Cobre Personalizados</h6>
+                <p>Tubos y conductos adicionales para transferencia térmica complementaria.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === SECCIÓN 4: SOFTWARE, CASOS DE USO Y RESULTADOS === -->
+    <section id="software-resultados" class="section-darker" aria-labelledby="software-titulo">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p style="font-size:0.72rem; letter-spacing:3px; text-transform:uppercase; color:var(--acento);">Software &amp; resultados</p>
+          <h2 class="section-title" id="software-titulo">Plataforma de Software y Resultados</h2>
+          <div class="section-line"></div>
+        </div>
+
+        <div class="row g-5 mb-5">
+          <div class="col-lg-6">
+            <h4 style="font-family:var(--fuente-titulo); color:var(--blanco); font-size:0.85rem; letter-spacing:2px; margin-bottom:1.2rem;">
+              <i class="bi bi-windows text-acento me-2"></i>WinOs Unify Corps — Layer 11 v2.1
+            </h4>
+            <p class="about-text" style="font-size:0.9rem;">
+              P51 opera utilizando <strong style="color:var(--blanco);">WinOs Unify Corps Layer 11 v2.1</strong>,
+              la versión más avanzada del entorno de optimización desarrollado dentro del ecosistema
+              <strong style="color:var(--blanco);">NexCore</strong>.
+            </p>
+            <div>
+              <span class="tech-tag"><i class="bi bi-cpu me-1"></i>Optimización de recursos</span>
+              <span class="tech-tag"><i class="bi bi-thermometer-half me-1"></i>Monitoreo térmico</span>
+              <span class="tech-tag"><i class="bi bi-diagram-2 me-1"></i>Gestión dinámica de procesos</span>
+              <span class="tech-tag"><i class="bi bi-graph-up me-1"></i>Ajustes para cargas de IA</span>
+              <span class="tech-tag"><i class="bi bi-lightning-charge me-1"></i>Integración Thunderbolt 3</span>
+            </div>
+
+            <hr class="divider">
+
+            <h4 style="font-family:var(--fuente-titulo); color:var(--blanco); font-size:0.85rem; letter-spacing:2px; margin-bottom:1rem;">
+              <i class="bi bi-list-check text-acento me-2"></i>Casos de Uso
+            </h4>
+            <ul style="color:#888; font-size:0.88rem; line-height:1.9; padding-left:1.1rem;">
+              <li>Pruebas de inferencia local de modelos LLM</li>
+              <li>Evaluación de rendimiento CUDA</li>
+              <li>Desarrollo y validación de RoboNexis</li>
+              <li>Conexión con infraestructura Mainframe mediante Thunderbolt 3</li>
+              <li>Ejecución de modelos de hasta 22B parámetros en entornos controlados</li>
+            </ul>
+          </div>
+
+          <div class="col-lg-6">
+            <h4 style="font-family:var(--fuente-titulo); color:var(--blanco); font-size:0.85rem; letter-spacing:2px; margin-bottom:1.2rem;">
+              <i class="bi bi-graph-up-arrow text-acento me-2"></i>Resultados Destacados
+            </h4>
+            <p class="about-text" style="font-size:0.9rem;">
+              La plataforma fue utilizada durante las pruebas de inferencia del ecosistema RoboNexis,
+              incluyendo la ejecución del modelo <strong style="color:var(--blanco);">Codestral-22B Q4_K_M</strong>,
+              bajo configuración optimizada.
+            </p>
+
+            <div class="row g-3 mt-2">
+              <div class="col-6">
+                <div class="result-card">
+                  <p class="lbl">Tiempo de Respuesta</p>
+                  <p class="val">~13.8s</p>
+                  <p class="sub">Codestral-22B Q4_K_M</p>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="result-card">
+                  <p class="lbl">Modelo Máximo</p>
+                  <p class="val">22B</p>
+                  <p class="sub">parámetros, entorno controlado</p>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="result-card">
+                  <p class="lbl">Presión de Contacto</p>
+                  <p class="val">15–25</p>
+                  <p class="sub">libras, disipadores GRID K2</p>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="result-card">
+                  <p class="lbl">Turbinas Activas</p>
+                  <p class="val">6</p>
+                  <p class="sub">flujo controlado multi-etapa</p>
+                </div>
+              </div>
+            </div>
+
+            <p style="color:#555; font-size:0.82rem; line-height:1.7; margin-top:1.2rem;">
+              La combinación de arquitectura térmica personalizada, ventilación multi-etapa y
+              optimización de software permitió mantener estabilidad operativa durante cargas
+              prolongadas de procesamiento intensivo.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === SECCIÓN 5: TECNOLOGÍAS === -->
+    <section id="tecnologias" class="section-dark" aria-labelledby="tech-P51-titulo">
+      <div class="container text-center">
+        <h3 style="font-family:var(--fuente-titulo); color:var(--blanco); font-size:0.9rem; letter-spacing:2px; margin-bottom:1.5rem;" id="tech-P51-titulo">
+          <i class="bi bi-tools text-acento me-2"></i>Stack Tecnológico
+        </h3>
+        <div>
+          <span class="tech-pill"><i class="bi bi-laptop"></i>Lenovo ThinkPad P51</span>
+          <span class="tech-pill"><i class="bi bi-cpu"></i>Intel Xeon E3-1505M</span>
+          <span class="tech-pill"><i class="bi bi-memory"></i>40 GB RAM</span>
+          <span class="tech-pill"><i class="bi bi-snow2"></i>NVIDIA GRID K2 (heatsinks)</span>
+          <span class="tech-pill"><i class="bi bi-fan"></i>BFB1012UH-A</span>
+          <span class="tech-pill"><i class="bi bi-arrow-repeat"></i>Turbinas AVB</span>
+          <span class="tech-pill"><i class="bi bi-gear-wide-connected"></i>Bomba de diafragma</span>
+          <span class="tech-pill"><i class="bi bi-windows"></i>WinOs Unify Corps L11 v2.1</span>
+          <span class="tech-pill"><i class="bi bi-lightning-charge"></i>Thunderbolt 3</span>
+          <span class="tech-pill"><i class="bi bi-robot"></i>Codestral 22B Q4_K_M</span>
+        </div>
+
+        <hr class="divider mt-5">
+
+        <div class="d-flex flex-wrap gap-3 justify-content-center mt-4">
+          <a href="detalle-robonexis-n1.html" class="btn-tech">
+            <i class="bi bi-arrow-left me-2"></i>Anterior: RoboNexis N1
+          </a>
+          <a href="portfolio.html" class="btn-tech btn-tech-solid">
+            <i class="bi bi-grid me-2"></i>Ver Todos los Proyectos
+          </a>
+          <a href="detalle-cryostorm.html" class="btn-tech">
+            Siguiente: Cryostorm<i class="bi bi-arrow-right ms-2"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <!--FOOTER-->
