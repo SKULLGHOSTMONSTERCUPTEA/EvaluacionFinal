@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<!--
+  =============================================
+  TechLab Portfolio — Documento Técnico Extendido
+  Autor: Alexis Negrón Rodríguez
+  Archivo: documento.html
+
+  Estructura HTML5 — 13 secciones en 5 bloques temáticos:
+  - <nav>: Navbar Bootstrap 5 con enlace activo "Documento"
+  - <header>: Hero compacto con título del documento
+  - <aside>: Índice lateral sticky (desktop) / colapsable (móvil)
+  - <main>: Documento completo organizado en <article> secciones:
+      BLOQUE CONTEXTO
+      §1  Resumen Técnico y Objetivos
+      BLOQUE ARQUITECTURA CENTRAL
+      §2  WinOs Unify Corps — Concepto y Componentes
+      §3  Evolución WinOs 1.2 → 2.1
+      BLOQUE INGENIERÍA DE HARDWARE
+      §4  Reingeniería GPU — M2090, RTX 3060Ti, Hydra V100
+      §5  CryoStorm — Ingeniería Térmica Adaptativa
+      §6  Plataformas — P51, Asus E210M, TouchPi, Mainframe
+      §7  RoboNexis N1 y Hydra Prometheus X2
+      BLOQUE INTELIGENCIA ARTIFICIAL
+      §8  MonikaAI — Arquitectura Multi-Agente
+      §9  Casos de Estudio de Inferencia LLM
+      §10 NexCore — Validación Extrema y Shell/UI
+      BLOQUE CIERRE
+      §11 Competencias y Diferenciación Profesional
+      §12 Optimizaciones de Pipeline — LUID, CUDA, AI Inference
+      §13 Proyección Estratégica y Declaración Final
+  - <footer>: Pie de página + botón descarga PDF
+  Nota: el índice usa scroll-spy simple vía IntersectionObserver.
+  =============================================
+-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Documento Técnico Extendido — Alexis Negrón Rodríguez · Portafolio completo de proyectos e innovaciones">
+  <title>TechLab | Documento Técnico Extendido</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+
+  <style>
+    .doc-layout{display:flex;gap:2.5rem;align-items:flex-start}
+    .doc-sidebar{width:270px;flex-shrink:0;position:sticky;top:90px;max-height:calc(100vh - 110px);overflow-y:auto}
+    .doc-content{flex:1;min-width:0}
+    .doc-nav{list-style:none;padding:0;margin:0}
+    .doc-nav-group{font-size:.62rem;letter-spacing:2px;text-transform:uppercase;color:#444;padding:.9rem .9rem .4rem;border-top:1px solid rgba(255,255,255,.06);margin-top:.4rem}
+    .doc-nav-group:first-child{border-top:none;margin-top:0;padding-top:0}
+    .doc-nav li{margin:0;border-left:1px solid rgba(255,255,255,.08);margin-left:0}
+    .doc-nav a{display:block;padding:.42rem .9rem;font-size:.79rem;color:#666;text-decoration:none;border-left:2px solid transparent;margin-left:-1px;transition:color .2s,border-color .2s}
+    .doc-nav a:hover{color:#aaa}
+    .doc-nav a.active{color:var(--acento);border-left-color:var(--acento)}
+
+    .doc-section{margin-bottom:3.5rem;scroll-margin-top:90px}
+    .doc-section h2{font-family:var(--fuente-titulo);font-size:1.1rem;color:var(--blanco);letter-spacing:2px;margin-bottom:.4rem;padding-bottom:.8rem;border-bottom:1px solid rgba(255,255,255,.08)}
+    .doc-section .doc-num{font-size:.68rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);margin-bottom:.3rem}
+    .doc-section h3{font-family:var(--fuente-titulo);font-size:.88rem;color:var(--blanco);letter-spacing:1px;margin:1.6rem 0 .9rem}
+    .doc-section p{color:#999;font-size:.92rem;line-height:1.85;margin-bottom:1rem}
+    .doc-section ul{color:#999;font-size:.92rem;line-height:1.85;padding-left:1.3rem}
+    .doc-section ul li{margin-bottom:.3rem}
+    .doc-section strong{color:#ccc}
+
+    .mt{width:100%;border-collapse:collapse;font-size:.86rem;margin:1rem 0 1.5rem}
+    .mt th{font-family:var(--fuente-titulo);font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:#555;padding:.6rem 1rem;border-bottom:1px solid rgba(255,255,255,.08);text-align:left}
+    .mt td{padding:.65rem 1rem;border-bottom:1px solid rgba(255,255,255,.05);color:#bbb;vertical-align:middle}
+    .mt tr:last-child td{border-bottom:none}
+    .mt tr:hover td{background:rgba(0,200,255,.03)}
+    .hi{color:var(--acento);font-weight:700;font-family:var(--fuente-titulo);letter-spacing:1px}
+    .ok{color:#00ff88;font-weight:600}
+    .bad{color:#ff4466;font-weight:600}
+
+    .proj-mini{background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.2rem;margin-bottom:1rem;transition:border-color .3s}
+    .proj-mini:hover{border-color:rgba(0,200,255,.2)}
+    .proj-mini-title{font-family:var(--fuente-titulo);font-size:.85rem;color:var(--blanco);letter-spacing:1px;margin-bottom:.4rem}
+    .proj-mini p{margin-bottom:.6rem}
+    .proj-mini a{font-size:.78rem;color:var(--acento);text-decoration:none}
+    .proj-mini a:hover{text-decoration:underline}
+
+    .stack-row{display:flex;gap:1rem;padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,.05)}
+    .stack-row:last-child{border-bottom:none}
+    .stack-cat{font-family:var(--fuente-titulo);font-size:.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--acento);min-width:110px;flex-shrink:0}
+    .stack-vals{font-size:.85rem;color:#888}
+
+    .comp-block{background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.3rem;margin-bottom:1rem}
+    .comp-block-title{font-family:var(--fuente-titulo);font-size:.78rem;color:var(--blanco);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:.8rem}
+
+    .frase{border-left:3px solid var(--acento);padding:.7rem 1.1rem;margin:.8rem 0;background:rgba(0,200,255,.04)}
+    .frase p{font-style:italic;color:#777;margin:0;font-size:.9rem}
+
+    .doc-note{background:rgba(0,200,255,.04);border:1px solid rgba(0,200,255,.1);border-radius:4px;padding:1rem;font-size:.85rem;color:#777;line-height:1.7;margin:1rem 0}
+    .doc-note i{color:var(--acento);margin-right:.4rem}
+
+    /* GPU recondicionamiento card */
+    .gpu-card{background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.3rem;margin-bottom:1rem}
+    .gpu-card-title{font-family:var(--fuente-titulo);font-size:.82rem;color:var(--blanco);letter-spacing:1.5px;margin-bottom:.3rem}
+    .gpu-card-sub{font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--acento);margin-bottom:.8rem}
+    .gpu-stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem;margin-top:.8rem}
+    .gpu-stat{background:rgba(0,200,255,.04);border:1px solid rgba(0,200,255,.1);border-radius:3px;padding:.5rem .7rem}
+    .gpu-stat-lbl{font-size:.6rem;letter-spacing:1px;text-transform:uppercase;color:#555;margin-bottom:.1rem}
+    .gpu-stat-val{font-family:var(--fuente-titulo);font-size:.82rem;color:var(--acento)}
+
+    /* MonikaAI agent card */
+    .agent-card{background:#111;border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1.1rem;height:100%;transition:border-color .3s}
+    .agent-card:hover{border-color:rgba(0,200,255,.2)}
+    .agent-name{font-family:var(--fuente-titulo);font-size:.85rem;color:var(--acento);letter-spacing:1px;margin-bottom:.3rem}
+    .agent-role{font-size:.78rem;color:#888;margin:0;line-height:1.6}
+
+    /* Diagrama de flujo simple (mainframe / touchpi) */
+    .flow-vert{display:flex;flex-direction:column;align-items:center;gap:0}
+    .flow-node{background:#111;border:1px solid rgba(0,200,255,.18);border-radius:4px;padding:.6rem 1.4rem;font-family:var(--fuente-titulo);font-size:.78rem;color:var(--blanco);letter-spacing:1px;text-align:center;width:100%;max-width:280px}
+    .flow-arrow{color:rgba(0,200,255,.4);font-size:1.1rem;padding:.25rem 0}
+
+    .toggle-mobile{display:none}
+    @media (max-width: 991px) {
+      .doc-sidebar{display:none}
+      .doc-sidebar.open{display:block;position:fixed;top:0;left:0;width:280px;height:100vh;background:#0d0d0d;z-index:1050;padding:1.5rem;overflow-y:auto;border-right:1px solid rgba(255,255,255,.1)}
+      .toggle-mobile{display:block;margin-bottom:1.5rem}
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" aria-label="Navegación principal">
+    <div class="container">
+      <a class="navbar-brand" href="index.html"><i class="bi bi-cpu-fill me-2"></i>TECHLAB</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+              data-bs-target="#navbarMain" aria-controls="navbarMain"
+              aria-expanded="false" aria-label="Alternar navegación">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav ms-auto gap-lg-2">
+          <li class="nav-item"><a class="nav-link" href="index.html"><i class="bi bi-house me-1"></i>Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="resumen.html"><i class="bi bi-file-person me-1"></i>Resumen</a></li>
+          <li class="nav-item"><a class="nav-link" href="portfolio.html"><i class="bi bi-grid me-1"></i>Portafolio</a></li>
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="documento.html"><i class="bi bi-journal-text me-1"></i>Documento</a></li>
+          <li class="nav-item"><a class="nav-link" href="recursos.html"><i class="bi bi-collection-play me-1"></i>Recursos</a></li>
+          <li class="nav-item"><a class="nav-link" href="contacto.html"><i class="bi bi-envelope me-1"></i>Contacto</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header class="section-darker py-5 text-center border-bottom" style="border-color:rgba(255,255,255,.06)!important;">
+    <div class="container">
+      <p style="font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--acento);margin-bottom:.5rem;">Referencia técnica completa</p>
+      <h1 class="section-title">Documento Técnico Extendido</h1>
+      <div class="section-line"></div>
+      <p style="color:#888;max-width:560px;margin:0 auto;font-size:.92rem;line-height:1.8;">
+        Arquitectura de Sistemas Adaptativos e Integración IA — Alexis Negrón Rodríguez.
+        Documento completo con metodologías, resultados validados y casos de estudio.
+      </p>
+    </div>
+  </header>
+
+  <main class="section-dark">
+    <div class="container py-5">
+
+      <button class="btn-tech toggle-mobile" onclick="document.getElementById('docSidebar').classList.toggle('open')">
+        <i class="bi bi-list me-2"></i>Índice del documento
+      </button>
+
+      <div class="doc-layout">
+
+        <!-- ÍNDICE LATERAL — 13 secciones en 5 bloques -->
+        <aside class="doc-sidebar" id="docSidebar">
+          <p style="font-size:.68rem;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:.4rem;padding-left:.9rem;">Índice</p>
+          <ul class="doc-nav" id="docNav">
+
+            <li class="doc-nav-group">Contexto</li>
+            <li><a href="#s1" data-target="s1">01 · Resumen técnico y objetivos</a></li>
+
+            <li class="doc-nav-group">Arquitectura central</li>
+            <li><a href="#s2" data-target="s2">02 · WinOs Unify Corps</a></li>
+            <li><a href="#s3" data-target="s3">03 · Evolución WinOs 1.2 → 2.1</a></li>
+
+            <li class="doc-nav-group">Ingeniería de hardware</li>
+            <li><a href="#s4" data-target="s4">04 · Reingeniería GPU</a></li>
+            <li><a href="#s5" data-target="s5">05 · CryoStorm</a></li>
+            <li><a href="#s6" data-target="s6">06 · Plataformas modulares</a></li>
+            <li><a href="#s7" data-target="s7">07 · RoboNexis N1 · Hydra Prometheus</a></li>
+
+            <li class="doc-nav-group">Inteligencia artificial</li>
+            <li><a href="#s8" data-target="s8">08 · MonikaAI</a></li>
+            <li><a href="#s9" data-target="s9">09 · Casos de estudio LLM</a></li>
+            <li><a href="#s10" data-target="s10">10 · NexCore — validación extrema</a></li>
+
+            <li class="doc-nav-group">Cierre</li>
+            <li><a href="#s11" data-target="s11">11 · Competencias y diferenciación</a></li>
+            <li><a href="#s12" data-target="s12">12 · Pipeline LUID · CUDA · AI</a></li>
+            <li><a href="#s13" data-target="s13">13 · Proyección y declaración final</a></li>
+
+          </ul>
+        </aside>
+
+        <!-- CONTENIDO -->
+        <div class="doc-content">
+
+          <!-- ============ BLOQUE: CONTEXTO ============ -->
+
+          <!-- §1 -->
+          <article class="doc-section" id="s1">
+            <p class="doc-num">Sección 01 · Contexto</p>
+            <h2>Resumen Técnico y Objetivos</h2>
+            <p>
+              Este documento presenta el desarrollo de una <strong>arquitectura computacional
+              personalizada</strong> enfocada en optimización avanzada de sistemas operativos,
+              integración hardware–software de alto control, diseño térmico predictivo,
+              implementación de inteligencia artificial embebida y reingeniería de hardware
+              y plataformas eGPU.
+            </p>
+            <p>
+              El ecosistema desarrollado — centrado en <strong>WinOs Unify Corps</strong> —
+              demuestra estabilidad térmica, eficiencia energética y capacidad de entrenamiento
+              de modelos de IA bajo hardware limitado, validado mediante pruebas reales
+              prolongadas.
+            </p>
+            <p>
+              El objetivo no ha sido modificar sistemas superficialmente, sino diseñar una
+              infraestructura adaptativa capaz de:
+            </p>
+            <ul>
+              <li>Supervisar su propio estado</li>
+              <li>Ajustar dinámicamente recursos</li>
+              <li>Prevenir degradación térmica</li>
+              <li>Integrar agentes inteligentes especializados</li>
+            </ul>
+          </article>
+
+          <!-- ============ BLOQUE: ARQUITECTURA CENTRAL ============ -->
+
+          <!-- §2 -->
+          <article class="doc-section" id="s2">
+            <p class="doc-num">Sección 02 · Arquitectura central</p>
+            <h2>WinOs Unify Corps — Concepto y Componentes</h2>
+
+            <h3>Concepto</h3>
+            <p>
+              WinOs Unify Corps es un entorno Windows personalizado basado en LTSC, diseñado
+              para operar con control granular de servicios, segmentación avanzada de recursos,
+              compresión de memoria dinámica, gestión jerárquica CPU–GPU–RAM y arquitectura
+              Zero Latency x64.
+            </p>
+
+            <h3>Objetivos Técnicos</h3>
+            <ul>
+              <li>Reducir latencias no determinísticas</li>
+              <li>Minimizar procesos innecesarios</li>
+              <li>Prolongar vida útil del hardware</li>
+              <li>Permitir integración IA a nivel sistema</li>
+            </ul>
+
+            <h3>Componentes Clave</h3>
+            <ul>
+              <li><strong>WinOsCore</strong> — núcleo lógico de control</li>
+              <li><strong>Memory Compression Engine</strong></li>
+              <li><strong>PCIe Rail Optimization Layer</strong></li>
+              <li><strong>LUID Performance Provisioning</strong></li>
+              <li><strong>Monitoring &amp; Telemetry Nodes</strong></li>
+              <li>Experiencia en eventos de bajo nivel (Event Tracing, Kernel Providers, ACPI)</li>
+              <li>Redirección de instrucciones gráficas a través de Intel HD 620, 8250U, y GPUs híbridas (GT940MX y RX580)</li>
+            </ul>
+
+            <div class="doc-note">
+              <i class="bi bi-cpu"></i>
+              <strong style="color:#999;">Telemetría personalizada:</strong> desarrollo de tres
+              nodos principales — CPU, GPU, Memory — con etiquetas binarias y parámetros como
+              <code style="color:var(--acento);background:rgba(0,200,255,.06);padding:0 4px;">graphics_processing_engine</code>,
+              <code style="color:var(--acento);background:rgba(0,200,255,.06);padding:0 4px;">PPM_Processor_7</code>,
+              <code style="color:var(--acento);background:rgba(0,200,255,.06);padding:0 4px;">segment_size</code>,
+              <code style="color:var(--acento);background:rgba(0,200,255,.06);padding:0 4px;">frame_quality</code>,
+              <code style="color:var(--acento);background:rgba(0,200,255,.06);padding:0 4px;">compression_ratio</code> —
+              con generación de logs y análisis predictivo de comportamiento de hardware bajo distintas cargas.
+            </div>
+          </article>
+
+          <!-- §3 -->
+          <article class="doc-section" id="s3">
+            <p class="doc-num">Sección 03 · Arquitectura central</p>
+            <h2>Evolución WinOs 1.2 → 2.1</h2>
+
+            <h3>Generación 1 — WinOs Unify Corps 1.2</h3>
+            <p><strong>Características:</strong> optimización experimental inicial, reducción básica de servicios, ajustes registry-level, offloading parcial limitado, inferencia CPU-oriented.</p>
+            <p><strong>Limitaciones observadas:</strong> mayor degradación contextual, mayor latencia sostenida, menor eficiencia energética, pipeline de memoria menos optimizado.</p>
+
+            <h3>Generación 2 — WinOs Unify Corps 2.1</h3>
+            <p><strong>Mejoras integradas:</strong> optimización avanzada de llama.cpp, refinamiento del scheduler x64, mejor administración de VRAM y RAM, arquitectura modular de agentes, reducción de latencia contextual, estabilidad térmica prolongada.</p>
+
+            <table class="mt">
+              <thead><tr><th>Característica</th><th>WinOs 1.2</th><th>WinOs 2.1</th></tr></thead>
+              <tbody>
+                <tr><td>Inferencia 550 tokens</td><td style="color:#888;">2m 40s</td><td><span class="ok">Mejorada</span></td></tr>
+                <tr><td>Scheduler</td><td style="color:#888;">Básico</td><td><span class="ok">Adaptativo</span></td></tr>
+                <tr><td>llama.cpp</td><td style="color:#888;">Sin optimización</td><td><span class="ok">Optimizado</span></td></tr>
+                <tr><td>Gestión térmica</td><td style="color:#888;">Parcial</td><td><span class="ok">Predictiva</span></td></tr>
+                <tr><td>Offloading</td><td style="color:#888;">Limitado</td><td><span class="ok">Refinado</span></td></tr>
+                <tr><td>Arquitectura AI</td><td style="color:#888;">Experimental</td><td><span class="ok">Modular</span></td></tr>
+                <tr><td>Estabilidad contextual</td><td style="color:#888;">Media</td><td><span class="ok">Alta</span></td></tr>
+              </tbody>
+            </table>
+
+            <p style="font-size:.84rem;color:#666;">
+              Resultados observados en WinOs 2.1: reducción significativa en tiempo de inferencia,
+              mayor estabilidad en generación extendida, mejor coherencia multi-contextual,
+              menor degradación bajo cargas largas.
+            </p>
+          </article>
+
+          <!-- ============ BLOQUE: INGENIERÍA DE HARDWARE ============ -->
+
+          <!-- §4 -->
+          <article class="doc-section" id="s4">
+            <p class="doc-num">Sección 04 · Ingeniería de hardware</p>
+            <h2>Reingeniería GPU — Modding y Reacondicionamiento</h2>
+
+            <p>
+              Se realizaron modificaciones y rehabilitación de hardware incluyendo adaptaciones
+              en GPUs profesionales, validación eléctrica previa a encendido, ajustes de
+              resistencias para pruebas de identificación PCI, y flasheo controlado con
+              validación térmica posterior.
+            </p>
+
+            <div class="gpu-card">
+              <p class="gpu-card-sub">Modding · BIOS · PCI ID</p>
+              <p class="gpu-card-title">NVIDIA Tesla M2090 → Quadro 7000</p>
+              <p style="font-size:.85rem;color:#888;line-height:1.7;margin-bottom:0;">
+                Modificación física de la tarjeta, incluyendo cambios en resistencias para alterar
+                identificadores PCI y simular una Quadro 7000. Inyección de cadenas personalizadas
+                en BIOS para habilitar funciones gráficas profesionales (DirectX, CUDA). Flasheo
+                controlado de BIOS y validación térmica y de rendimiento tras la conversión.
+                Técnica aplicada exitosamente también en la GPU K10 de NVIDIA.
+              </p>
+            </div>
+
+            <div class="gpu-card">
+              <p class="gpu-card-sub">Reacondicionamiento · eGPU Thunderbolt</p>
+              <p class="gpu-card-title">RTX 3060 Ti — CuForge Arctic Bloom</p>
+              <p style="font-size:.85rem;color:#888;line-height:1.7;">
+                Sistema de refrigeración personalizado, undervolt estratégico, integración vía
+                eGPU Thunderbolt, validación bajo 30°C ambiente.
+              </p>
+              <div class="gpu-stat-grid">
+                <div class="gpu-stat"><p class="gpu-stat-lbl">Temp. promedio carga media</p><p class="gpu-stat-val">~28°C</p></div>
+                <div class="gpu-stat"><p class="gpu-stat-lbl">Hotspot</p><p class="gpu-stat-val">+2°C</p></div>
+              </div>
+              <p style="font-size:.8rem;color:#555;margin:.7rem 0 0;">Sin picos térmicos abruptos · estabilidad eléctrica tras estabilización inicial.</p>
+            </div>
+
+            <div class="gpu-card" style="border-color:rgba(0,200,255,.15);margin-bottom:0;">
+              <p class="gpu-card-sub">Reacondicionamiento · eGPU Thunderbolt</p>
+              <p class="gpu-card-title">Hydra Prometheus V100 — Tesla V100</p>
+              <p style="font-size:.85rem;color:#888;line-height:1.7;">
+                Sistema de refrigeración personalizado, undervolt estratégico, integración vía
+                eGPU Thunderbolt, validación bajo 30°C ambiente.
+              </p>
+              <div class="gpu-stat-grid">
+                <div class="gpu-stat"><p class="gpu-stat-lbl">Temp. promedio carga media</p><p class="gpu-stat-val">~38°C</p></div>
+                <div class="gpu-stat"><p class="gpu-stat-lbl">Hotspot</p><p class="gpu-stat-val">+2°C</p></div>
+              </div>
+              <p style="font-size:.8rem;color:#555;margin:.7rem 0 0;">Sin picos térmicos abruptos · estabilidad eléctrica tras estabilización inicial. Esta es la GPU utilizada en los casos de estudio de inferencia Codestral 22B del Mainframe eGPU.</p>
+            </div>
+
+            <a href="detalle-mainframe.html" class="btn-tech mt-2"><i class="bi bi-arrow-right me-2"></i>Ver Mainframe eGPU completo</a>
+          </article>
+
+          <!-- §5 -->
+          <article class="doc-section" id="s5">
+            <p class="doc-num">Sección 05 · Ingeniería de hardware</p>
+            <h2>CryoStorm — Ingeniería Térmica Adaptativa</h2>
+            <p>
+              Plataforma experimental de ingeniería térmica desarrollada para optimizar la
+              disipación de calor en sistemas portátiles de alto rendimiento. Reingeniería
+              completa del sistema de ventilación sobre un Acer Nitro 5 con
+              Intel Core i7-12650H y NVIDIA RTX 4060.
+            </p>
+            <table class="mt">
+              <thead><tr><th>Métrica</th><th>Antes</th><th>CryoStorm</th></tr></thead>
+              <tbody>
+                <tr><td>Spikes térmicos</td><td><span class="bad">~90°C</span></td><td><span class="ok">Eliminados</span></td></tr>
+                <tr><td>Disipador principal (carga sostenida)</td><td><span class="bad">~39°C</span></td><td><span class="ok">30–32°C</span></td></tr>
+                <tr><td>CPU bajo inferencia</td><td colspan="2" style="color:#bbb;">38–53°C estable</td></tr>
+                <tr><td>GPU full load</td><td colspan="2" style="color:#bbb;">~43°C sostenido · ~35°C mejores escenarios</td></tr>
+              </tbody>
+            </table>
+            <p style="font-size:.84rem;color:#666;">
+              Arquitectura X2 Quad Heatsink con ~12 heatpipes en configuración dual CPU/GPU.
+              Disipación de RAM mediante heatsink tipo PS3 PCH e interfaz térmica CrimsonLayer TIM.
+            </p>
+            <a href="detalle-cryostorm.html" class="btn-tech mt-2"><i class="bi bi-arrow-right me-2"></i>Ver CryoStorm completo</a>
+          </article>
+
+          <!-- §6 -->
+          <article class="doc-section" id="s6">
+            <p class="doc-num">Sección 06 · Ingeniería de hardware</p>
+            <h2>Plataformas Modulares — P51, Asus E210M, TouchPi, Mainframe</h2>
+
+            <h3>P51 — Mobile AI Workstation Prototype</h3>
+            <p>
+              Estación de trabajo portátil experimental sobre Lenovo ThinkPad P51 con
+              Intel Xeon E3-1505M y 40 GB de RAM. Incorpora arquitectura térmica personalizada
+              con disipadores NVIDIA GRID K2 modificados, presión controlada de 15–25 lb para
+              contacto térmico, y sistema de ventilación multi-etapa: seis turbinas de flujo
+              controlado, incluyendo una BFB1012UH-A de alto caudal y turbinas AVB de doble
+              rodamiento. Soporte de presión mediante bomba de diafragma independiente y
+              conductos de cobre personalizados.
+            </p>
+            <p>
+              Opera bajo <strong>WinOs Unify Corps Layer 11 v2.1</strong>. Utilizado como
+              plataforma principal en las pruebas de inferencia de Codestral-22B Q4_K_M,
+              logrando tiempos de respuesta cercanos a 13.8 segundos. Demostración clave del
+              proyecto: <em>"El rendimiento no depende exclusivamente del hardware, sino del
+              control arquitectónico del sistema."</em>
+            </p>
+
+            <h3>Asus E210M — Windows 11 LTSC 24H2 Structural Optimization</h3>
+            <p>
+              Validación de la metodología WinOs Unify Corps sobre un Intel Celeron N4020 con
+              4 GB de RAM física, Windows 11 Enterprise LTSC 24H2 (Build 26100.1742).
+              Reducción progresiva de huella de memoria: 1,111 MB → 1,040 MB → 920 MB estable,
+              manteniendo activos Windows Defender, Security Health Service, Firewall, RPC,
+              DCOM, LSASS y BitLocker. Procesos mínimos: 38–39 · típicos: 40–43 · subprocesos: 490–726.
+            </p>
+            <p>
+              Integer Overflow documentado en contador de FPS (<span class="bad">-246,864,158</span>)
+              provocado por reducción extrema de interrupciones parasitarias — gestionado
+              transparentemente por el Kernel sin TDR, sin congelamientos ni fallos en CMD/PowerShell.
+              Optimización Mellanox-Kernel con pico TX de <strong style="color:var(--acento);">1,445 MB/s</strong>
+              y 0% de pérdida de paquetes.
+            </p>
+            <a href="detalle-asus-e210m.html" class="btn-tech btn-sm mb-3"><i class="bi bi-arrow-right me-2"></i>Ver Asus E210M completo</a>
+
+            <h3>TouchPi — Portable Edge AI Hybrid Infrastructure</h3>
+            <div class="flow-vert mb-3" style="max-width:300px;">
+              <div class="flow-node">TouchScreen</div>
+              <div class="flow-arrow"><i class="bi bi-arrow-down"></i></div>
+              <div class="flow-node">LattePanda</div>
+              <div class="flow-arrow"><i class="bi bi-arrow-down"></i></div>
+              <div class="flow-node">Raspberry Pi 4B</div>
+              <div class="flow-arrow"><i class="bi bi-arrow-down"></i></div>
+              <div class="flow-node">Coral TPU</div>
+              <div class="flow-arrow"><i class="bi bi-arrow-down"></i></div>
+              <div class="flow-node" style="border-color:rgba(0,200,255,.4);color:var(--acento);">AI Inference</div>
+            </div>
+            <p>
+              Plataforma híbrida enfocada en Edge AI, procesamiento distribuido e
+              interoperabilidad Windows/Linux. Refrigeración mediante doble turbina Delta
+              BFB1012 con flujo gradualizado y cámaras internas de presión.
+              Raspberry Pi 4B: 45°C máx. compilando librerías AI. LattePanda: 50–57°C promedio,
+              60°C máx. bajo carga sostenida. Incluye adaptación ergonómica de controles
+              GameSir X2 e integración LAN de baja latencia.
+            </p>
+            <a href="detalle-touchpi.html" class="btn-tech btn-sm mb-3"><i class="bi bi-arrow-right me-2"></i>Ver TouchPi completo</a>
+
+            <h3>Mainframe eGPU — Infraestructura Portable CUDA &amp; NAS</h3>
+            <div class="flow-vert mb-3" style="max-width:300px;">
+              <div class="flow-node">NAS</div>
+              <div class="flow-arrow"><i class="bi bi-arrow-down"></i></div>
+              <div class="flow-node">eGPU</div>
+              <div class="flow-arrow"><i class="bi bi-arrow-down"></i></div>
+              <div class="flow-node">PSU Chain</div>
+              <div class="flow-arrow"><i class="bi bi-arrow-down"></i></div>
+              <div class="flow-node">Thermal Zones</div>
+              <div class="flow-arrow"><i class="bi bi-arrow-down"></i></div>
+              <div class="flow-node">USB Hub Central</div>
+              <div class="flow-arrow"><i class="bi bi-arrow-down"></i></div>
+              <div class="flow-node" style="border-color:rgba(0,200,255,.4);color:var(--acento);">Communication Modules</div>
+            </div>
+            <p>
+              Infraestructura portátil orientada a aceleración CUDA, almacenamiento NAS,
+              inferencia IA y virtualización. Construida sobre chasis S2200 modificado con
+              eGPU Thunderbolt, NAS iStar 4-Bay, USB Hub x16, dual PSU sincronizado, monitoreo
+              analógico de voltaje y control térmico automatizado mediante controladores
+              STC-1000 y sensores NTC físicos.
+            </p>
+            <a href="detalle-mainframe.html" class="btn-tech btn-sm"><i class="bi bi-arrow-right me-2"></i>Ver Mainframe eGPU completo</a>
+          </article>
+
+          <!-- §7 -->
+          <article class="doc-section" id="s7">
+            <p class="doc-num">Sección 07 · Ingeniería de hardware</p>
+            <h2>RoboNexis N1 y Hydra Prometheus X2</h2>
+
+            <h3>RoboNexis N1 — Autonomous Experimental Robotics Platform</h3>
+            <p>
+              Plataforma robótica experimental orientada a automatización física, reconocimiento
+              facial, comunicación modular y arquitectura de IA embebida. Chasis Yahboom G1
+              reutilizado, Raspberry Pi 3B, Debian Buster personalizado. Comunicación en 4 capas
+              redundantes (hotspot, LoRa Mesh, cifrado local, TCP/IP). Movilidad con 4 motores DC
+              1300 RPM gearbox. Energía: 15 celdas de litio 18650 + solar auxiliar — autonomía
+              3–6h estándar, hasta 8h con alimentación externa. Funciones AI: reconocimiento
+              facial, detección de movimiento, sonar, emociones simuladas con orejas robóticas
+              dinámicas (−25° frontal / −15° trasero).
+            </p>
+            <a href="detalle-robonexis-n1.html" class="btn-tech btn-sm mb-3"><i class="bi bi-arrow-right me-2"></i>Ver RoboNexis N1 completo</a>
+
+            <h3>Hydra Prometheus X2 RTX 3090 — Advanced Hybrid Cooling Architecture</h3>
+            <p>
+              Plataforma experimental de refrigeración híbrida sobre RTX 3090 Zotac, orientada
+              a resolver hotspots extremos y estrés continuo en VRAM/VRM. Procedimiento térmico
+              experimental: lijado calibrado, inspección microscópica, análisis de porosidad,
+              ciclos térmicos controlados y activación progresiva de compuesto térmico.
+              Refrigeración con turbinas BFB1012 de doble álabe, una de ellas reconstruida y
+              recalibrada para menor vibración y mejor presión estática.
+            </p>
+            <table class="mt">
+              <thead><tr><th>Componente</th><th>Temperatura</th></tr></thead>
+              <tbody>
+                <tr><td>Núcleo GPU</td><td><span class="hi">~60°C máx.</span></td></tr>
+                <tr><td>Hotspot</td><td><span class="hi">45–60°C</span></td></tr>
+                <tr><td>VRAM (carga AI sostenida)</td><td><span class="hi">60°C</span></td></tr>
+              </tbody>
+            </table>
+          </article>
+
+          <!-- ============ BLOQUE: INTELIGENCIA ARTIFICIAL ============ -->
+
+          <!-- §8 -->
+          <article class="doc-section" id="s8">
+            <p class="doc-num">Sección 08 · Inteligencia artificial</p>
+            <h2>MonikaAI — Arquitectura Multi-Agente</h2>
+            <p>
+              MonikaAI es un framework modular de agentes diseñado para supervisión térmica y
+              energética, gestión de memoria, análisis de tráfico gráfico y coordinación de
+              estabilidad. Funciona como sistema de orquestación multicapa integrado dentro de
+              WinOs Unify Corps. Durante la inicialización, ejecuta un análisis preliminar del
+              entorno: utilización de CPU, memoria, comportamiento térmico, procesos activos,
+              latencias, estado energético y disponibilidad de recursos.
+            </p>
+
+            <div class="flow-vert mb-4" style="max-width:280px;">
+              <div class="flow-node" style="border-color:rgba(0,200,255,.4);color:var(--acento);">MonikaAI Core</div>
+              <div class="flow-arrow"><i class="bi bi-arrow-down"></i></div>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-sm-6 col-lg-3">
+                <div class="agent-card">
+                  <p class="agent-name">BELCHIOR-1</p>
+                  <p class="agent-role">Infraestructura</p>
+                </div>
+              </div>
+              <div class="col-sm-6 col-lg-3">
+                <div class="agent-card">
+                  <p class="agent-name">CASPER-1</p>
+                  <p class="agent-role">Control memoria x64</p>
+                </div>
+              </div>
+              <div class="col-sm-6 col-lg-3">
+                <div class="agent-card">
+                  <p class="agent-name">ARIAL-1</p>
+                  <p class="agent-role">Tráfico DXGI/D3D11</p>
+                </div>
+              </div>
+              <div class="col-sm-6 col-lg-3">
+                <div class="agent-card">
+                  <p class="agent-name">MAGI-Z</p>
+                  <p class="agent-role">Persistencia y estabilidad</p>
+                </div>
+              </div>
+            </div>
+
+            <h3>Monika Técnico — Módulo de Optimización Especializada</h3>
+            <p>
+              Subsistema especializado que interpreta recomendaciones del núcleo de análisis,
+              selecciona scripts o políticas de optimización, y aplica ajustes adaptativos según
+              el contexto operativo: optimización segmentada, asignación dinámica de recursos,
+              ajustes de rendimiento y priorización de procesos.
+            </p>
+
+            <h3>Arquitectura Predictiva</h3>
+            <p>
+              WinOs Unify Corps incorpora estructuras de predicción basadas en patrones de
+              utilización, árboles de decisión, telemetría y análisis contextual. Cuando el
+              sistema detecta recursos limitados o cargas elevadas, los módulos predictivos
+              anticipan degradaciones, redistribuyen recursos y estabilizan el entorno antes
+              de alcanzar condiciones críticas.
+            </p>
+          </article>
+
+          <!-- §9 -->
+          <article class="doc-section" id="s9">
+            <p class="doc-num">Sección 09 · Inteligencia artificial</p>
+            <h2>Casos de Estudio de Inferencia LLM</h2>
+
+            <h3>Caso A — Inferencia Contextual Extendida (NexCore)</h3>
+            <table class="mt">
+              <thead><tr><th>Parámetro</th><th>Resultado</th></tr></thead>
+              <tbody>
+                <tr><td>Modelo</td><td><span class="hi">Codestral 22B Q4</span></td></tr>
+                <tr><td>Hardware</td><td>P51 / Xeon 1505M</td></tr>
+                <tr><td>Tokens generados</td><td><span class="hi">~750</span></td></tr>
+                <tr><td>Tiempo total</td><td><span class="hi">~2m 05s</span></td></tr>
+                <tr><td>CPU Package Power</td><td>~15 W</td></tr>
+                <tr><td>Estado térmico</td><td><span class="ok">Estable · sin throttling</span></td></tr>
+              </tbody>
+            </table>
+            <p style="font-size:.84rem;color:#666;">
+              El modelo mantuvo coherencia táctica y consistencia en generación bilingüe
+              simultánea (Español → Inglés) sin degradación crítica. Estos resultados sirvieron
+              como base para las optimizaciones implementadas en la infraestructura Tesla V100 eGPU.
+            </p>
+
+            <h3>Caso B — Inferencia de Alta Densidad Cognitiva (RoboNexis + Tesla V100)</h3>
+            <table class="mt">
+              <thead><tr><th>Parámetro</th><th>Valor</th></tr></thead>
+              <tbody>
+                <tr><td>Plataforma</td><td>Lenovo P51 · 17 GB RAM asignada</td></tr>
+                <tr><td>eGPU</td><td><span class="hi">Tesla V100</span> · 14,166 MB VRAM</td></tr>
+                <tr><td>Modelo</td><td>RoboNexisAICodestral-22B-v0.1-Q4_K_M.gguf</td></tr>
+                <tr><td>Consumo promedio GPU</td><td>125 W</td></tr>
+                <tr><td>Temperatura estabilizada</td><td><span class="ok">43°C</span></td></tr>
+                <tr><td>Offloading</td><td>Híbrido CPU + GPU</td></tr>
+              </tbody>
+            </table>
+
+            <div class="row g-3 mb-2">
+              <div class="col-md-6">
+                <div class="gpu-card" style="margin-bottom:0;">
+                  <p class="gpu-card-sub">Prueba A — Descriptiva completa</p>
+                  <p class="gpu-card-title">Uranio · enriquecimiento nuclear</p>
+                  <div class="gpu-stat-grid">
+                    <div class="gpu-stat"><p class="gpu-stat-lbl">Tokens</p><p class="gpu-stat-val">750</p></div>
+                    <div class="gpu-stat"><p class="gpu-stat-lbl">Tiempo</p><p class="gpu-stat-val">19.70 s</p></div>
+                  </div>
+                  <p style="font-size:.8rem;color:#555;margin:.7rem 0 0;">Rendimiento: <strong style="color:var(--acento);">~38 t/s</strong></p>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="gpu-card" style="margin-bottom:0;border-color:rgba(0,200,255,.18);">
+                  <p class="gpu-card-sub">Prueba B — Alta velocidad (+5s después)</p>
+                  <p class="gpu-card-title">Buffer liberado eficientemente</p>
+                  <div class="gpu-stat-grid">
+                    <div class="gpu-stat"><p class="gpu-stat-lbl">Tokens</p><p class="gpu-stat-val">750</p></div>
+                    <div class="gpu-stat"><p class="gpu-stat-lbl">Tiempo</p><p class="gpu-stat-val">~8.00 s</p></div>
+                  </div>
+                  <p style="font-size:.8rem;color:#555;margin:.7rem 0 0;">Rendimiento: <strong style="color:var(--acento);">~93 t/s</strong></p>
+                </div>
+              </div>
+            </div>
+
+            <h3>Evidencia Relacionada</h3>
+            <ul>
+              <li>Capturas OpenHardwareMonitor</li>
+              <li>GPU-Z Telemetry</li>
+              <li>Video de inferencia RoboNexis</li>
+              <li>Métricas de VRAM Allocation</li>
+              <li>Registros térmicos HWInfo</li>
+            </ul>
+            <a href="recursos.html" class="btn-tech btn-sm"><i class="bi bi-collection-play me-2"></i>Ver evidencia en Recursos</a>
+          </article>
+
+          <!-- §10 -->
+          <article class="doc-section" id="s10">
+            <p class="doc-num">Sección 10 · Inteligencia artificial</p>
+            <h2>NexCore — Validación Extrema y Shell/UI</h2>
+
+            <h3>Validación Bajo Entrenamiento Real</h3>
+            <p>
+              Entrenamiento de modelo 12B–16B (CPU-only-Raw): <strong style="color:var(--acento);">42+ horas
+              acumuladas</strong> en ciclos de 12 horas, temperatura estable 50–58°C, sin picos
+              críticos, ~40,000 milestones desarrollados. El entorno sostuvo cargas prolongadas
+              sin degradación térmica ni inestabilidad — logrado sin WinOs completamente activado.
+            </p>
+            <div class="doc-note">
+              <i class="bi bi-graph-up"></i>
+              Telemetría real registrada durante la sesión de 12 horas (HWInfo): CPU Temps
+              estables entre 55–59°C, CPU Clocks con patrón de boost/throttle consistente,
+              CPU Package Power oscilando en banda estrecha (~14.8–15.4W), y memoria virtual
+              comprometida estabilizada tras fase inicial de carga — sin tendencia de
+              degradación a lo largo de la sesión. Gráficas disponibles en
+              <a href="recursos.html" style="color:var(--acento);">Recursos</a>.
+            </div>
+
+            <h3>Anexo — Desacoplamiento Shell/UI (NexCore 1.2)</h3>
+            <p>
+              Reducción de overhead de SearchUI y ShellExperienceHost mediante desacoplamiento
+              parcial de dependencias visuales del shell. Componentes analizados: SearchUI.exe,
+              ShellExperienceHost.exe, explorer.exe, SystemApps, COM Interfaces, Registry Policies.
+            </p>
+            <table class="mt">
+              <thead><tr><th>Métrica</th><th>Resultado</th></tr></thead>
+              <tbody>
+                <tr><td>Procesos base</td><td><span class="hi">~40–42</span></td></tr>
+                <tr><td>Fallos Explorer</td><td><span class="ok">No observados</span></td></tr>
+                <tr><td>Corrupción de datos</td><td><span class="ok">No detectada</span></td></tr>
+              </tbody>
+            </table>
+            <p style="font-size:.84rem;color:#666;">
+              Windows ejecutó remapeos automáticos sobre enlaces simbólicos de SystemApps como
+              mecanismo de autoprotección, sin afectar estabilidad del shell ni persistencia
+              funcional del entorno.
+            </p>
+
+            <h3>Caso de Validación Extrema — Concurrencia VM + Inferencia LLM</h3>
+            <table class="mt">
+              <thead><tr><th>Parámetro</th><th>Configuración</th></tr></thead>
+              <tbody>
+                <tr><td>Plataforma</td><td>Getac K120 G1 · Intel Mobile Platform · 16 GB RAM</td></tr>
+                <tr><td>Sistema</td><td>NexCore 1.2 · VM VirtualBox</td></tr>
+                <tr><td>IA</td><td>RoboNexisAICodestral-22B</td></tr>
+              </tbody>
+            </table>
+            <p>Cargas concurrentes: VM Windows 10 Pro N + actualización offline, inferencia CPU raw con prompt táctico extendido, y dos monitores externos con renderizado DXGI/DWM continuo sobre iGPU Intel HD.</p>
+            <table class="mt">
+              <thead><tr><th>Telemetría</th><th>Resultado</th></tr></thead>
+              <tbody>
+                <tr><td>Memoria física utilizada</td><td><span class="hi">~23.9 GB</span> / 24 GB límite</td></tr>
+                <tr><td>Saturación equivalente</td><td><span class="bad">~150%</span></td></tr>
+                <tr><td>Memoria disponible mínima</td><td><span class="hi">438 MB</span></td></tr>
+                <tr><td>Boot VM</td><td>17.04 s</td></tr>
+                <tr><td>BSOD / deadlocks / corrupción</td><td><span class="ok">Ninguno</span></td></tr>
+                <tr><td>Pipeline gráfico</td><td><span class="ok">Sin flickering · sin colapso DWM</span></td></tr>
+                <tr><td>Coherencia inferencia IA</td><td><span class="ok">Completa · sin corrupción semántica</span></td></tr>
+              </tbody>
+            </table>
+            <p style="font-size:.84rem;color:#666;">
+              NexCore 1.2 redistribuyó correctamente memoria comprimida, balanceó física y
+              virtual, y evitó colisiones críticas de paginación — validando resiliencia
+              equivalente a estaciones de trabajo multitarea de alta densidad.
+            </p>
+            <a href="detalle-nexcore.html" class="btn-tech btn-sm"><i class="bi bi-arrow-right me-2"></i>Ver NexCore completo</a>
+          </article>
+
+          <!-- ============ BLOQUE: CIERRE ============ -->
+
+          <!-- §11 -->
+          <article class="doc-section" id="s11">
+            <p class="doc-num">Sección 11 · Cierre</p>
+            <h2>Competencias y Diferenciación Profesional</h2>
+
+            <h3>Competencias Técnicas Demostradas</h3>
+            <ul>
+              <li>Optimización profunda de Windows LTSC</li>
+              <li>Control avanzado de afinidad de núcleos</li>
+              <li>Diseño térmico práctico</li>
+              <li>Integración eGPU compleja</li>
+              <li>Reingeniería eléctrica básica</li>
+              <li>Arquitectura multi-agente IA</li>
+              <li>Entrenamiento local de modelos LLM</li>
+              <li>Monitoreo de bajo nivel</li>
+              <li>Gestión predictiva de estabilidad</li>
+            </ul>
+
+            <h3>Diferenciación Profesional</h3>
+            <p>Este portafolio demuestra:</p>
+            <ul>
+              <li>Integración real hardware + software + IA</li>
+              <li>Validación empírica prolongada</li>
+              <li>Arquitectura modular escalable</li>
+              <li>Diseño orientado a longevidad</li>
+              <li>Enfoque preventivo en lugar de correctivo</li>
+            </ul>
+            <div class="doc-note">
+              <i class="bi bi-check-circle"></i>
+              No se presentan proyectos aislados, sino un <strong style="color:#999;">ecosistema cohesivo</strong>.
+            </div>
+          </article>
+
+          <!-- §12 -->
+          <article class="doc-section" id="s12">
+            <p class="doc-num">Sección 12 · Cierre</p>
+            <h2>Optimizaciones de Pipeline — LUID, CUDA, AI Inference</h2>
+
+            <h3>Mejoras del LUID Pipeline — Graphics &amp; Process Scheduling</h3>
+            <p>Componentes: dynamic affinity scaling, process priority hierarchy, DXGI/D3D11 pipeline tuning, LUID orchestration, background task balancing.</p>
+            <p style="font-size:.84rem;color:#666;">Resultados: reducción de frametime inconsistency, menor saturación CPU, mejor distribución de workloads híbridos, mayor estabilidad en gaming + inference simultáneo.</p>
+
+            <h3>NVIDIA LS Container + CUDA Infrastructure Optimization</h3>
+            <p>Optimización de comunicación entre CUDA runtime, servicios NVIDIA, inference pipelines y memory allocation layers.</p>
+            <p style="font-size:.84rem;color:#666;">Mejoras observadas: reducción de overhead, menor latency spike, mejor persistencia de VRAM, mejor reutilización de contexto CUDA.</p>
+
+            <h3>AI Inference Optimization Layer</h3>
+            <p>Técnicas implementadas: ajustes de memory management dependientes de arquitectura x64, optimización de asignación affinity/core, ajustes de cache locality, reestructuración parcial de procesos CUDA/NVIDIA Container, validación de throughput mediante llama.cpp.</p>
+
+            <table class="mt">
+              <thead><tr><th>Escenario</th><th>Antes</th><th>Después</th></tr></thead>
+              <tbody>
+                <tr><td>Codestral 22B CPU inference</td><td style="color:#888;">20–25 min</td><td><span class="ok">15–20 min</span></td></tr>
+                <tr><td>eGPU accelerated inference</td><td style="color:#888;">5–10 min</td><td><span class="ok">12s–5 min</span></td></tr>
+                <tr><td>Token throughput</td><td style="color:#888;">Variable</td><td><span class="ok">Más estable</span></td></tr>
+                <tr><td>Context coherence</td><td style="color:#888;">Media</td><td><span class="ok">Mejorada</span></td></tr>
+                <tr><td>Tokens asignados</td><td style="color:#888;">Media</td><td><span class="ok">250–750</span></td></tr>
+              </tbody>
+            </table>
+            <p style="font-size:.84rem;color:#666;">Tecnologías adicionales durante inferencia: Coquitts, Whisper.</p>
+          </article>
+
+          <!-- §13 -->
+          <article class="doc-section" id="s13" style="margin-bottom:1rem;">
+            <p class="doc-num">Sección 13 · Cierre</p>
+            <h2>Proyección Estratégica y Declaración Final</h2>
+
+            <h3>Proyección Estratégica — Próximas Fases</h3>
+            <ul>
+              <li>Modularización formal de agentes</li>
+              <li>Migración parcial a Linux para pruebas comparativas</li>
+              <li>Integración de cifrado interno</li>
+              <li>Arquitectura distribuida multi-nodo</li>
+              <li>Posible formalización como proyecto de investigación</li>
+            </ul>
+
+            <h3>Future Research &amp; Expansion</h3>
+            <ul>
+              <li>Linux migration · distributed AI nodes · CUDA clustering</li>
+              <li>Predictive infrastructure · autonomous agents</li>
+              <li>Encrypted communications · edge AI scaling</li>
+              <li>Hybrid Windows/Linux orchestration · CUDA distribution a mayor escala</li>
+            </ul>
+
+            <div class="frase"><p>"La optimización no se concibe de fronteras, sino de las oportunidades que le des."</p></div>
+            <div class="frase"><p>"Meant to outperform."</p></div>
+
+            <h3>Declaración Final</h3>
+            <p>
+              Este portafolio representa la construcción progresiva de una arquitectura
+              computacional adaptativa, desarrollada mediante experimentación controlada,
+              validación térmica real, integración sistemática de inteligencia artificial
+              y reingeniería de hardware funcional.
+            </p>
+            <p>
+              El objetivo no ha sido competir en benchmarks sintéticos, sino diseñar sistemas
+              resilientes, eficientes y escalables — representando más de
+              <strong>15 años de trabajo continuo</strong>, desde los 5 años hasta la actualidad,
+              con una profunda capacidad de análisis técnico autodidacta.
+            </p>
+
+            <div class="doc-note">
+              <i class="bi bi-folder2-open"></i>
+              La documentación física combinada suma aproximadamente <strong style="color:#999;">75 páginas</strong>
+              en este documento extendido, más <strong style="color:#999;">39 páginas</strong> de
+              documentación física adicional y <strong style="color:#999;">10 documentos
+              adicionales</strong> sobre NexCore — composición específica, planos y registros
+              técnicos — sin incluir otros proyectos del ecosistema.
+            </div>
+
+            <div class="d-flex flex-wrap gap-2 mt-3">
+              <a href="recursos.html" class="btn-tech btn-tech-solid"><i class="bi bi-collection-play me-2"></i>Ver Recursos y Evidencia</a>
+              <a href="evidencia/documento-completo.pdf" class="btn-tech" download><i class="bi bi-file-pdf me-2"></i>Descargar versión PDF</a>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 <a href="index.html">TechLab</a> · Alexis Negrón Rodríguez · San Juan, Puerto Rico</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const sections = document.querySelectorAll('.doc-section');
+    const navLinks = document.querySelectorAll('#docNav a');
+
+    const spy = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navLinks.forEach(l => l.classList.remove('active'));
+          const active = document.querySelector(`#docNav a[data-target="${entry.target.id}"]`);
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-15% 0px -70% 0px' });
+
+    sections.forEach(s => spy.observe(s));
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        document.getElementById('docSidebar').classList.remove('open');
+      });
+    });
+  </script>
+
+</body>
+</html>
