@@ -2,7 +2,7 @@
 
 **Portafolio técnico de Alexis Negrón Rodríguez** — diseño, optimización y validación empírica de sistemas operativos personalizados, ingeniería térmica experimental e inferencia de IA en hardware restringido.
 
-🔗 **[Ver el portafolio en vivo](https://tu-usuario.github.io/EvaluacionFinal/)**
+🔗 **[Ver el portafolio en vivo](https://github.com/SKULLGHOSTMONSTERCUPTEA/EvaluacionFinal)**
 
 ---
 
@@ -60,10 +60,10 @@ Cada proyecto tiene su propia página de detalle con métricas reales, tablas de
 **Alexis Negrón Rodríguez**
 Bachelor Degree in Technology — Major in Information Assurance & Security
 
-- 🌐 [Portafolio completo](https://tu-usuario.github.io/EvaluacionFinal/resumen.html)
+- 🌐 [Portafolio completo](https://skullghostmonstercuptea.github.io/EvaluacionFinal/resumen.html)
 - 💼 [LinkedIn](https://linkedin.com/in/tu-perfil)
-- 📧 alexis.techlab@example.com
+- 📧 alexisjoel2334@gmail.com
 
 ---
 
-*Documentación técnica, capturas de telemetría y evidencia adicional disponibles en [`/recursos.html`](https://tu-usuario.github.io/EvaluacionFinal/recursos.html).*
+*Documentación técnica, capturas de telemetría y evidencia adicional disponibles en [`/recursos.html`](https://skullghostmonstercuptea.github.io/EvaluacionFinal/recursos.html).*
